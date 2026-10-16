@@ -86,7 +86,7 @@
 | «Феннель · Главный советник» | обзор поверх всех сессий и воркспейса (см. ниже) | `session_017za27YfU1LN8o5HQmKjybW` |
 | «Ренье · Задачи» | заведение и разбор задач в ClickUp, недельный ритм, задачи без проекта | `session_016G6f7MVrvGXfypRDQSHfbQ` |
 | «Вивиан · Отчёты» | дейлик, отчёт Кате за день, недельные итоги (по журналу и ClickUp) | `session_019LzMhCU9eACrdMA2raNy9x` |
-| «Каллисто · Charisly» | всё по продукту Charisly | `session_01EvPNtZwX7VezmMzybbdvip` |
+| «Демиан · Charisly» | всё по продукту Charisly | `session_01EvPNtZwX7VezmMzybbdvip` |
 
 | «Эмили · Настройка и ClickUp» | первичная настройка воркспейса, вопросы по ClickUp и окружению | `session_014Wc8qGV2hjrH41xdYin3ZC` |
 

@@ -77,7 +77,7 @@ Student-план (по описанию в сторонних магазинах
 | 0:00–0:04 | «Поверните устройство», докачка Maze Palace (143 МБ) |
 | 0:04–0:58 | Первая комната дворца в 3D (горизонтально): 5 предметов по местам (Balanced Stones, Meditation Mat, Floating Candles, …, Stone Lantern) → Back / Look again / Recreate → выбрать недостающий предмет из инвентаря → «You have completed your first transfer» |
 | 0:58–1:03 | Onboarding Lesson results: слонёнок-маскот, 3 звезды, 5/5, 02:13, +5 Loci Coins |
-| 1:04–2:08 | Урок: видео Jonas с субтитрами (±15 с), между частями — задания «Match body parts» (матрёшка-голова, листья-уши, гамбургер-глаз; палочки-нос, мяч-рот, кенгуру-подбородок…), «Well done!» с пересказом связок |
+| 1:04–2:08 | Урок: видео Jonas с субтитрами (±15 с), между частями — задания «Match body parts» (матрёшка-голова, листья-уши, гамбургер-глаз; палочки-нос, мяч-рот, кенгуру-подбородок…), «Well done!» с пересказом связок. Запись оборвана: дальше урок продолжается по той же схеме «видео → задание», всего около 5 заданий (со слов Наташи) |
 | 2:10–2:24 | Lessons: карта разделов (1 Memory Crash Course, 5 Numbers, 6 Sleep, 14 Dates, 21 Recent Years), «Move here?», чек-лист Get started (+100 монет) |
 | 2:26–2:28 | Transfers: комнаты Meditation Zone, Fountain, Tea Room; шкала D0–D1–D3–D7–D16–D30, «Start transfer» |
 | 2:32–2:36 | Palaces: Japanese 15/50, Medieval 15/200, Space 15/200, Cyber Egypt 10/200; комнаты Armory 5, Food Storage 10, Snack Room 10 (закрыта, Unlock) |

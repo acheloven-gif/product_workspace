@@ -59,6 +59,8 @@
 - Геймификация: сердечки (5; бесконечные в подписке), валюта-кристаллы, серия (streak), звёзды, магазин.
 - Интервальные повторения, ~10 минут в день.
 
+**Android:** [memoryOS: Improve Your Memory](https://play.google.com/store/apps/details?id=com.memoryos.app) в Google Play — тот же разработчик (Encoder Inc.), 4.8★, 13.4K отзывов, 100K+ установок, обновлено 16.10.2026.
+
 **Встроенные покупки (US):** Student Monthly $5.99; Essential Weekly $6.99 / Monthly $16.99 / Annual $89.99; Expert Monthly $29.99 / Annual $149.99–$174.99.
 Student-план (по описанию в сторонних магазинах): 52 микроурока, 140 локусов, бесконечные сердечки.
 

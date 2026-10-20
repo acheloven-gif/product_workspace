@@ -6,7 +6,7 @@
 
 **memoryOS** — тренировка памяти в игровом формате: запоминать имена, детали, иностранные слова; геймифицированные микроуроки.
 - Веб-воронка: `start.memoryos.com` (рекламодатель в FB — Flyer 1 VC).
-- Приложение: [memoryOS: Memory Games](https://apps.apple.com/us/app/memoryos-memory-games/id1553283646) (Encoder Inc., 4.87★, 16.8K оценок US).
+- Приложение: [memoryOS: Memory Games](https://apps.apple.com/us/app/memoryos-memory-games/id1553283646) (Encoder Inc., 4.87★, 16.8K оценок US); Android — [Google Play](https://play.google.com/store/apps/details?id=com.memoryos.app) (4.8★, 13.4K отзывов, 100K+ установок).
 - Разбор воронки и приложения со скриншотами: `references/memoryos/`. Цены воронки: 4 нед $15.19 → $49.99; 12 нед $36.99 → $99.99; 24 нед $59.99 → $119.99.
 - Подход как у Charisly: копируем воронку → план → приложение конкурента, свой дизайн и бренд.
 

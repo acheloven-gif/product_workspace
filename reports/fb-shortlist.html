@@ -5,18 +5,18 @@
 <style>/* Layout: single reading column of app cards; inside each card media left (sticky) + pixel data right, stacking on phones */
 /* Layout: single column of app cards; media left + pixel data right; cream paper with blush accents */
 :root{
- --bg:#fbf5ef; --surface:#fffdfa; --tile:#fbeff0; --line:#f0dcdc; --fg:#3a2a2f; --muted:#957f86;
- --accent:#c0567a; --accent-soft:#f9e1e8; --idea:#fdeef2; --idea-fg:#7a2f4b; --big:#b8325f; --frame:#2e2226;
- --up:#3f8a64; --up-bg:#e6f3ea; --hold:#a0702a; --hold-bg:#fbf0dc; --new:#7d5bb3; --new-bg:#efe7fa; --down:#b8325f; --down-bg:#fbe3ea;
+ --bg:#fffaf7; --surface:#ffffff; --tile:#fff4f7; --line:#f8e4ea; --fg:#3d2c35; --muted:#a3909a;
+ --accent:#e8709a; --accent-soft:#ffe8f0; --idea:#fff1f6; --idea-fg:#a33a68; --big:#e0457e; --frame:#fdf0f4; --bar:#f6a8c3;
+ --up:#3c9a6c; --up-bg:#e5f7ee; --hold:#c08a1e; --hold-bg:#fff5dc; --new:#8a68d6; --new-bg:#f2ecff; --down:#e0457e; --down-bg:#ffe6ee;
  --display:"Playfair Display",Georgia,serif; --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Onest",system-ui,sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
  --bg:#1c1417; --surface:#251b1f; --tile:#2e2227; --line:#3d2e34; --fg:#f4e8ea; --muted:#b59ea6;
- --accent:#f0a0bb; --accent-soft:#40252f; --idea:#3a2430; --idea-fg:#f7cfdc; --big:#ff9ebd; --frame:#120d0f;
+ --accent:#f4a6c2; --accent-soft:#40252f; --idea:#3a2430; --idea-fg:#f7cfdc; --big:#ff9ebd; --frame:#2e2227; --bar:#f4a6c2;
  --up:#8fd3ad; --up-bg:#1f3529; --hold:#e9c27c; --hold-bg:#3a2e1a; --new:#c7aef5; --new-bg:#2e2540; --down:#ff9ebd; --down-bg:#45222f; color-scheme:dark}}
 :root[data-theme="dark"]{
  --bg:#1c1417; --surface:#251b1f; --tile:#2e2227; --line:#3d2e34; --fg:#f4e8ea; --muted:#b59ea6;
- --accent:#f0a0bb; --accent-soft:#40252f; --idea:#3a2430; --idea-fg:#f7cfdc; --big:#ff9ebd; --frame:#120d0f;
+ --accent:#f4a6c2; --accent-soft:#40252f; --idea:#3a2430; --idea-fg:#f7cfdc; --big:#ff9ebd; --frame:#2e2227; --bar:#f4a6c2;
  --up:#8fd3ad; --up-bg:#1f3529; --hold:#e9c27c; --hold-bg:#3a2e1a; --new:#c7aef5; --new-bg:#2e2540; --down:#ff9ebd; --down-bg:#45222f; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
 .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px;display:flex;flex-direction:column;gap:20px}
@@ -46,7 +46,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
 tr.cur td{background:var(--accent-soft);font-weight:600}
 .group{border-top:3px solid var(--accent);padding-top:14px;display:flex;flex-direction:column;gap:6px}
 .group p{margin:0;background:var(--idea);color:var(--idea-fg);padding:10px 14px;border-radius:8px;font-weight:500;max-width:95ch}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 6px 24px -14px var(--accent);padding:22px;display:flex;flex-direction:column;gap:10px;scroll-margin-top:70px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:0 8px 30px -18px var(--bar);padding:22px;display:flex;flex-direction:column;gap:10px;scroll-margin-top:70px}
 .sub{margin:4px 0 0;color:var(--muted);font-size:.86rem;overflow-wrap:anywhere}
 .kpis,.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--tile);border:1px solid var(--line);font-size:.8rem;font-weight:600;white-space:nowrap}
@@ -77,7 +77,7 @@ tr.cur td{background:var(--accent-soft);font-weight:600}
 .bar{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 2.4em;gap:8px;align-items:center;font-size:.86rem;padding-block:2px}
 .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bt{height:8px;background:var(--tile);border-radius:99px;overflow:hidden}
-.bt i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.bt i{display:block;height:100%;background:var(--bar);border-radius:99px}
 .bv{font-family:var(--mono);text-align:right}
 .links{display:flex;flex-wrap:wrap;gap:6px}
 .chip{padding:6px 12px;border:1px solid var(--line);border-radius:8px;color:var(--accent);text-decoration:none;font-weight:600;font-size:.84rem;background:var(--surface)}

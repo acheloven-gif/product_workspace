@@ -6,6 +6,27 @@
 
 🟢 ок · 🟡 есть вопрос · 🔴 не проходит · ⚪ не проверено
 
+## Раунд 5 (2026-10-21): от remember / recall (помнить, вспоминать, запоминать)
+
+Корни: remember, recall, recollect, retain, memorize, keep in mind.
+Заняты все три домена: Remembly, Rememberly, Remby, Recollo, Recallify, Retainly, Retainy, Recalli, Remindo, Recallo, Remmi, Rememba, Remeo, Rememo, Recallia.
+
+| Название | От какого слова | 1. App Store | 2. Похожие | 3. Выдача | 4. Домены .com / .app / .ai | 5. Товарный знак | 6–8. Произношение, на слух, не глупо | Комментарий |
+|---|---|---|---|---|---|---|---|---|
+| **Recallyn** | recall — вспоминать | 🟢 нет | 🟡 Recally (скриншоты для Mac), Recalmin (БАД) | 🟡 в сторе по «recall» — приложения про отзыв товаров | 🟢 / 🟢 / 🟢 | ⚪ | 🟡 «ри-КОЛ-ин»; могут написать Recallin | Лучший: свободны все три домена, включая .com |
+| **Remberly** | remember + -ly | 🟢 нет | 🟡 Rember (ИИ-флэшкарты), Rembrr, KinRember | 🟢 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «РЕМ-бер-ли», слышится remember | Запасной |
+| **Remberio** | remember + -io | 🟢 нет | 🟢 | 🟢 пусто | 🟢 / 🟢 / 🟢 | ⚪ | 🟡 «рем-БЕ-рио» неочевидно | Запасной: свободен .com |
+| **Rembera** | remember + -a | 🟢 нет | 🟢 | 🟢 пусто | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Запасной |
+| **Recalvo** | recall + -vo | 🟢 нет | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Под вопросом: смысл слабее |
+| **Recollia** | recollect + -ia | 🟢 нет | 🟡 Recoll (голосовой дневник с ИИ) | 🟢 | 🔴 / 🟢 / 🔴 | ⚪ | 🟡 | Только .app |
+| Rememvo | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | ⚪ | 🔴 «-mvo» не произносится | Отпадает по п. 6 |
+| Recallen | recall | 🟢 | 🔴 Recallens (фото-навигатор) | — | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Отпадает по п. 2 |
+| Recolla | recollect | 🔴 есть Recolla | — | — | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Отпадает по п. 1 |
+| Keepmind | keep in mind | 🔴 есть 2 приложения | — | — | 🔴 / 🟢 / 🔴 | ⚪ | 🟢 | Отпадает по п. 1 |
+| Memrize | memorize | 🟢 | 🔴 Memrise — крупное приложение | — | 🔴 / 🔴 / 🟢 | ⚪ | 🔴 на слух = Memrise | Отпадает |
+
+**Предложение:** рабочее — Recallyn; запасные — Remberly и Remberio.
+
 ## Раунд 4 (2026-10-21): Memo, «память» по-французски и на латыни, синонимы
 
 **Сами слова заняты везде.** Memo, Memoire, Memoria, Memor, Memini, Mnemo, Souvenir, Recordo, Rappel — .com / .app / .ai заняты у всех; в App Store есть Memo (несколько), Memoire – Journal, Memor (2), Memini VPN, Mnemo (5+), Recordo, Rappel. Memoria в сторе свободна, но выдача — игры «Memory» (п. 3 🔴), и это почти «Memory» — риск по знаку Ravensburger.

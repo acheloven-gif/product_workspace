@@ -6,6 +6,15 @@
 
 🟢 ок · 🟡 есть вопрос · 🔴 не проходит · ⚪ не проверено
 
+## Сводная: Remembrio, Remberly, Remberio, Remembera (2026-10-21)
+
+| Название | От какого слова | 1. App Store | 2. Похожие | 3. Выдача | 4. Домены .com / .app / .ai | 5. Товарный знак | 6–8. Произношение, на слух, не глупо | Комментарий |
+|---|---|---|---|---|---|---|---|---|
+| **Remembrio** | remember / remembrance + brio | 🟢 нет | 🟢 | 🟢 пусто | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «ри-МЕМ-брио» | Чистое; почти дубль Remembio |
+| **Remberly** | remember + -ly | 🟢 нет | 🟡 Rember (ИИ-флэшкарты), Rembrr, KinRember | 🟢 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «РЕМ-бер-ли» | Хорошо читается |
+| **Remberio** | remember + -io | 🟢 нет | 🟢 | 🟢 пусто | 🟢 / 🟢 / 🟢 | ⚪ | 🟡 «рем-БЕ-рио» неочевидно | Единственный из четырёх со свободным .com |
+| **Remembera** | remember + -a | 🟢 нет | 🟡 Rembr, «Remember: Memorize + Retain», Remember AI (тренировка памяти) | 🟡 выдача — приложения про remember | 🔴 / 🟢 / 🟢 | ⚪ | 🟡 читается как фраза «remember a» | Слабее: тонет в выдаче по remember |
+
 ## Раунд 7 (2026-10-21): Remem- / Rememb- + окончания
 
 Перебрано 42 варианта (Remem/Rememb + -ly, -lo, -la, -li, -io, -ia, -o, -a, -y, -er, -ora, -ix, -ify, -zy, -ee, -ino, -ella, -iq, -ivo, -ara, -oo).

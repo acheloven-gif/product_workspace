@@ -63,7 +63,8 @@
 | 13 | Remembla | remember | ⚪ | 🔴 Rememble (флэшкарты) | — | 🟢 / 🟢 / 🟢 | 🟢 | отпадает |
 | 14 | Remembia | remember | 🟢 | 🔴 Remembria | — | 🔴 / 🟢 / 🟢 | 🟢 | отпадает |
 | 15 | Remembiq / Remembivo / Rememiq / Rememivo | remember | — | — | — | 🟢 / 🟢 / 🟢 | 🔴 | отпадают |
-| 16 | Remembio | remember + bio | 🟢 | 🟡 ReMemo, Remembria | 🟡 добавки Remedio | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
+| 16 | Rememby | remember + -y | 🔴 есть «Rememby: beauty appointments» | 🟡 Rememery (цифровые мемориалы) | — | 🔴 / 🔴 / ⚪ | ⚪ | 🟢 | Отпадает: имя занято в App Store, .com и .app заняты |
+| Remembio | remember + bio | 🟢 | 🟡 ReMemo, Remembria | 🟡 добавки Remedio | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
 | 17 | Rememory | re + memory | 🔴 занято | — | — | 🔴 / 🔴 / 🔴 | 🟢 | отпадает: внутри «Memory» |
 | 18 | Recallura | recall | 🟢 | 🟢 | 🟡 отзыв товаров | 🟢 / 🟢 / ⚪ | 🟢 | хороший, есть .com |
 | 19 | Reminisca | reminisce | 🟢 | 🟡 | 🟡 терапия при деменции | 🔴 / 🟢 / 🟢 | 🟡 | под вопросом |

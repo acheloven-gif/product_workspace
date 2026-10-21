@@ -85,3 +85,11 @@ Student-план (по описанию в сторонних магазинах
 | 2:40–2:44 | Profile: Guest ID, Save your progress, Current plan Free, Expert Annual (all palaces, all lessons, no ads, unlimited hearts), +15 монет за отзыв, Numbers peg list, Statistics (8 loci, 1/132 уроков, score 13, 100%) |
 
 Вкладки: Lessons, Transfers, Palaces, Shop, Profile. Сверху: сердечки 5, серия, монеты.
+
+## Проверка: меняется ли результат воронки от ответов (2026-10-21)
+
+Воронку прошли 3 раза с разными ответами (вариант «вторые ответы»; все первые: 65+, Male, Personal development, Rarely, Names, 5 мин/день; все последние: 18–24, Skip, Health and aging, Always, Language Vocab, 20 мин/день).
+- Экран «план готов» одинаковый у всех: график Memory Level и «+70% in 4 Weeks», мелким шрифтом «The chart is a non-customized illustration based on average user data».
+- Пейволл одинаковый у всех: «Now: Struggling to Remember / Weak memory → Your goal: Remember Everything Important / Master of Recall», те же цены и тексты.
+- Меняется только лоадер «Creating your personalized memory plan»: он повторяет три ответа — главную цель, навык и темп.
+Вывод: результат не персонализирован, «+70%» показывается всем одинаково; персонализация — только эхо ответов на лоадере. Скрины: `funnel-variants/`.

@@ -63,8 +63,7 @@
 | 13 | Remembla | remember | ⚪ | 🔴 Rememble (флэшкарты) | — | 🟢 / 🟢 / 🟢 | 🟢 | отпадает |
 | 14 | Remembia | remember | 🟢 | 🔴 Remembria | — | 🔴 / 🟢 / 🟢 | 🟢 | отпадает |
 | 15 | Remembiq / Remembivo / Rememiq / Rememivo | remember | — | — | — | 🟢 / 🟢 / 🟢 | 🔴 | отпадают |
-| 16 | Rememby | remember + -y | 🔴 есть «Rememby: beauty appointments» | 🟡 Rememery (цифровые мемориалы) | — | 🔴 / 🔴 / ⚪ | ⚪ | 🟢 | Отпадает: имя занято в App Store, .com и .app заняты |
-| Remembio | remember + bio | 🟢 | 🟡 ReMemo, Remembria | 🟡 добавки Remedio | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
+| 16 | Remembio | remember + bio | 🟢 | 🟡 ReMemo, Remembria | 🟡 добавки Remedio | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
 | 17 | Rememory | re + memory | 🔴 занято | — | — | 🔴 / 🔴 / 🔴 | 🟢 | отпадает: внутри «Memory» |
 | 18 | Recallura | recall | 🟢 | 🟢 | 🟡 отзыв товаров | 🟢 / 🟢 / ⚪ | 🟢 | хороший, есть .com |
 | 19 | Reminisca | reminisce | 🟢 | 🟡 | 🟡 терапия при деменции | 🔴 / 🟢 / 🟢 | 🟡 | под вопросом |
@@ -104,6 +103,7 @@
 
 | Название | От какого слова | 1. App Store | 2. Похожие | 3. Выдача | 4. Домены .com / .app / .ai | 5. Товарный знак | 6–8. Произношение, на слух, не глупо | Комментарий |
 |---|---|---|---|---|---|---|---|---|
+| Rememby | remember + -y | 🔴 есть «Rememby: beauty appointments» | 🟡 Rememery (цифровые мемориалы) | 🟢 | 🔴 / 🔴 / ⚪ | ⚪ | 🟢 | Отпадает: имя занято в App Store, .com и .app заняты |
 | **Remembio** | remember + bio | 🟢 нет | 🟡 ReMemo Companion (для людей с проблемами памяти), Remembria (ИИ-ассистент для пожилых), Remio | 🟡 рядом добавки Remedio, Santo Remedio Memoria | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «ри-МЕМ-био» | Сильный кандидат; «bio» даёт оттенок здоровья — держать тексты без медицинских обещаний |
 | Remembrio (повтор) | — | 🟢 нет (стор ответил: пусто) | — | — | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | App Store подтверждён чистым |
 | Rememory | re + memory | 🔴 есть 2 приложения (Rememory — spatial video, Rememory — CRM), плюс ReMemory-photo, Rememories | — | — | 🔴 / 🔴 / 🔴 | 🔴 содержит «Memory» — знак Ravensburger | 🟢 | Отпадает: занято, все домены заняты, слово Memory внутри |

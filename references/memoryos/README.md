@@ -93,3 +93,10 @@ Student-план (по описанию в сторонних магазинах
 - Пейволл одинаковый у всех: «Now: Struggling to Remember / Weak memory → Your goal: Remember Everything Important / Master of Recall», те же цены и тексты.
 - Меняется только лоадер «Creating your personalized memory plan»: он повторяет три ответа — главную цель, навык и темп.
 Вывод: результат не персонализирован, «+70%» показывается всем одинаково; персонализация — только эхо ответов на лоадере. Скрины: `funnel-variants/`.
+
+## Скринкасты воронки и пейволла (2026-10-21)
+
+Записаны в браузере (мобильный вьюпорт 390×844, тестовые ответы и e-mail, без оплаты):
+- `funnel-screencast-2026-10-21.mp4` — вся воронка от первого экрана до низа пейволла (3:08).
+- `paywall-screencast-2026-10-21.mp4` — «план готов» и пейволл целиком, с прокруткой до конца (0:51): таймер 10:00, «Now → Your goal», три плана, гарантия 30 дней, что входит в план, эксперт, «Featured on», отзывы, видео, FAQ («Isn't memoryOS too expensive?», «How is this different from online courses…?», «Why not learn memory skills from a textbook?», «I do not play videogames, can this work for me?»), повторный блок «Choose your plan».
+Апсейлов на записи нет: они, если есть, идут после оплаты.

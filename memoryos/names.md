@@ -6,6 +6,50 @@
 
 🟢 ок · 🟡 есть вопрос · 🔴 не проходит · ⚪ не проверено
 
+## Сводка для Наташи (2026-10-21): первые 10 и последние 20 проверенных
+
+Обозначения: 🟢 ок · 🟡 есть вопрос · 🔴 не проходит · ⚪ не проверено. Домены — .com / .app / .ai. Товарные знаки не проверены ни у кого (⚪) — проверяем по финалистам.
+
+### Первые 10
+
+| # | Название | От какого слова | App Store | Похожие | Выдача | Домены | На слух | Итог |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Lociva | loci (места во дворце памяти) | 🟢 | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | отклонено: про дворец, не про память |
+| 2 | Locimo | loci | 🟢 | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | отклонено: про дворец |
+| 3 | Retenzo | retention | 🟢 | 🟢 | 🟡 лекарство Evrenzo | 🔴 / 🟢 / 🟢 | 🟢 | под вопросом |
+| 4 | Locira | loci | 🟢 | 🔴 Locora | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | отпадает |
+| 5 | Locusly | locus | 🟢 | 🟢 | 🟡 Locus | 🔴 / 🟢 / 🟢 | 🟡 | под вопросом |
+| 6 | Palacy | palace | 🟢 | 🟡 Palace | 🟡 | 🔴 / 🟢 / 🟢 | 🔴 | отпадает |
+| 7 | Ricordly | ит. ricordo | 🟢 | 🟡 Ricorda | 🟡 Ricordi | 🔴 / 🟢 / 🟢 | 🔴 | отпадает |
+| 8 | Encodo | encode | 🟢 | 🔴 Encoder Inc. (конкурент) | 🟡 | 🔴 / 🟢 / ⚪ | 🟢 | отпадает |
+| 9 | Aminti | рум. amintire — память | 🟢 | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
+| 10 | Amintia | рум. amintire | ⚪ | 🟡 Aminta, Amantia | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | запасной |
+
+### Последние 20
+
+| # | Название | От какого слова | App Store | Похожие | Выдача | Домены | На слух | Итог |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Remembera | remember | 🟢 | 🟡 Rembr, Remember AI | 🟡 тонет в «remember» | 🔴 / 🟢 / 🟢 | 🟡 «remember a» | слабее |
+| 2 | Remberio | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟡 | хороший, есть .com |
+| 3 | Remberly | remember | 🟢 | 🟡 Rember, Rembrr | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
+| 4 | Remembrio | remember + brio | 🟢 | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | хороший (≈ Remembio) |
+| 5 | Rememblo | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟢 | лучший, есть .com |
+| 6 | Remembix | remember | 🟢 | 🟡 RememRx | 🟢 | 🟢 / 🟢 / 🟢 | 🟢 | хороший, есть .com |
+| 7 | Remembino | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟡 игриво | хороший, есть .com |
+| 8 | Rememino | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟢 | хороший, есть .com |
+| 9 | Rememella | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟡 длинное | под вопросом |
+| 10 | Remembella | remember | 🟢 | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | 🟡 длинное | под вопросом |
+| 11 | Rememara | remember | 🟢 | 🟡 Remembrara | 🟢 | 🟢 / 🟢 / 🟢 | 🟡 | под вопросом |
+| 12 | Rememlo | remember | 🟢 | 🟢 | 🟢 | 🔴 / 🟢 / 🟢 | 🟢 | без .com |
+| 13 | Remembla | remember | ⚪ | 🔴 Rememble (флэшкарты) | — | 🟢 / 🟢 / 🟢 | 🟢 | отпадает |
+| 14 | Remembia | remember | 🟢 | 🔴 Remembria | — | 🔴 / 🟢 / 🟢 | 🟢 | отпадает |
+| 15 | Remembiq / Remembivo / Rememiq / Rememivo | remember | — | — | — | 🟢 / 🟢 / 🟢 | 🔴 | отпадают |
+| 16 | Remembio | remember + bio | 🟢 | 🟡 ReMemo, Remembria | 🟡 добавки Remedio | 🔴 / 🟢 / 🟢 | 🟢 | хороший |
+| 17 | Rememory | re + memory | 🔴 занято | — | — | 🔴 / 🔴 / 🔴 | 🟢 | отпадает: внутри «Memory» |
+| 18 | Recallura | recall | 🟢 | 🟢 | 🟡 отзыв товаров | 🟢 / 🟢 / ⚪ | 🟢 | хороший, есть .com |
+| 19 | Reminisca | reminisce | 🟢 | 🟡 | 🟡 терапия при деменции | 🔴 / 🟢 / 🟢 | 🟡 | под вопросом |
+| 20 | Rememberry | remember + berry | 🟢 | 🟡 Rememory | 🟢 | 🔴 / 🔴 / 🟢 | 🟡 | только .ai |
+
 ## Сводная: Remembrio, Remberly, Remberio, Remembera (2026-10-21)
 
 | Название | От какого слова | 1. App Store | 2. Похожие | 3. Выдача | 4. Домены .com / .app / .ai | 5. Товарный знак | 6–8. Произношение, на слух, не глупо | Комментарий |

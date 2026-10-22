@@ -9,7 +9,8 @@ FoxIQ — существующий продукт: IQ-тест и brain-training
 - ТЗ, по которому делали приложение: [IQ / brain-training — веб-версия](https://app.clickup.com/t/1249d35af8t).
 - Разбор и план по возвратам: [FoxIQ: доработки под возвраты](https://app.clickup.com/t/1249d35hcdg).
 - Дашборд PostHog «FoxIQ — базовый пульс»: https://ph.app-inkfolio-reader.pro/project/1/dashboard/9 (проект `foxiq` / `foxiq_ff`).
-- Что есть в приложении: `foxiq/app-now.md`; таблица «обещание → есть/частично/нет»: `foxiq/funnel-gap.md`; скриншоты — `references/foxiq/app/`.
+- Что есть в приложении: `foxiq/app-now.md`; обещания воронки memoryOS по шагам: `foxiq/memoryos-promises.md` (скриншоты — `references/memoryos/funnel-2026-10-22/`); таблица «обещание → есть/частично/нет»: `foxiq/funnel-gap.md`; гипотезы на потом: `foxiq/hypotheses.md`; скриншоты FoxIQ — `references/foxiq/app/`.
+- Решение: воронку memoryOS копируем на FoxIQ один в один, вместе с темой памяти (2026-10-22).
 - Воронка: https://f.foxiq.app/test-iq (разбор — `foxiq/funnel-foxiq.md`); $1 за 7 дней, затем $29.99/мес. Собрана из воронки Brainza.
 - Разработчик приложения FoxIQ — Даня; воронка FoxIQ — Даша (FunnelFox).
 

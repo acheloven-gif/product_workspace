@@ -38,22 +38,18 @@
 
 **Данные квиза с воронки передаём в приложение** вместе с подпиской: роль, отрасль, что продвигает (товары / услуги / цифровые товары), где представлен бизнес, каналы, опыт, бюджет, имя. По ним подбираем концепт и примеры по умолчанию (одежда → Fashion try-on, услуги → Service showcase, цифровой продукт → Digital demo). Если данные не пришли — значения по умолчанию, без повторного опроса.
 
-## Онбординг (0:00–0:50, для тех, кто пришёл мимо воронки)
+## Онбординг (для тех, кто пришёл мимо воронки)
 
-Шапка: название раздела и полоса прогресса из 4 частей (Your profile → Social growth → Create content & ads → Set goals).
+Короткий квиз, 5 вопросов, у конкурента их около 15 (0:00–0:50). Полоса прогресса сверху.
 
-1. **Старт** (0:00): «Grow your brand with AI marketing», коллаж UGC-примеров, рейтинг и число клиентов, кнопки «Get started» и «Log in», ссылки на условия.
-2. **Your profile:** главная цель, мультивыбор (Get more sales, Launch ads that work, Grow on social media, Create better content, Build brand awareness) → соцдоказательство → роль (как на воронке) → отрасль (поиск + список) → «Let's find what works best for {отрасль}» с примерами роликов.
-3. **Social growth:** что сложнее всего в соцсетях (мультивыбор) → использовали ли соцсети для роста (Yes / Not yet) → экран-обещание с графиком → сколько часов в день уходит на соцсети → «Get a month of content in minutes»: 12 минут в день против 4 часов, «5x faster» → утверждение «Consistent posting leads to fast growth» (шкала из 5) → «Awesome!» → «We're preparing your Social growth plan».
-4. **Create content & ads:** опыт с визуальным контентом → «Upload one photo, get a full content pack» → «Create content inspired by viral trends» (лента примеров) → «Did you know human-led videos convert 10x better?» (Yes / I didn't know) → «Build a full UGC factory — no creators involved» (форматы Podcast, Street interview) → опыт с платной рекламой (4 уровня) → «Automate ad campaigns & lead your growth».
-5. **Уведомления:** «Turn on notifications to keep your marketing moving» (Turn on / Maybe later). На вебе — согласие на письма и выбор времени.
-6. **Set goals:** цель по клиентам в месяц, слайдер 50–450+ → когда хотите достичь (2–3 / 3–5 / 5–9 месяцев / год) → «Here's what's possible in 3–5 months», график.
-7. **Загрузка** (0:35–0:41): «We're setting up AI tools tailored to your goals», этапы Analyzing your business type → Processing your goals → Generating a growth plan, под ними отзывы.
-8. **Почта и имя:** «Enter your email to access your Growth Strategy», затем «What is your name?».
-9. **Сводка профиля:** уровень роста (шкала, «High»), отрасль, опыт, клиенты через 3–5 месяцев.
-10. **Что входит** (0:48): 24/7 social media agent, AI-generated content that sells (500+ шаблонов), Batch organic content creation (месяц контента в один клик), Hyper-realistic AI avatars.
-11. **Пейволл** (0:50), см. ниже. Закрывается крестиком.
-12. **«Start creating»** (0:54): «Create high-quality image ads and UGC videos for your business needs», кнопка «Get started» → сразу «Choose a product».
+1. **Старт:** «Растите бизнес с ИИ-маркетингом», примеры роликов, кнопки «Начать» и «Войти».
+2. **Вопросы:** главная цель → кто вы (роль) → отрасль (поиск + список) → что продвигаете (товары / услуги / цифровое) → опыт с рекламой и контентом. Между вопросами — один экран-обещание: «Загрузите одно фото — получите готовую рекламу» с примерами роликов.
+3. **Загрузка:** «Настраиваем ИИ под ваш бизнес», 3–5 секунд.
+4. **Почта** → вход по мэджик линку.
+5. **Пейволл**, закрывается крестиком.
+6. **Первый товар:** сразу экран «Загрузите товар» (блок 2).
+
+Ответы используем так же, как данные с воронки: подбираем концепт и примеры по умолчанию.
 
 ## Пейволл
 

@@ -98,3 +98,20 @@
 - Gamification («Get points for tasks»), а в описании приложения XP и прокачка персонажа — то есть удержание строится на игровой механике.
 - По тому же коду крутится целое семейство воронок (cleaning-game, home-capsule, nutrition-ai, life-planning) — команда системно тестирует углы.
 - Тестовое прохождение: имя Anna, email rosalyn.arden.test@gmail.com; оплату не делали.
+
+## Вариант из шорт-листа FB: `cleaning-game` (проверено 23.10)
+
+- В шорт-листе (reports/fb-shortlist.html) у Chillio стоит скриншот ленда «Turn your cleaning into a game. According to your type and triggers»,
+  это вариант воронки `cleaning-game` (`references/chillio/cleaning-game/shortlist-landing.jpeg`). Там же записана идея: объединить с блокером экранного времени.
+  По карточке: реклама ведёт только в веб-воронку, ссылок на стор не нашли; объявления — от лица персонажей (Emily Brooks, The Home Glow Up, Emma Carter);
+  крючок топ-объявления: «can i come over in 20 minutes? = full-body terror»; гео US 87%, CA 5%, GB 4%, AU 3%.
+  Ниша пикселя в срезах FB меняется: «Прокрастинация» (18.05) → «Уборка дома» (28.07) → «Психология / Саморазвитие» (28.08, 10.10).
+- Вход `quiz.get-chillio.app/cleaning-game` сейчас тоже ведёт на сломанный `/quiz/1`. Сам квиз открывается напрямую: `my-chillio.com/cleaning-game/1`.
+- **Отличия от `house-ai`** (скриншоты: `references/chillio/cleaning-game/`):
+  - первый экран сейчас «Let AI run your house» (заголовок про игру с ленда из шорт-листа сменили);
+  - цели: Manage household, Reduce clutter, Stop procrastinating, Make chores easy, Have less mental load, Other;
+  - отзыв в лоадере — про «micro-cleaning hacks»;
+  - пейволл продаёт игру: «An app that turns chores into a game», «A streak you'll actually want to keep», «Daily routine as a game — you tick things off,
+    and the app keeps score», «Points and streaks — every finished task earns points, and your streak grows on the days you show up»;
+    соцдоказательство «88% of users left positive reviews on Trustpilot (as of June 2026)».
+  - Остальные вопросы, email, колесо скидки и цены совпадают с `house-ai`: $10.50 / $19.99 / $34.99 с −50%, дальше $39.99 за 4 недели или $79.99 за 12 недель.

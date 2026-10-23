@@ -20,6 +20,20 @@
 - **Юрлица:** веб-воронка (условия на get-chillio.app) — Digitaloom Inc (Делавэр); приложение в App Store — Coremove Limited;
   в нашей задаче записано Botan App Limited. Цепочку компаний пока не проверяли.
 
+## Веб-версия приложения (проверено 23.10)
+
+- **Есть.** После оплаты продукт живёт в вебе на my-chillio.com, его можно поставить на телефон как PWA.
+  Есть инструкции для iPhone (`/pwa-info`) и Android (`/pwa-info-android`): «Add Chillio to your home screen. It works just like an app»,
+  вход по email и паролю или ссылкой на почту (magic link), плюс кнопка «Continue in web version».
+  Скриншоты: `references/chillio/web-pwa-info-android.png`, `references/chillio/web-login.png`.
+- **Разделы веб-приложения по коду сайта:** `/lessons` (главная), `/lessons/plan` (план), `/lessons/meals` (питание),
+  `/lessons/grocery-list` (список покупок), `/lessons/my-pet` (питомец — игровая механика), `/lessons/account`, `/lessons/cancel` (отмена подписки).
+  Внутрь без оплаченного аккаунта не пускает.
+- **Апсейлы после оплаты (страницы `/specialoffer/*`):** cleaning-kit, cleaning-kit-discount, house-cleaning, household-bundle-house,
+  household-bundle-life, wellbeing-kit, somatic-therapy, voice-cat-household. Содержимое и цены не видны без покупки.
+- Также в коде есть `/exclusive-deal` (вероятно, вторая скидка) и `/rate-us`.
+- Чтобы посмотреть приложение изнутри, нужна покупка от $10.50 (недельный тариф) с последующей отменой. Альтернатива — видеозапись iOS-версии на ScreensDesign (7 мин, платный доступ).
+
 ## Воронка `house-ai-c` по экранам
 
 Скриншоты: `references/chillio/funnel-NN.png` (номер — порядок прохождения, не номер шага в URL). Ответы — за женщину 26–35, цель «Reduce clutter».

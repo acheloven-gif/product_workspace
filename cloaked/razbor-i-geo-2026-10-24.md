@@ -6,7 +6,7 @@
 ## 1. Что такое Cloaked
 
 Ссылки: [воронка](https://buy.cloaked.com/) · [App Store](https://apps.apple.com/us/app/cloaked-protect-your-privacy/id1600487147) ·
-[Google Play](https://play.google.com/store/apps/details?id=app.android.cloaked) · [цены](https://www.cloaked.com/pricing) · веб-кабинет — app.cloaked.com (Предп.: не открыли, прокси не пустил).
+[Google Play](https://play.google.com/store/apps/details?id=app.android.cloaked) · [цены](https://www.cloaked.com/pricing) · веб-кабинет — [my.cloaked.com](https://my.cloaked.com/home) (вход, регистрация и оплата: [my.cloaked.com/checkout](https://my.cloaked.com/checkout) — регистрация по телефону, email или логину, оплата картой через Stripe, 30 дней на возврат денег).
 
 **Воронка buy.cloaked.com** (скрин: `references/cloaked/buy-cloaked-mobile-2026-10-24.png`):
 - Оффер: «Put an end to spam. Find out where your data is exposed.» Счётчик «3 077 103 440 exposures removed from data brokers».

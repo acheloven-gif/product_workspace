@@ -11,6 +11,8 @@ Cloaked (Cloaked Inc.) — приватность: удаление персон
 Креатив (скрин Кати): «If you have an iPhone, change this setting right now» — история про спам-звонки, слив номера дата-брокерам, бесплатный скан приватности.
 По данным сервиса FB-выгрузок гео — US 100%. Скрин брифа: `references/cloaked/katya-brief-2026-10-24.png`.
 
+Задача в ClickUp: [Cloaked: разобрать воронку и приложение, выбрать гео](https://app.clickup.com/t/1249d35jpy8).
+
 Раньше: Cloaked был в разборе FB-выгрузок (лист «Под вопросом» шорт-листа, убран из топа из-за дорогого CPA) —
 `reports/fb-shortlist.html`, `reports/fb-kandidaty-itog-10-10.xlsx`, [задача](https://app.clickup.com/t/1249d35gtqp).
 

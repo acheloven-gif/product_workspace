@@ -163,136 +163,103 @@ def sc_of(a):
     return score(a, t1) if t1 is not None else alltoc[a][2]
 SHORT.sort(key=lambda a: -(sc_of(a) or 0)); QUEST.sort(key=lambda a: -(sc_of(a) or 0))
 
+
+# ---------- Шорт-лист и Под вопросом: простые таблицы в формате «Топ-кандидатов» ----------
+from openpyxl.formula.translate import Translator
+from openpyxl.worksheet.datavalidation import DataValidation
+from openpyxl.formatting.rule import FormulaRule
+from openpyxl.styles import PatternFill
+
+WHY_Q = {
+    'Mob (рецепты)': 'Рынок рецептов и планировщиков питания перенасыщен; ROAS в октябре 0,05.',
+    'Cloaked': 'CPA высокий ($474, дорогая треть выгрузки 10.10).',
+    'Aligned': 'CPA высокий ($180, дорогая треть выгрузки 10.10).',
+    'Chillio': 'В выгрузке 10.10 есть (строки 22 и 186, Botan App Limited), но доход 0 (ROAS 0), CPA 51 467 и 4 455 — оплаты не отслеживаются, сравнить нельзя. Оплаты видны только в мае (ROAS 0,35, CPA 217).',
+    'Guardio': 'CPA высокий ($210); в августовских выгрузках не было, вернулся в октябре.',
+    'Mozart AI': 'Новый: есть только в выгрузке 10.10, тренда нет.',
+    'HyperMusic AI (w2a.one)': 'Новый: есть только в выгрузке 10.10, тренда нет; ведёт в приложение.',
+    'Trace': 'Доход почти нулевой (ROAS 0,06) — оплаты по пикселю видны плохо, CPA ненадёжен.',
+    'Dear Melodies': 'Гео смешанное (tier-1 и не tier-1); ниша песен на заказ новая, спенд держится.',
+    'Reverse Lookup': 'Доход почти нулевой (ROAS 0,01) — CPA ненадёжен; гео смешанное.',
+    'Zurna (ИИ-фото)': 'Новый: есть только в выгрузке 10.10; CPA высокий ($192).',
+}
+TRENDS = 'растёт,держится,падает,новый,вернулся'
+
 def copy_row_style(src, dst):
     if src.has_style:
         dst.font = copy.copy(src.font); dst.fill = copy.copy(src.fill); dst.border = copy.copy(src.border)
         dst.alignment = copy.copy(src.alignment); dst.number_format = src.number_format; dst.protection = copy.copy(src.protection)
+FILL = {'растёт': 'C6EFCE', 'держится': 'FFEB9C', 'падает': 'FFC7CE', 'новый': 'DDEBF7', 'вернулся': 'DDEBF7'}
 
-def build(title, order, intro):
-    old = wb[title]; idx = wb.sheetnames.index(title)
-    ws = wb.create_sheet(title + '_new', idx)
-    for k, d in old.column_dimensions.items(): ws.column_dimensions[k].width = d.width
-    ws.sheet_view.showGridLines = old.sheet_view.showGridLines
-    tmpl_toc = 6
-    for r in range(1, 6):
-        for c in range(1, 9):
-            s = old.cell(r, c); t = ws.cell(r, c); t.value = s.value; copy_row_style(s, t)
-        ws.row_dimensions[r].height = old.row_dimensions[r].height
-    for m in old.merged_cells.ranges:
-        if m.max_row <= 5: ws.merge_cells(str(m))
-    ws.cell(2, 1).value = intro
-    cur = 6 + len(order) + 3
-    starts = {}
-    for a in order:
-        src, s, e = allcards[a]
-        starts[a] = cur; off = cur - s
-        for r in range(s, e + 1):
-            ws.row_dimensions[r + off].height = src.row_dimensions[r].height
-            for c in range(1, 9):
-                sc = src.cell(r, c); t = ws.cell(r + off, c); t.value = sc.value; copy_row_style(sc, t)
-                if sc.hyperlink:
-                    t.hyperlink = copy.copy(sc.hyperlink); t.hyperlink.ref = t.coordinate
-        for m in src.merged_cells.ranges:
-            if s <= m.min_row and m.max_row <= e:
-                ws.merge_cells(start_row=m.min_row + off, start_column=m.min_col, end_row=m.max_row + off, end_column=m.max_col)
-        for cf in src.conditional_formatting:
-            for rng in cf.sqref.ranges:
-                if s <= rng.min_row and rng.max_row <= e:
-                    for rule in cf.rules:
-                        ws.conditional_formatting.add(f'{get_column_letter(rng.min_col)}{rng.min_row + off}:{get_column_letter(rng.max_col)}{rng.max_row + off}', copy.copy(rule))
-        # мета-строка карточки: тренд и скор
-        meta = ws.cell(cur + 2, 1)
-        if isinstance(meta.value, str):
-            v = re.sub(r'тренд авг→окт: [^·]+', f'тренд авг→окт: {R[a]["ao"]}   ', meta.value)
-            sc_ = sc_of(a)
-            v = re.sub(r'скор \d+/100', f'скор {round(sc_) if sc_ is not None else "—"}/100', v)
-            if v != meta.value: changes.append((title, a, 'карточка: тренд/скор', meta.value[-60:], v[-60:]))
-            meta.value = v
-        if a in REASON:
-            idea = ws.cell(cur + 3, 1)
-            idea.value = REASON[a] + (idea.value or '')
-        cur = e + off + 1
+def src_row(a):
+    for n in ['Топ-кандидаты', 'Находки (gems)']:
+        w = wb[n]
+        for r in range(4, w.max_row + 1):
+            if w.cell(r, 2).value == a: return w, r
+    raise KeyError(a)
+
+def trend_rules(ws, col_letter, r1, r2):
+    rng = f'{col_letter}{r1}:{col_letter}{r2}'
+    for k, c in FILL.items():
+        ws.conditional_formatting.add(rng, FormulaRule(formula=[f'{col_letter}{r1}="{k}"'], fill=PatternFill('solid', start_color=c, end_color=c)))
+    dv = DataValidation(type='list', formula1=f'"{TRENDS}"', allow_blank=True); ws.add_data_validation(dv); dv.add(rng)
+
+top = wb['Топ-кандидаты']
+def build_table(title, order, intro, why_hdr, why):
+    idx = wb.sheetnames.index(title); wb.remove(wb[title])
+    ws = wb.create_sheet(title, idx)
+    for k, d in top.column_dimensions.items(): ws.column_dimensions[k].width = d.width
+    ws.sheet_view.showGridLines = top.sheet_view.showGridLines
+    for r in (1, 2, 3):
+        ws.row_dimensions[r].height = top.row_dimensions[r].height
+        for c in range(1, top.max_column + 1):
+            s = top.cell(r, c); t = ws.cell(r, c); t.value = s.value; copy_row_style(s, t)
+    for m in top.merged_cells.ranges:
+        if m.max_row <= 3: ws.merge_cells(str(m))
+    ws.cell(1, 1).value = intro
+    hdr = [ws.cell(3, c).value for c in range(1, top.max_column + 1)]
+    wcol = hdr.index('Почему') + 1; ws.cell(3, wcol).value = why_hdr
     for i, a in enumerate(order):
-        r = 6 + i; d = R[a]; sc_ = sc_of(a)
-        vals = [i + 1, a, round(sc_) if sc_ is not None else None, d['sp']['Октябрь'],
-                round(d['cpa']['Октябрь'], 1) if d['cpa']['Октябрь'] else None, tier(a), d['ao'], alltoc[a][7]]
-        for c, v in enumerate(vals, 1):
-            t = ws.cell(r, c); t.value = v; copy_row_style(old.cell(tmpl_toc, c), t)
-        ws.row_dimensions[r].height = old.row_dimensions[tmpl_toc].height
-        ws.cell(r, 2).hyperlink = Hyperlink(ref=ws.cell(r, 2).coordinate, location=f"'{title}'!A{starts[a]}")
-        if a == 'Chillio': ws.cell(r, 5).value = 'н/д (ROAS 0)'
-    ws.freeze_panes = old.freeze_panes
-    wb.remove(old); ws.title = title
+        sw, sr = src_row(a); r = 4 + i
+        ws.row_dimensions[r].height = sw.row_dimensions[sr].height
+        for c in range(1, top.max_column + 1):
+            s = sw.cell(sr, c); t = ws.cell(r, c); copy_row_style(top.cell(4, c), t)
+            v = s.value
+            if isinstance(v, str) and v.startswith('='):
+                v = Translator(v, origin=s.coordinate).translate_formula(t.coordinate)
+            t.value = v
+            if s.hyperlink: t.hyperlink = copy.copy(s.hyperlink); t.hyperlink.ref = t.coordinate
+        ws.cell(r, 1).value = i + 1
+        if why: ws.cell(r, wcol).value = why[a]
+        if a == 'Chillio': ws.cell(r, hdr.index('CPA окт') + 1).value = None
+    r2 = 3 + len(order)
+    for cf in top.conditional_formatting:
+        for rng in cf.sqref.ranges:
+            col = get_column_letter(rng.min_col)
+            if col in ('D', 'E'): continue
+            for rule in cf.rules: ws.conditional_formatting.add(f'{col}4:{col}{r2}', copy.copy(rule))
+    trend_rules(ws, 'D', 4, r2); trend_rules(ws, 'E', 4, r2)
+    ws.freeze_panes = top.freeze_panes
 
-PERIOD = ('Источник: 6 выгрузок FB (18.05, 29.06, 28.07, 27.08, 28.08, 10.10). Метрики пикселя и спенд — по самой свежей выгрузке 10.10 (web2web giants #9), '
-          'спенд за 28 дней; тренд — октябрь к августу; более ранние срезы — только история. В список попадают приложения, которые есть в выгрузке 10.10 '
-          'с веб-воронкой и с отслеживаемыми оплатами (доход > 0). Скор: 30% спенд, 25% доля tier-1, 25% дешевизна CPA, 20% тренд; сортировка по скору.')
-build('Шорт-лист', SHORT, 'Приложения-кандидаты без оговорок. ' + PERIOD + ' Сомнительные — на листе «Под вопросом».')
-build('Под вопросом', QUEST, 'Варианты с оговорками: заметный спенд в выгрузке 10.10, но есть сомнения по нише, продукту, CPA или качеству данных. ' + PERIOD)
+# в «Топ» и «Находках» в списке трендов тоже нужен «вернулся»
+for n in ['Топ-кандидаты', 'Находки (gems)']:
+    w = wb[n]
+    for dv in w.data_validations.dataValidation:
+        if dv.formula1 and 'новый' in dv.formula1: dv.formula1 = f'"{TRENDS}"'
+    for cf in list(w.conditional_formatting):
+        for rng in cf.sqref.ranges:
+            col = get_column_letter(rng.min_col)
+            if col in ('D', 'E'):
+                c = FILL['вернулся']
+                w.conditional_formatting.add(rng.coord, FormulaRule(formula=[f'{col}{rng.min_row}="вернулся"'], fill=PatternFill('solid', start_color=c, end_color=c)))
 
-# ---------- Методика ----------
-ws = wb['Методика (27.10)']; ws.title = 'Методика (28.10)'
-r0 = ws.max_row + 2
-lines = [
-    'Обновление 28.10 (по комментарию Кати от 28.10)',
-    '1. Сводная сверена построчно с исходными выгрузками (6 файлов, 892 строки, все числовые поля) — совпадает. Подробности — лист «Проверка (28.10)».',
-    '2. Тренд авг→окт: «новый» — только если приложения нет ни в одной выгрузке до октября; если было в мае–июле, но не в августе — «вернулся» (вес в скоре как у «новый»).',
-    '3. Спенд по месяцам пересчитан для всех приложений во всех листах по одному правилу: основная схема (веб), один пиксель в двух августовских выгрузках — берётся выгрузка с бóльшим спендом.',
-    '4. Шорт-лист и «Под вопросом»: только приложения из выгрузки 10.10 с веб-воронкой и доходом > 0. Таблица содержания и карточки отсортированы по скору; тренд и скор в карточках обновлены.',
-    '5. Chillio перенесён в «Под вопросом»: в выгрузке 10.10 нет дохода (ROAS 0), CPA некорректен. Решения 20.10 перенесены и в таблицу: Mosso убран из шорт-листа, Aligned — в «Под вопросом».',
-    '6. Лист «Вертикали» не пересчитывался: в нём спенд по всем схемам (веб + стор); для CPA и сравнения приложений не использовать.',
-    '',
-    'Что изменилось 28.10 (было → стало):',
-]
-for i, t in enumerate(lines): ws.cell(r0 + i, 1).value = t
-ws.cell(r0, 1).font = openpyxl.styles.Font(bold=True)
-r1 = r0 + len(lines)
-for j, h in enumerate(['Лист', 'Приложение', 'Поле', 'Было', 'Стало']): ws.cell(r1, j + 1).value = h
-for k, ch in enumerate(changes, 1):
-    for j, v in enumerate(ch): ws.cell(r1 + k, j + 1).value = v if not isinstance(v, float) else round(v, 4)
-
-# ---------- Проверка (28.10) ----------
-pv = wb.create_sheet('Проверка (28.10)', 1)
-pv.column_dimensions['A'].width = 34; pv.column_dimensions['B'].width = 120
-B = openpyxl.styles.Font(bold=True)
-rows = [
-    ('ПРОВЕРКА ДАННЫХ (28.10)', None),
-    (None, None),
-    ('Исходники', 'web2web giants #5 (18.05), #6.1 (29.06), #7.1 (28.07), web2web new #1 (27.08), giants #8 (28.08), giants #9 (10.10) — файлы из задачи в ClickUp и от Наташи.'),
-    ('1. Сводная ↔ исходники', 'Все 892 строки «Сводной» найдены в исходниках по дате выгрузки и ID строки; все числовые поля (спенд, ROAS, CPA, доход, прибыль, конверсии, аккаунты, объявления, топ-объявление) совпадают. '
-     'Расхождения только в формате: 14 длинных ID пикселя Excel хранит как число (последние цифры округлены), 1 ссылка Tyver в исходнике — #REF!. Ошибок переноса нет.'),
-    ('2. Полнота', 'Строки выгрузки 10.10, не попавшие в «Сводную», проверены по спенду: это нутра/БАДы, товарка и мини-сериалы (Hims, Noom Med, Kilo, Orbio, LifeMD, cherryshort и т.п.) — по условию задачи не берём. Пропущенных приложений не найдено.'),
-    ('3. Арифметика листов', 'Спенд по месяцам, CPA, перцентили, тренды и скор в «Топ», «Находки», «Health», «Веб и стор», таблицах содержания и карточках пересчитаны независимо от «Сводной» и сверены: после исправлений расхождений 0. '
-     'Метрики пикселя в карточках (спенд, доход, ROAS, CPA, конверсии, клики, аккаунты) сверены с выгрузкой 10.10 — 228 ячеек, расхождений 0.'),
-    ('4. Что было неправильно', 'а) тренд «новый» у приложений, которые были в мае–июле, но не в августе (Guardio, SweetSecrets) → «вернулся»; '
-     'б) у части приложений тренд июнь–авг и спенд за август остались от старой версии расчёта (Testora, Kure, MyBody) → пересчитано по одному правилу; '
-     'в) в карточках шорт-листа остались старые скор и тренд (Zeely 76 → 69, memoryOS «держится» → «растёт»); таблица содержания была не по скору; '
-     'г) Chillio стоял в шорт-листе с CPA 31 320 — см. п. 5; '
-     'д) решения 20.10 не были перенесены в таблицу: Mosso убран из шорт-листа, Aligned — в «Под вопросом». Полный список «было → стало» — на листе «Методика (28.10)».'),
-    ('5. Chillio', 'В выгрузке 10.10 есть: строки ID 22 (пиксель 479921384506883, quiz.get-chillio.app/gs-house-ai, спенд 28д 1 852 797) и ID 186 (пиксель 2896379393996743, cleaning-game, 120 276), аккаунт Botan App Limited. '
-     'Но доход 0, ROAS 0, CPA в выгрузке 51 467 и 4 455 — оплаты по пикселю не отслеживаются, оценить связку нельзя. Оплаты видны только в мае (ROAS 0,35, CPA 217, воронка winter-magic); в июле–августе ROAS 0,08 → 0,01. '
-     'Поэтому Chillio убран из шорт-листа в «Под вопросом».'),
-    ('6. Правило шорт-листа', 'Только приложения из самой свежей выгрузки (10.10) с веб-воронкой и доходом > 0; метрики — по выгрузке 10.10; ранние выгрузки — только для тренда и истории.'),
-    ('7. На что смотреть осторожно', None),
-]
-anom_lo = []; anom_zero = []
-for r in sv[1:]:
-    sp = num(r[ix['спенд за 28 дней']]); cpa = r[ix['CPA за 28 дней']]; roas = r[ix['ROAS за 28 дней']]
-    if scheme(r[ix['ссылка на ленд']]) == 'веб' and isinstance(cpa, (int, float)) and cpa < 10 and sp > 50000:
-        anom_lo.append(f'{r[0]} ({r[3]}, ID {r[4]}: спенд ' + f'{sp:,.0f}'.replace(',', ' ') + f', CPA {cpa})')
-    if r[3] == '10.10' and sp > 100000 and not num(r[ix['доход за 28 дней']]):
-        anom_zero.append(f'{r[0]} (ID {r[4]}: спенд ' + f'{sp:,.0f}'.replace(',', ' ') + f', CPA {cpa})')
-rows += [
-    ('   веб-строки с CPA < 10', 'похоже на оптимизацию на установку/лид, а не оплату — CPA не сравним: ' + '; '.join(anom_lo) + '.'),
-    ('   10.10: доход 0 при спенде > 100k', 'оплаты не отслеживаются, CPA не сравним: ' + '; '.join(anom_zero) + '.'),
-    ('   опечатки в выгрузке 10.10', 'у Zeely в выгрузке 10.10 написано «Zealy, Inc.» и zealy.ai — пиксель тот же (507395697701950), это Zeely; часть ссылок на ленды в выгрузке битая (gs-house-ai у Chillio и др.).'),
-    ('   «Вертикали»', 'спенд по всем схемам (веб + стор), не пересчитывался — для CPA и сравнения приложений не использовать.'),
-]
-for i, (k, v) in enumerate(rows, 1):
-    pv.cell(i, 1).value = k; pv.cell(i, 2).value = v
-    pv.cell(i, 1).font = B; pv.cell(i, 2).alignment = openpyxl.styles.Alignment(wrap_text=True, vertical='top')
-    pv.cell(i, 1).alignment = openpyxl.styles.Alignment(wrap_text=True, vertical='top')
-pv.cell(1, 1).font = openpyxl.styles.Font(bold=True, size=14)
+INTRO = ('Метрики — по самой свежей выгрузке 10.10 (web2web giants #9), спенд за 28 дней; тренд авг→окт — октябрь к августу; ранние выгрузки (май–август) — только для тренда. '
+         'В список — только приложения, которые есть в выгрузке 10.10, с веб-воронкой и доходом > 0. Сортировка по скору: 30% спенд, 25% доля tier-1, 25% дешевизна CPA, 20% тренд.')
+build_table('Шорт-лист', SHORT, 'Шорт-лист: кандидаты без оговорок. ' + INTRO, 'Почему', None)
+build_table('Под вопросом', QUEST, 'Под вопросом: заметный спенд в выгрузке 10.10, но есть сомнения по нише, CPA или качеству данных. ' + INTRO, 'Почему под вопросом', WHY_Q)
+wb.move_sheet('Шорт-лист', -wb.sheetnames.index('Шорт-лист'))
+wb.move_sheet('Под вопросом', 1 - wb.sheetnames.index('Под вопросом'))
+del wb['Методика (27.10)']
 
 wb.save(OUT)
 print('changes', len(changes))

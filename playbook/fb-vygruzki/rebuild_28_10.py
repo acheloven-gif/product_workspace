@@ -279,6 +279,65 @@ for n in ['Топ-кандидаты', 'Находки (gems)']:
                 c = FILL['вернулся']
                 w.conditional_formatting.add(rng.coord, FormulaRule(formula=[f'{col}{rng.min_row}="вернулся"'], fill=PatternFill('solid', start_color=c, end_color=c)))
 
+# ---------- Вертикали: только веб-воронка ----------
+sys.path.insert(0, f'{ROOT}/playbook/fb-vygruzki')
+from verticals import VERT, EXCLUDE, V
+def web(a, m):
+    x = agg(a, m, 'веб'); return x[0] if x else 0
+def web_cpa(a):
+    x = agg(a, 'Октябрь', 'веб'); return x[0] / x[1] if x and x[1] else None
+def zone_of(c):
+    if c is None: return None
+    p = pct(c, oct_vals); return 'g' if p <= 1/3 else ('y' if p <= 2/3 else 'r')
+def tr_web(a):
+    sp = {m: web(a, m) or None for m in MONTHS}; return trend_ao(sp)
+ws = wb['Вертикали']
+tmpl_h = [copy.copy(ws.cell(3, c)._style) for c in range(1, 16)]
+tmpl_d = [copy.copy(ws.cell(4, c)._style) for c in range(1, 16)]
+hr = ws.row_dimensions[3].height; dr = ws.row_dimensions[4].height
+old_v = {ws.cell(r, 1).value: [ws.cell(r, c).value for c in range(1, 16)] for r in range(4, ws.max_row + 1) if ws.cell(r, 1).value}
+for rng in list(ws.conditional_formatting): pass
+ws.conditional_formatting = type(ws.conditional_formatting)()
+for r in range(3, ws.max_row + 1):
+    for c in range(1, ws.max_column + 1): ws.cell(r, c).value = None
+ws.cell(1, 1).value = ('Только приложения и только веб-воронка (строки с рекламой прямо в стор не учитываются — там конверсия = установка). '
+    'Без маркетплейсов курсов (Coursera, Udemy, Preply), онлайн-школ (Kodland, Allright, Brighterly, Mate Academy), статей-адвертореалов '
+    '(HealthBoost, Health Insider, Healthtime, Health Horizon, Health Post, Fashion Radar, ParentGuide, TopTravel) и товаров (Memowrite, Old Ways Remedies, Ryoko, TinySnap). '
+    'Спенд за 28 дней по срезам; один пиксель в двух августовских выгрузках — берётся выгрузка с бóльшим спендом. '
+    'Зоны CPA — внутри выгрузки 10.10: зелёная — дешевле 1/3 приложений, жёлтая — средняя треть, красная — дорогая треть. Разметка по вертикалям — playbook/fb-vygruzki/verticals.py.')
+HDR = ['Вертикаль', 'Спенд 28д, Июль', 'Спенд 28д, Август', 'Спенд 28д, Октябрь (10.10)', 'Октябрь к августу', 'Тренд вертикали',
+       'Приложений в октябре', '🟢 CPA', '🟡 CPA', '🔴 CPA', 'Доля спенда окт. с зелёным/жёлтым CPA', 'Растут (авг→окт)',
+       'Новые / вернулись в октябре', 'Падают / пропали', 'Крупнейшие в октябре с зелёным/жёлтым CPA']
+for c, h in enumerate(HDR, 1): ws.cell(3, c).value = h; ws.cell(3, c)._style = tmpl_h[c - 1]
+ws.row_dimensions[3].height = hr
+vrows = []
+for v, vapps in V.items():
+    apps_v = [a for a in vapps if a in R and a not in EXCLUDE]
+    s = {m: sum(web(a, m) for a in apps_v) for m in ['Июль', 'Август', 'Октябрь']}
+    octa = [a for a in apps_v if web(a, 'Октябрь')]
+    z = collections.Counter(zone_of(web_cpa(a)) for a in octa)
+    gy = [a for a in octa if zone_of(web_cpa(a)) in ('g', 'y')]
+    share = sum(web(a, 'Октябрь') for a in gy) / s['Октябрь'] if s['Октябрь'] else None
+    trs = collections.Counter(tr_web(a) for a in apps_v if web(a, 'Август') or web(a, 'Октябрь'))
+    q = s['Октябрь'] / s['Август'] - 1 if s['Август'] else None
+    vt = None if q is None else ('растёт' if q > 0.2 else ('падает' if q < -0.2 else 'держится'))
+    top_s = ', '.join(f'{a} ({web(a, "Октябрь")/1e6:.2f}M)' for a in sorted(gy, key=lambda a: -web(a, 'Октябрь'))[:4])
+    if not (s['Июль'] or s['Август'] or s['Октябрь']): continue
+    vrows.append([v, s['Июль'] or None, s['Август'] or None, s['Октябрь'] or None, q, vt, len(octa), z['g'], z['y'], z['r'], share,
+                  trs['растёт'], trs['новый'] + trs['вернулся'], trs['падает'] + trs['пропал'], top_s])
+vrows.sort(key=lambda r: -(r[3] or 0))
+for i, row in enumerate(vrows):
+    r = 4 + i; ws.row_dimensions[r].height = dr
+    for c, val in enumerate(row, 1):
+        ws.cell(r, c).value = val; ws.cell(r, c)._style = tmpl_d[c - 1]
+    ws.cell(r, 5).number_format = '0%'; ws.cell(r, 11).number_format = '0%'
+    o = old_v.get(row[0])
+    if o:
+        for lbl, j in [('Спенд Июль', 1), ('Спенд Август', 2), ('Спенд Октябрь', 3), ('Приложений в октябре', 6)]:
+            if (o[j] or 0) != (row[j] or 0) and abs((o[j] or 0) - (row[j] or 0)) > 1: changes.append(('Вертикали', row[0], lbl, o[j], row[j]))
+    else: changes.append(('Вертикали', row[0], 'новая строка', None, row[3]))
+trend_rules(ws, 'F', 4, 3 + len(vrows))
+
 INTRO = ('Метрики — по самой свежей выгрузке 10.10 (web2web giants #9), спенд за 28 дней; тренд авг→окт — октябрь к августу; ранние выгрузки (май–август) — только для тренда. '
          'В список — только приложения, которые есть в выгрузке 10.10, с веб-воронкой и доходом > 0. Сортировка по скору: 30% спенд, 25% доля tier-1, 25% дешевизна CPA, 20% тренд.')
 build_table('Шорт-лист', SHORT, 'Шорт-лист: кандидаты без оговорок. ' + INTRO, 'Почему', None)

@@ -107,6 +107,32 @@ for name in ['Топ-кандидаты', 'Находки (gems)']:
         if isinstance(t1, (int, float)) and ws.cell(r, col['Скор (0–100)']).value is not None:  # где скора не было (health в «Находках») — не добавляем
             setv(ws, r, col['Скор (0–100)'], score(a, t1), a, 'Скор')
 
+# ---------- «Топ-кандидаты»: порядок по скору (убывание) ----------
+from openpyxl.formula.translate import Translator as _Tr
+def sort_top(ws):
+    hdr = [c.value for c in ws[3]]; sc = hdr.index('Скор (0–100)') + 1; ncol = ws.max_column
+    rows = list(range(4, ws.max_row + 1))
+    snap = []
+    for r in rows:
+        cells = []
+        for c in range(1, ncol + 1):
+            x = ws.cell(r, c)
+            cells.append((x.value, x.coordinate, copy.copy(x.font), copy.copy(x.fill), copy.copy(x.border), copy.copy(x.alignment), x.number_format, copy.copy(x.hyperlink) if x.hyperlink else None))
+        snap.append((ws.cell(r, sc).value, ws.row_dimensions[r].height, cells))
+    order = sorted(snap, key=lambda t: -(t[0] if isinstance(t[0], (int, float)) else -1))
+    if [t[2][1][0] for t in order] != [t[2][1][0] for t in snap]:
+        changes.append((ws.title, '—', 'порядок строк', ', '.join(str(t[2][1][0]) for t in snap), ', '.join(str(t[2][1][0]) for t in order)))
+    for i, (scv, h, cells) in enumerate(order):
+        r = 4 + i; ws.row_dimensions[r].height = h
+        for c, (v, coord, f, fl, b, al, nf, hl) in enumerate(cells, 1):
+            t = ws.cell(r, c)
+            if isinstance(v, str) and v.startswith('='): v = _Tr(v, origin=coord).translate_formula(t.coordinate)
+            t.value = v; t.font = f; t.fill = fl; t.border = b; t.alignment = al; t.number_format = nf
+            t.hyperlink = None
+            if hl: hl.ref = t.coordinate; t.hyperlink = hl
+        ws.cell(r, 1).value = i + 1
+sort_top(wb['Топ-кандидаты'])
+
 # ---------- Health и фитнес ----------
 ws = wb['Health и фитнес']; hdr = [c.value for c in ws[1]]; col = {h: i + 1 for i, h in enumerate(hdr) if h}
 for r in range(2, ws.max_row + 1):

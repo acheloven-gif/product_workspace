@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Шорт-лист FB-выгрузок</title>
+<style>
+:root{--bg:#fff8f3;--card:#ffffff;--ink:#3a2a24;--mute:#8a7469;--line:#f1dfd4;--accent:#e07a5f;--accent-soft:#fde5da;
+--lo:#5aa469;--mid:#e0a43a;--hi:#d1495b;--na:#b8a89f}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1f1916;--card:#2a221e;--ink:#f3e7e0;--mute:#b9a499;--line:#3d322c;--accent:#f0957a;--accent-soft:#3a2a24}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:1240px;margin:0 auto;padding:28px 16px 48px}
+h1{font-size:26px;margin:0 0 4px}
+.sub{color:var(--mute);margin:0 0 18px;font-size:14px}
+.changes{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px 16px;margin:0 0 20px;font-size:14px}
+.changes b{display:block;margin-bottom:4px}
+.changes ul{margin:0;padding-left:18px}
+input[name=tab]{position:absolute;opacity:0;pointer-events:none}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tabs label{cursor:pointer;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-weight:600;font-size:14px}
+.tabs label span{color:var(--mute);font-weight:400;margin-left:4px}
+.panel{display:none}
+#t1:checked~.tabs label[for=t1],#t2:checked~.tabs label[for=t2],#t3:checked~.tabs label[for=t3]{background:var(--accent);border-color:var(--accent);color:#fff}
+#t1:checked~.tabs label[for=t1] span,#t2:checked~.tabs label[for=t2] span,#t3:checked~.tabs label[for=t3] span{color:#fff}
+#t1:checked~#p1,#t2:checked~#p2,#t3:checked~#p3{display:block}
+.note{color:var(--mute);font-size:13px;margin:0 0 10px}
+.wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:980px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--mute);padding:10px;border-bottom:1px solid var(--line);background:var(--accent-soft);position:sticky;top:0}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+tr:last-child td{border-bottom:0}
+td small{display:block;color:var(--mute);font-size:12px}
+td.n{color:var(--mute);width:28px}
+td.app{width:30%} td.app span{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+td.app .lk{margin-top:4px} td.app a{color:var(--accent);text-decoration:none} td.app a:hover{text-decoration:underline}
+td.num{white-space:nowrap;font-variant-numeric:tabular-nums}
+td.why{font-size:13px;width:28%}
+.z{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.z.lo{background:var(--lo)} .z.mid{background:var(--mid)} .z.hi{background:var(--hi)} .z.na{background:var(--na)}
+.t{font-style:normal;font-size:12px;padding:2px 8px;border-radius:999px;white-space:nowrap;background:var(--accent-soft)}
+.t-растёт{background:#d9f0dd;color:#2f6b3a} .t-держится{background:#fbefcf;color:#7a5a12} .t-падает{background:#f8d6da;color:#8a2333}
+.t-новый,.t-вернулся{background:#dbe8f6;color:#2c4f7a}
+</style></head>
+<body><main>
+<h1>Шорт-лист приложений по FB-выгрузкам</h1>
+<p class="sub">Метрики — выгрузка 10.10 (web2web giants #9), спенд за 28 дней. Тренд — октябрь к августу; ранние выгрузки (май–август) — только для тренда. Обновлено 28.10.</p>
+<div class="changes"><b>Что изменилось 28.10</b><ul>
+<li>Сводная сверена построчно со всеми 6 выгрузками — цифры перенесены верно; исправлены расчёты поверх: тренды, август у части приложений, скоры, порядок.</li>
+<li>Шорт-лист — только приложения из выгрузки 10.10 с веб-воронкой и оплатами: 8 приложений. Убраны Mosso, Aligned и Chillio (Aligned и Chillio — в «Под вопросом»).</li>
+<li>У Chillio в выгрузке 10.10 оплат нет (ROAS 0) — CPA сравнивать нельзя; оплаты видны только в мае.</li>
+</ul></div>
+<input type="radio" name="tab" id="t1" checked><input type="radio" name="tab" id="t2"><input type="radio" name="tab" id="t3">
+<div class="tabs"><label for="t1">Шорт-лист<span>8</span></label><label for="t2">Под вопросом<span>11</span></label><label for="t3">Топ-кандидаты<span>24</span></label></div>
+<section class="panel" id="p1"><p class="note">Кандидаты без оговорок, по скору: 30% спенд, 25% доля tier-1, 25% дешевизна CPA, 20% тренд. Точка у CPA — треть выгрузки 10.10: зелёная — дёшево, жёлтая — средне, красная — дорого.</p><div class="wrap"><table>
+<thead><tr><th>#</th><th>Приложение</th><th>Скор</th><th>Спенд 28д, окт</th><th>CPA окт</th><th>Тренд авг→окт</th><th>Гео</th><th>Почему</th></tr></thead>
+<tbody><tr>
+<td class="n">1</td>
+<td class="app"><b>Skilario</b><span>Обучение ИИ для заработка: «как простой PDF превратить в доход», создание цифровых продуктов с ИИ. Квиз про цель — доход, свобода от 9–5.</span><span class="lk"><a href="https://web.skilario.com/en/quiz/1-page" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/skilario-learn-ai-skills/id6780402624" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=29288548724080746" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>75</b></td>
+<td class="num">$906k</td>
+<td class="num"><i class="z mid"></i>$67<small>средне</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 72%, AU 13%, CA 7%, GB 6%, ZA 2%</small></td>
+<td class="why">Спенд 28д: июль 0.19M → авг 0.49M → окт 0.91M (растёт). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">2</td>
+<td class="app"><b>Intch</b><span>Поиск удалённых проектов и part-time работы, ИИ-нетворкинг: «из-за кризиса компании переходят на part-time — подключим вас к этим возможностям».</span><span class="lk"><a href="https://get.intch.org/onboarding/professional" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=2297875187706787" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>73</b></td>
+<td class="num">$511k</td>
+<td class="num"><i class="z lo"></i>$55<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 74%, TR 8%, CA 6%, GB 6%, AU 6%</small></td>
+<td class="why">Спенд 28д: июль 0.12M → авг 0.16M → окт 0.51M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">3</td>
+<td class="app"><b>Zeely</b><span>ИИ-платформа маркетинга для малого бизнеса: делает рекламные креативы, видео и запускает рекламу за пару минут. Воронка спрашивает цель — «первые продажи» или «больше продаж».</span><span class="lk"><a href="https://zeely.ai/start" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/zeely-ai-marketing-platform/id1586861768" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=app.zeely.android" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1056413206968872" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>69</b></td>
+<td class="num">$3.22M</td>
+<td class="num"><i class="z mid"></i>$95<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 71%, GB 12%, CA 6%, UA 5%, AU 2%</small></td>
+<td class="why">Спенд 28д (веб-воронка): июль 3.16M → авг 3.17M → окт 3.22M (держится). CPA в октябре в средней трети. Отдельно схема «прямо в стор» (в расчёт не входит, конверсия там — установка): май 0.16M, CPA 14.3; июн 0.14M, CPA 10.8; июл 0.14M, CPA 136.5; окт 0.10M, CPA 6.1.</td>
+</tr><tr>
+<td class="n">4</td>
+<td class="app"><b>memoryOS</b><span>Тренировка памяти в игровом формате: запоминать имена, детали, иностранные слова. Награды Apple; один из самых дешёвых CPA.</span><span class="lk"><a href="https://start.memoryos.com/new-h" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/memoryos-memory-games/id1553283646" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.memoryos.app" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=2124369798160109" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>65</b></td>
+<td class="num">$348k</td>
+<td class="num"><i class="z lo"></i>$65<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 72%, GB 7%, IT 7%, TR 7%, PL 6%</small></td>
+<td class="why">Спенд 28д (веб-воронка): июль 0.44M → авг 0.25M → окт 0.35M (растёт). CPA в октябре в нижней трети (дёшево). Отдельно схема «прямо в стор» (в расчёт не входит, конверсия там — установка): май 0.12M, CPA 5.1; июн 0.10M, CPA 4.6; авг 0.18M, CPA 5.7; окт 0.16M, CPA 3.4.</td>
+</tr><tr>
+<td class="n">5</td>
+<td class="app"><b>Kidology</b><span>Коуч для родителей: «родительство бывает громким» — тест на стиль воспитания и план.</span><span class="lk"><a href="https://kidology.app/quiz/no_yelling" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/kidology-parenting-coach/id6751578433" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1454358369857930" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>56</b></td>
+<td class="num">$370k</td>
+<td class="num"><i class="z mid"></i>$96<small>средне</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 76%, MX 24%</small></td>
+<td class="why">Спенд 28д: июль 0.32M → авг 0.23M → окт 0.37M (растёт). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">6</td>
+<td class="app"><b>Prayers Academy</b><span>Христианские духовные практики и молитвы.</span><span class="lk"><a href="https://quiz.prayers.academy/myarchetype/" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1077131321483" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>56</b></td>
+<td class="num">$134k</td>
+<td class="num"><i class="z mid"></i>$69<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 100%</small></td>
+<td class="why">Христианские духовные практики: «узнай свой духовный архетип и план, каким тебя создал Бог». Держится: 0,13M в августе и октябре, US 100%, CPA ниже среднего.</td>
+</tr><tr>
+<td class="n">7</td>
+<td class="app"><b>TheRealIntro</b><span>Обучение знакомствам и флирту для мужчин: «что сказать, чтобы её заинтересовать». Связан с Muses Academy.</span><span class="lk"><a href="https://therealintro.com/landing_uuid=8177aa9-31d1-4fa1-a1e8-5c661b8b384a&amp;quizlang=de&amp;utm_source={{campaign.id}}&amp;utm_m" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=999296429748511" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>52</b></td>
+<td class="num">$618k</td>
+<td class="num"><i class="z mid"></i>$95<small>средне</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>язык воронки «en»</small></td>
+<td class="why">Спенд 28д: июль — → авг — → окт 0.62M (новый в октябре). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">8</td>
+<td class="app"><b>Honey (ИИ-девушка)</b><span>ИИ-компаньон: создай свою «девушку мечты» и общайся в чате. Тайвань.</span><span class="lk"><a href="https://get-honey.today/4902-2" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=4542124466069551" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>44</b></td>
+<td class="num">$258k</td>
+<td class="num"><i class="z lo"></i>$60<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>2<small>TW 62%, MX 38%</small></td>
+<td class="why">Спенд 28д: июль 0.13M → авг 0.13M → окт 0.26M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr></tbody></table></div></section>
+<section class="panel" id="p2"><p class="note">Заметный спенд в выгрузке 10.10, но есть сомнения по нише, CPA или качеству данных.</p><div class="wrap"><table>
+<thead><tr><th>#</th><th>Приложение</th><th>Скор</th><th>Спенд 28д, окт</th><th>CPA окт</th><th>Тренд авг→окт</th><th>Гео</th><th>Почему под вопросом</th></tr></thead>
+<tbody><tr>
+<td class="n">1</td>
+<td class="app"><b>Mob (рецепты)</b><span>Рецепты и планировщик питания: «готовь раз в воскресенье — ешь хорошо всю неделю», batch cooking. Британский бренд.</span><span class="lk"><a href="https://mob.co.uk/onboarding" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/mob-meal-planner-and-recipes/id6670216494" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1330222279306386" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>74</b></td>
+<td class="num">$652k</td>
+<td class="num"><i class="z lo"></i>$36<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>GB 51%, US 37%, AU 8%, IE 4%</small></td>
+<td class="why">Рынок рецептов и планировщиков питания перенасыщен; ROAS в октябре 0,05.</td>
+</tr><tr>
+<td class="n">2</td>
+<td class="app"><b>Cloaked</b><span>Сервис защиты персональных данных: удаляет ваши данные с сайтов-брокеров, даёт виртуальные номера и почты, блокирует спам-звонки. Реклама давит на страх «спам-звонки начинаются с того, что ваши данные продают».</span><span class="lk"><a href="http://buy.cloaked.com/" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/cloaked-protect-your-privacy/id1600487147" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=app.android.cloaked" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=2637948413274495" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>70</b></td>
+<td class="num">$9.00M</td>
+<td class="num"><i class="z hi"></i>$474<small>дорого</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 100%</small></td>
+<td class="why">CPA высокий ($474, дорогая треть выгрузки 10.10).</td>
+</tr><tr>
+<td class="n">3</td>
+<td class="app"><b>Aligned</b><span>ИИ-коуч и планировщик жизни: еда, уборка, дети, счета — всё спланировано. Реклама для загруженных родителей.</span><span class="lk"><a href="https://tryalignedapp.com/en/funnel/life-planning/quiz" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/aligned-ai-coach-planner/id6714475500" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=guru.aligned.app" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=296106954427754" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>67</b></td>
+<td class="num">$1.66M</td>
+<td class="num"><i class="z hi"></i>$180<small>дорого</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 87%, GB 6%, CA 4%, AU 3%, IE 1%</small></td>
+<td class="why">CPA высокий ($180, дорогая треть выгрузки 10.10).</td>
+</tr><tr>
+<td class="n">4</td>
+<td class="app"><b>Chillio</b><span>Приложение против прокрастинации и для порядка в доме (уборка, домашние дела) — ИИ-планировщик. По CPA не сравнивать: пиксель фиксирует очень мало конверсий.</span><span class="lk"><a href="https://quiz.get-chillio.app/gs-house-ai" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1088875950183490" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>64</b></td>
+<td class="num">$1.97M</td>
+<td class="num"><i class="z na"></i>н/д<small>оплат нет</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 86%, CA 6%, GB 4%, AU 3%</small></td>
+<td class="why">В выгрузке 10.10 есть (строки 22 и 186, Botan App Limited), но доход 0 (ROAS 0), CPA 51 467 и 4 455 — оплаты не отслеживаются, сравнить нельзя. Оплаты видны только в мае (ROAS 0,35, CPA 217).</td>
+</tr><tr>
+<td class="n">5</td>
+<td class="app"><b>Guardio</b><span>Антивирус и защита от мошенничества для телефона и браузера: проверяет сайты, ссылки, сообщения и аккаунты. Воронка — «бесплатная проверка безопасности телефона за 2 минуты».</span><span class="lk"><a href="https://guard.io/n/quiz" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/guardio-mobile-security/id1640981560" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=io.guard.luna" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1040456075347458" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>64</b></td>
+<td class="num">$5.73M</td>
+<td class="num"><i class="z hi"></i>$210<small>дорого</small></td>
+<td><em class="t t-вернулся">вернулся</em></td>
+<td>1<small>US 92%, CA 4%, AU 4%</small></td>
+<td class="why">CPA высокий ($210); в августовских выгрузках не было, вернулся в октябре.</td>
+</tr><tr>
+<td class="n">6</td>
+<td class="app"><b>Mozart AI</b><span>ИИ-генератор песен: «спой любую песню своим голосом» — создаёт голосовую модель и кавер, видео с вашим фото.</span><span class="lk"><a href="https://onboarding.mozartai.app/mozart-180" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/ai-song-generator-mozart/id6502656704" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=song.ai.generator" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1377657073906784" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>64</b></td>
+<td class="num">$310k</td>
+<td class="num"><i class="z lo"></i>$37<small>дёшево</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>US 74%, AU 11%, CA 8%, GB 7%</small></td>
+<td class="why">Новый: есть только в выгрузке 10.10, тренда нет.</td>
+</tr><tr>
+<td class="n">7</td>
+<td class="app"><b>HyperMusic AI (w2a.one)</b><span>ИИ-генератор музыки и клипов (связан с Mozart AI).</span><span class="lk"><a href="https://www.facebook.com/ads/library/?id=1206480451607711" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>62</b></td>
+<td class="num">$159k</td>
+<td class="num"><i class="z lo"></i>$21<small>дёшево</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>US 100%</small></td>
+<td class="why">Новый: есть только в выгрузке 10.10, тренда нет; ведёт в приложение.</td>
+</tr><tr>
+<td class="n">8</td>
+<td class="app"><b>Trace</b><span>Пробив по номеру телефона: имя, соцсети, адрес. Реклама давит на ревность («партнёр что-то скрывает?»).</span><span class="lk"><a href="https://getthetrace.com/phone-lookup2" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=171300321659913" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>60</b></td>
+<td class="num">$134k</td>
+<td class="num"><i class="z lo"></i>$51<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>FR 81%, DE 19%</small></td>
+<td class="why">Доход почти нулевой (ROAS 0,06) — оплаты по пикселю видны плохо, CPA ненадёжен.</td>
+</tr><tr>
+<td class="n">9</td>
+<td class="app"><b>Dear Melodies</b><span>Персональная песня в подарок: пишут песню о партнёре/родителях/ребёнке по вашей истории (ИИ + доставка за 3 дня).</span><span class="lk"><a href="https://dearmelodies.com/design/main7/quiz32" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1497586092383654" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>58</b></td>
+<td class="num">$345k</td>
+<td class="num"><i class="z lo"></i>$56<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1/смешанное<small>US 57%, MX 33%, CA 10%</small></td>
+<td class="why">Гео смешанное (tier-1 и не tier-1); ниша песен на заказ новая, спенд держится.</td>
+</tr><tr>
+<td class="n">10</td>
+<td class="app"><b>Reverse Lookup</b><span>Пробив по номеру телефона: кто звонил, имя, соцсети, адрес. Многоязычные воронки.</span><span class="lk"><a href="https://reverselookup.com/pt-br/reverse-phone-lookup" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1576887450901329" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>54</b></td>
+<td class="num">$544k</td>
+<td class="num"><i class="z hi"></i>$101<small>дорого</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1/смешанное<small>GB 27%, BR 23%, US 17%, AU 16%, IT 16%</small></td>
+<td class="why">Доход почти нулевой (ROAS 0,01) — CPA ненадёжен; гео смешанное.</td>
+</tr><tr>
+<td class="n">11</td>
+<td class="app"><b>Zurna (ИИ-фото)</b><span>ИИ-генератор музыкальных клипов: «каверы и клипы из вашего фото и голоса» (Pixery).</span><span class="lk"><a href="https://survey.zurna.ai/zurna-music-video" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/zurna-ai-song-music-maker/id6745782591" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.pixery.songai" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=3216731252194534" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>46</b></td>
+<td class="num">$566k</td>
+<td class="num"><i class="z hi"></i>$192<small>дорого</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>US 69%, IT 10%, GB 10%, MX 6%, CA 4%</small></td>
+<td class="why">Новый: есть только в выгрузке 10.10; CPA высокий ($192).</td>
+</tr></tbody></table></div></section>
+<section class="panel" id="p3"><p class="note">Все кандидаты основного блока (без health): спенд в 10.10 ≥ 250k, тренд растёт/держится/новый, CPA в зелёной или жёлтой зоне. По скору.</p><div class="wrap"><table>
+<thead><tr><th>#</th><th>Приложение</th><th>Скор</th><th>Спенд 28д, окт</th><th>CPA окт</th><th>Тренд авг→окт</th><th>Гео</th><th>Почему</th></tr></thead>
+<tbody><tr>
+<td class="n">1</td>
+<td class="app"><b>ThePsychology</b><span>Психологические тесты и самопомощь (IQ, тип личности, эмоциональный интеллект) с подпиской на разборы. Реклама — «ответь на 30 вопросов и узнай свой IQ».</span><span class="lk"><a href="https://thepsychology.online/click" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=2574786356273278" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>89</b></td>
+<td class="num">$3.06M</td>
+<td class="num"><i class="z lo"></i>$18<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 68%, FR 14%, IL 10%, DE 8%</small></td>
+<td class="why">Спенд 28д: июль — → авг 2.13M → окт 3.06M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">2</td>
+<td class="app"><b>BlossomUp</b><span>Тесты личности и отношений (тип в отношениях, карьерный тип, политические взгляды) с персональным разбором по подписке. Реклама-крючки: «думаешь, знаешь свои взгляды?», «ты на своём месте в работе?».</span><span class="lk"><a href="https://blossomup.co/lp/careerr/" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=2158871135047286" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>85</b></td>
+<td class="num">$1.37M</td>
+<td class="num"><i class="z lo"></i>$31<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 82%, GB 11%, AU 4%, CA 3%</small></td>
+<td class="why">Спенд 28д: июль 0.80M → авг 0.87M → окт 1.37M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">3</td>
+<td class="app"><b>Educly</b><span>Обучение ИИ с нуля: «28-дневный ИИ-челлендж, 15 минут в день с телефона».</span><span class="lk"><a href="https://start.educly.app/english-eua-ca" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=170381369075607" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>81</b></td>
+<td class="num">$1.60M</td>
+<td class="num"><i class="z lo"></i>$16<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 57%, MX 27%, GB 8%, AU 7%</small></td>
+<td class="why">Спенд 28д: июль — → авг 0.77M → окт 1.60M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">4</td>
+<td class="app"><b>Astroline</b><span>Астрология: натальная карта, хиромантия по фото ладони, прогнозы, «скетч соулмейта». Воронка — квиз на 22 шага и персональный прогноз; реклама от лица астрологов-персонажей.</span><span class="lk"><a href="https://yabi.astroline.today/quiz-pr" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1810411809952663" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>80</b></td>
+<td class="num">$3.21M</td>
+<td class="num"><i class="z lo"></i>$43<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 53%, DE 13%, FR 10%, CA 10%, IT 9%</small></td>
+<td class="why">Спенд 28д: июль 2.38M → авг 3.19M → окт 3.21M (держится). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">5</td>
+<td class="app"><b>Skilario</b><span>Обучение ИИ для заработка: «как простой PDF превратить в доход», создание цифровых продуктов с ИИ. Квиз про цель — доход, свобода от 9–5.</span><span class="lk"><a href="https://web.skilario.com/en/quiz/1-page" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/skilario-learn-ai-skills/id6780402624" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=29288548724080746" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>75</b></td>
+<td class="num">$906k</td>
+<td class="num"><i class="z mid"></i>$67<small>средне</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 72%, AU 13%, CA 7%, GB 6%, ZA 2%</small></td>
+<td class="why">Спенд 28д: июль 0.19M → авг 0.49M → окт 0.91M (растёт). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">6</td>
+<td class="app"><b>Mob (рецепты)</b><span>Рецепты и планировщик питания: «готовь раз в воскресенье — ешь хорошо всю неделю», batch cooking. Британский бренд.</span><span class="lk"><a href="https://mob.co.uk/onboarding" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/mob-meal-planner-and-recipes/id6670216494" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1330222279306386" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>74</b></td>
+<td class="num">$652k</td>
+<td class="num"><i class="z lo"></i>$36<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>GB 51%, US 37%, AU 8%, IE 4%</small></td>
+<td class="why">Спенд 28д: июль 0.59M → авг 0.78M → окт 0.65M (держится). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">7</td>
+<td class="app"><b>ProMuse</b><span>Обучение ИИ: «28-дневная программа с сертификатом по ИИ» — для работающих в компании и на себя.</span><span class="lk"><a href="https://promuse.ai/onboarding" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/promuse-ai-certificates/id6758344656" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1283699577082891" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>73</b></td>
+<td class="num">$659k</td>
+<td class="num"><i class="z lo"></i>$62<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 84%, MX 9%, AU 7%</small></td>
+<td class="why">Спенд 28д: июль — → авг 0.33M → окт 0.66M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">8</td>
+<td class="app"><b>Intch</b><span>Поиск удалённых проектов и part-time работы, ИИ-нетворкинг: «из-за кризиса компании переходят на part-time — подключим вас к этим возможностям».</span><span class="lk"><a href="https://get.intch.org/onboarding/professional" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=2297875187706787" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>73</b></td>
+<td class="num">$511k</td>
+<td class="num"><i class="z lo"></i>$55<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 74%, TR 8%, CA 6%, GB 6%, AU 6%</small></td>
+<td class="why">Спенд 28д: июль 0.12M → авг 0.16M → окт 0.51M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">9</td>
+<td class="app"><b>Zeely</b><span>ИИ-платформа маркетинга для малого бизнеса: делает рекламные креативы, видео и запускает рекламу за пару минут. Воронка спрашивает цель — «первые продажи» или «больше продаж».</span><span class="lk"><a href="https://zeely.ai/start" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/zeely-ai-marketing-platform/id1586861768" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=app.zeely.android" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1056413206968872" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>69</b></td>
+<td class="num">$3.22M</td>
+<td class="num"><i class="z mid"></i>$95<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 71%, GB 12%, CA 6%, UA 5%, AU 2%</small></td>
+<td class="why">Спенд 28д (веб-воронка): июль 3.16M → авг 3.17M → окт 3.22M (держится). CPA в октябре в средней трети. Отдельно схема «прямо в стор» (в расчёт не входит, конверсия там — установка): май 0.16M, CPA 14.3; июн 0.14M, CPA 10.8; июл 0.14M, CPA 136.5; окт 0.10M, CPA 6.1.</td>
+</tr><tr>
+<td class="n">10</td>
+<td class="app"><b>Vocal Image</b><span>Тренер голоса и речи с ИИ: оценка голоса, упражнения, уверенная речь. Воронка на русском: «умнее всех в комнате, но никто не знает».</span><span class="lk"><a href="https://go.vocalimage.net/" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/vocal-image-speaking-coach/id1535324205" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=app.vocalimage.bessia" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=138168863336072" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>67</b></td>
+<td class="num">$273k</td>
+<td class="num"><i class="z lo"></i>$49<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>под вопросом<small>US 57%, SG 18%, GB 14%, AU 11%</small></td>
+<td class="why">Спенд 28д: июль 0.14M → авг 0.19M → окт 0.27M (растёт). CPA в октябре в нижней трети (дёшево). Воронка и объявления на русском — гео под вопросом.</td>
+</tr><tr>
+<td class="n">11</td>
+<td class="app"><b>Testora</b><span>Тесты: IQ (32 вопроса), тип личности, тест на аутизм/СДВГ, с подпиской на разбор. Много языков (испанский и др.).</span><span class="lk"><a href="https://funnel.testora.space/start-1" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1568459860795401" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>67</b></td>
+<td class="num">$895k</td>
+<td class="num"><i class="z mid"></i>$66<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1<small>US 85%, JP 6%, AU 5%, TW 4%</small></td>
+<td class="why">Спенд 28д: июль 0.67M → авг 0.96M → окт 0.90M (держится). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">12</td>
+<td class="app"><b>AyahPath</b><span>Ислам: ежедневные уроки по Корану, путь через Коран. Наш аналог — Ridwan.</span><span class="lk"><a href="https://quiz.ayahpath.com/" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=2282803602254973" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>66</b></td>
+<td class="num">$706k</td>
+<td class="num"><i class="z lo"></i>$36<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>2<small>GB 44%, AE 28%, SG 15%, SA 13%</small></td>
+<td class="why">Спенд 28д: июль 0.45M → авг 0.48M → окт 0.71M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">13</td>
+<td class="app"><b>memoryOS</b><span>Тренировка памяти в игровом формате: запоминать имена, детали, иностранные слова. Награды Apple; один из самых дешёвых CPA.</span><span class="lk"><a href="https://start.memoryos.com/new-h" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/memoryos-memory-games/id1553283646" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.memoryos.app" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=2124369798160109" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>65</b></td>
+<td class="num">$348k</td>
+<td class="num"><i class="z lo"></i>$65<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 72%, GB 7%, IT 7%, TR 7%, PL 6%</small></td>
+<td class="why">Спенд 28д (веб-воронка): июль 0.44M → авг 0.25M → окт 0.35M (растёт). CPA в октябре в нижней трети (дёшево). Отдельно схема «прямо в стор» (в расчёт не входит, конверсия там — установка): май 0.12M, CPA 5.1; июн 0.10M, CPA 4.6; авг 0.18M, CPA 5.7; окт 0.16M, CPA 3.4.</td>
+</tr><tr>
+<td class="n">14</td>
+<td class="app"><b>Mozart AI</b><span>ИИ-генератор песен: «спой любую песню своим голосом» — создаёт голосовую модель и кавер, видео с вашим фото.</span><span class="lk"><a href="https://onboarding.mozartai.app/mozart-180" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/ai-song-generator-mozart/id6502656704" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=song.ai.generator" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1377657073906784" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>64</b></td>
+<td class="num">$310k</td>
+<td class="num"><i class="z lo"></i>$37<small>дёшево</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>US 74%, AU 11%, CA 8%, GB 7%</small></td>
+<td class="why">Спенд 28д: июль — → авг — → окт 0.31M (новый в октябре). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">15</td>
+<td class="app"><b>Hint (астрология)</b><span>Персональная астрология и гороскопы. Главная воронка — «нарисуем лицо вашего соулмейта» (скетч по натальной карте), дальше подписка на гороскопы и разборы совместимости.</span><span class="lk"><a href="https://hint.app/soulmate" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=877369168508627" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>64</b></td>
+<td class="num">$3.91M</td>
+<td class="num"><i class="z mid"></i>$99<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1/смешанное<small>US 33%, BR 31%, GB 17%, DE 10%, FR 9%</small></td>
+<td class="why">Спенд 28д: июль 2.40M → авг 4.11M → окт 3.91M (держится). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">16</td>
+<td class="app"><b>Genius (ИИ-фото)</b><span>ИИ-генератор видео из фото: «оживи фото — человек танцует вирусный танец». Простой развлекательный оффер.</span><span class="lk"><a href="https://photo.genius.style/dancing-groupdancing-four-of-the-time" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1831780484865356" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>63</b></td>
+<td class="num">$808k</td>
+<td class="num"><i class="z mid"></i>$70<small>средне</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>US 87%, GB 5%, AU 4%, CA 3%</small></td>
+<td class="why">Спенд 28д: июль — → авг — → окт 0.81M (новый в октябре). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">17</td>
+<td class="app"><b>Kodree</b><span>Курсы ИИ, анализа данных и дизайна от Mate Academy: «28-дневная программа с сертификатом по Claude».</span><span class="lk"><a href="https://kodree.com/en/claude-content/get-started" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/kodree-learn-ai-data-design/id6739421200" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.mateacademyapp.knowely" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=3970436016595288" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>62</b></td>
+<td class="num">$584k</td>
+<td class="num"><i class="z mid"></i>$77<small>средне</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 51%, MX 23%, GB 12%, CA 8%, CO 6%</small></td>
+<td class="why">Спенд 28д: июль — → авг 0.47M → окт 0.58M (растёт). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">18</td>
+<td class="app"><b>Dear Melodies</b><span>Персональная песня в подарок: пишут песню о партнёре/родителях/ребёнке по вашей истории (ИИ + доставка за 3 дня).</span><span class="lk"><a href="https://dearmelodies.com/design/main7/quiz32" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=1497586092383654" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>58</b></td>
+<td class="num">$345k</td>
+<td class="num"><i class="z lo"></i>$56<small>дёшево</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1/смешанное<small>US 57%, MX 33%, CA 10%</small></td>
+<td class="why">Спенд 28д: июль 0.50M → авг 0.37M → окт 0.35M (держится). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">19</td>
+<td class="app"><b>Appewa (языки)</b><span>EWA — изучение английского по книгам, сериалам и аудио. Воронка на испанском: «никогда не поздно выучить английский».</span><span class="lk"><a href="http://quiz.appewa.com/setboarding/es/terms/introoffercheck4990c/classic/002-start" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/ewa-learn-languages/id1200778841" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=com.ewa.ewaapp" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=3039576369564625" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>57</b></td>
+<td class="num">$2.67M</td>
+<td class="num"><i class="z mid"></i>$70<small>средне</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>2<small>US 43%, MX 16%, PT 16%, JP 13%, IT 12%</small></td>
+<td class="why">Спенд 28д: июль — → авг — → окт 2.67M (новый в октябре). CPA в октябре средний. Мультиязычная, в основном не tier-1.</td>
+</tr><tr>
+<td class="n">20</td>
+<td class="app"><b>Kidology</b><span>Коуч для родителей: «родительство бывает громким» — тест на стиль воспитания и план.</span><span class="lk"><a href="https://kidology.app/quiz/no_yelling" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/kidology-parenting-coach/id6751578433" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1454358369857930" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>56</b></td>
+<td class="num">$370k</td>
+<td class="num"><i class="z mid"></i>$96<small>средне</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>1<small>US 76%, MX 24%</small></td>
+<td class="why">Спенд 28д: июль 0.32M → авг 0.23M → окт 0.37M (растёт). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">21</td>
+<td class="app"><b>MyGrowth</b><span>Микрообучение: короткие уроки и квизы (анатомия, биология, ИИ, финансы) вместо бесконечного скроллинга.</span><span class="lk"><a href="https://app.mygrowth.one/" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/mygrowth-daily-micro-learning/id6748383002" target="_blank" rel="noopener">App Store</a> · <a href="https://www.facebook.com/ads/library/?id=1600846601244112" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>54</b></td>
+<td class="num">$613k</td>
+<td class="num"><i class="z mid"></i>$78<small>средне</small></td>
+<td><em class="t t-держится">держится</em></td>
+<td>1/смешанное<small>US 46%, IT 19%, TR 16%, GB 10%, FR 9%</small></td>
+<td class="why">Спенд 28д: июль 0.63M → авг 0.75M → окт 0.61M (держится). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">22</td>
+<td class="app"><b>TheRealIntro</b><span>Обучение знакомствам и флирту для мужчин: «что сказать, чтобы её заинтересовать». Связан с Muses Academy.</span><span class="lk"><a href="https://therealintro.com/landing_uuid=8177aa9-31d1-4fa1-a1e8-5c661b8b384a&amp;quizlang=de&amp;utm_source={{campaign.id}}&amp;utm_m" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=999296429748511" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>52</b></td>
+<td class="num">$618k</td>
+<td class="num"><i class="z mid"></i>$95<small>средне</small></td>
+<td><em class="t t-новый">новый</em></td>
+<td>1<small>язык воронки «en»</small></td>
+<td class="why">Спенд 28д: июль — → авг — → окт 0.62M (новый в октябре). CPA в октябре средний.</td>
+</tr><tr>
+<td class="n">23</td>
+<td class="app"><b>KitUp</b><span>Микрообучение и саморазвитие на каждый день (русскоязычная аудитория в Турции).</span><span class="lk"><a href="http://quiz.kitup.net/ru/3000" target="_blank" rel="noopener">воронка</a> · <a href="https://apps.apple.com/us/app/kitup-micro-learning-everyday/id1419570041" target="_blank" rel="noopener">App Store</a> · <a href="https://play.google.com/store/apps/details?id=net.kitup.kitupapp" target="_blank" rel="noopener">Google Play</a> · <a href="https://www.facebook.com/ads/library/?id=1071279792041767" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>48</b></td>
+<td class="num">$310k</td>
+<td class="num"><i class="z lo"></i>$49<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>3<small>TR 82%, UA 18%</small></td>
+<td class="why">Спенд 28д: июль 0.21M → авг 0.23M → окт 0.31M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr><tr>
+<td class="n">24</td>
+<td class="app"><b>Honey (ИИ-девушка)</b><span>ИИ-компаньон: создай свою «девушку мечты» и общайся в чате. Тайвань.</span><span class="lk"><a href="https://get-honey.today/4902-2" target="_blank" rel="noopener">воронка</a> · <a href="https://www.facebook.com/ads/library/?id=4542124466069551" target="_blank" rel="noopener">объявление</a></span></td>
+<td class="num"><b>44</b></td>
+<td class="num">$258k</td>
+<td class="num"><i class="z lo"></i>$60<small>дёшево</small></td>
+<td><em class="t t-растёт">растёт</em></td>
+<td>2<small>TW 62%, MX 38%</small></td>
+<td class="why">Спенд 28д: июль 0.13M → авг 0.13M → окт 0.26M (растёт). CPA в октябре в нижней трети (дёшево).</td>
+</tr></tbody></table></div></section>
+</main></body></html>

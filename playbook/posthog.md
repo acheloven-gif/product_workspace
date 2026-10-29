@@ -83,6 +83,7 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
 - **Dev-окружение:** у Ridwan, Nalumi, Charisly события с dev приходят с `environment = 'dev'` — исключать.
 - **FoxIQ:** email с `+` (`%+%@%`), `%@gox-media.com`, `%@yandex.ru`, `%test%`, а также содержащие `k.k.tarasova`, `nikitos.gura`, `dariaivanova`, `eevakenn`, `nedvedyea`, и адреса `kkk@gmail.com`, `myskillhouse2020@gmail.com`. Данные FoxIQ до ~12.10.2026 — только тесты.
 - Тестовые проходы воронок с «пустышками» в метках (`utm_campaign=88888888`) и незаполненными шаблонами (`{campaignid}`).
+- **FoxIQ (найдено 29.10):** события воронки `foxiq_ff` приходят в PostHog только с 16.10.2026 — источник покупателей до этой даты не виден. `utm_source` = `4`, `19`, `22` — реклама Meta (в ссылке `fbclid`), `google` — Google Ads. В `subscription_started` свойство `platform` (`ios`/`web`) — похоже, устройство при покупке: все такие покупатели пользуются веб-приложением. `subscription_expired` с `reason = payment_failed` приходит и после отмены пользователем — «отказ банка» считать только без предшествующей `subscription_cancelled`. `first_run_started` срабатывает автоматически на экране результата — не метрика старта тренировки (для этого `game_started`). В `iq_result_shown` есть `iq_score`, `is_test`, `environment`.
 - Для остальных приложений полных списков пока нет. Если цифры странные — сначала проверить, нет ли внутренних аккаунтов, и дописать их сюда.
 
 ---

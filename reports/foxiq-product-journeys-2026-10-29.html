@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxIQ: путь покупателей</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~960px), same visual system as the Japan payments report. Summary, product map, archetypes, every user, features, what recordings show, why people cancel, ideal paths with LTV calculator, tests, limits, glossary. */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15202a; --muted:#56636f; --line:#dbe2e7; --soft:#eef3f5;
+  --accent:#0d5f6f; --accent-soft:#e3f1f3;
+  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf2e1; --ok:#0b7a4b; --ok-soft:#e5f5ec; --info:#3a4fb8; --info-soft:#eaedfb;
+  --bar:#2a78d6; --bar2:#c8d6dc;
+  --s-good:#0ca30c; --s-warn:#fab219; --s-crit:#d03b3b; --s-neutral:#b9c6cd;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100;
+  --f-body:"Golos Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:46px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.12rem;font-weight:650}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:flex;flex-direction:column;gap:12px}
+header .meta{color:var(--muted);font-size:.95rem;max-width:72ch}
+section{display:flex;flex-direction:column;gap:16px}
+section > p, .card > p{max-width:72ch}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:2px 9px;border-radius:999px;white-space:nowrap;vertical-align:2px}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.info{background:var(--info-soft);color:var(--info)}
+.chip.plain{background:var(--soft);color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:none}
+tr.tot td{background:var(--soft);font-weight:600}
+td.r,th.r{text-align:right}
+td .sub{display:block;color:var(--muted);font-size:.8rem}
+td.bar{width:32%}
+.barline{display:flex;align-items:center;gap:8px}
+.barline .b{height:10px;border-radius:0 4px 4px 0;background:var(--bar);display:inline-block;flex:none}
+.barline .b.lo{background:var(--s-crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h4{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+ul.list,ol.list{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact .l{font-size:.84rem;color:var(--muted);line-height:1.35}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0;max-width:74ch}
+.steps{counter-reset:st;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps > li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:flex;flex-direction:column;gap:6px}
+.steps > li::before{content:counter(st);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps .meta2{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--muted)}
+.steps .meta2 b{color:var(--ink);font-weight:600}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:8px 16px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,[data-tip]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.92rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details > summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--muted)}
+details[open] > summary::before{content:"▾"}
+details .tbl{border:none;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+/* stacked 100% bar */
+.stack{display:flex;gap:2px;height:24px;background:var(--surface)}
+.stack .seg{height:100%;min-width:3px}
+.stack .seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem}
+.legend .k{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.g-good{background:var(--s-good)} .g-warn{background:var(--s-warn)} .g-crit{background:var(--s-crit)} .g-neutral{background:var(--s-neutral)}
+.g-c1{background:var(--c1)} .g-c2{background:var(--c2)} .g-c3{background:var(--c3)} .g-c4{background:var(--c4)}
+/* column chart */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;height:190px;border-bottom:1px solid var(--line);padding-top:8px}
+.cols .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.cols .c .val{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+.cols .c .col{width:24px;max-width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.cols-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.25}
+/* calculator */
+.calc table{min-width:640px}
+.calc td input{width:100%;max-width:120px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc td.inp{width:150px}
+.calc tr.out td{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc tr.out td:first-child{font-family:var(--f-body)}
+.calc tr.head td{background:var(--soft);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:.88rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+.delta-up{color:var(--ok)} .delta-down{color:var(--crit)}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+.wrap{max-width:960px}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.arch .card{gap:9px}
+.arch .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arch .share{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.mini{display:flex;height:10px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.mini span{height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.flow .st b{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.flow .st.hot{border-color:var(--crit);background:var(--crit-soft)}
+.flow .arrow{align-self:center;color:var(--muted);font-family:var(--f-mono)}
+.ja{font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",var(--f-body)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.filters label{font-size:.84rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.filters select,.filters input{font:inherit;font-size:.9rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:150px}
+#ppl td .story{display:block;font-size:.8rem;color:var(--muted);line-height:1.45;margin-top:3px}
+#ppl table{min-width:760px}
+.hyp{display:flex;flex-direction:column;gap:12px}
+.hyp .card h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cols2 > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.days{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.days li{display:grid;grid-template-columns:62px 1fr;gap:8px}
+.days li b{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+.calc2 .inputs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.9rem}
+.calc2 .inputs input{width:110px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc2 .out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{font-family:var(--f-mono);font-size:1.6rem;font-weight:600}
+button.b.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+@media (max-width:720px){.cols2,.calc2{grid-template-columns:1fr}}
+
+@media (max-width:560px){h1{font-size:1.65rem} .card{padding:16px} dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} .cols .c .col{width:18px} .cols-x{font-size:.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+tr.st td{border-top:none;padding-top:0}
+#ppl tbody tr:not(.st) td{border-bottom:none}
+
+.lbl{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.lbl.v{background:var(--ok-soft);color:var(--ok)} .lbl.p{background:var(--warn-soft);color:var(--warn)} .lbl.n{background:var(--info-soft);color:var(--info)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="eyebrow">FoxIQ · веб-приложение · покупатели 12–29 октября 2026</p>
+<h1>FoxIQ: путь покупателей и что связано с отменой</h1>
+<p class="meta">Разбор всех 66 человек, которые оформили пробную подписку FoxIQ за $1 с 12.10 00:00 по 29.10 13:55 (МСК). Что они делали в приложении, когда и как отменяли и кто дошёл до первого платежа. Источник — только PostHog: события приложения (<code>project = foxiq</code>) и воронки FunnelFox (<code>project = foxiq_ff</code>). Считаются люди (<code>person_id</code>), время — московское. Тестовые аккаунты исключены по списку из playbook/posthog.md; в выборке их не оказалось, <code>is_test</code> и <code>environment = dev</code> тоже не встретились. Человек обозначен первыми 8 символами <code>person_id</code>, почт в отчёте нет.</p>
+<div class="note small">Выборка маленькая: 66 покупателей, из них только у 32 пробный период уже закончился. Все сравнения ниже — <b>связь, а не причина</b>, а разница в 1–3 человека может быть случайной. Метки у выводов: <span class="lbl v">Видно в данных</span><span class="lbl p">Предположение</span><span class="lbl n">Не знаем</span>.</div>
+</header>
+
+<section id="summary" class="summary">
+<h2>Коротко</h2>
+<ol>
+<li><span class="lbl v">Видно</span><b>IQ-результат одинаковый у всех: 137.</b> Экран результата видели все 66 покупателей. У 60 человек балл записан в событии <code>iq_result_shown</code>, и у всех 60 это 137, хотя квиз в воронке на 40+ вопросов обещает личный результат. Это главное расхождение между обещанием и продуктом.</li>
+<li><span class="lbl v">Видно</span><b>Отменяют сразу после результата.</b> Сами отменили 13 из 66 (20%). У 8 из 13 отмена пришлась на первый час, медиана — 10 минут после оплаты. До отмены все 13 видели результат, и ни один не начал тренировку. 7 человек отменили через кнопку в приложении: все 7 нажали «Отменить» и подтвердили за несколько секунд. Ничего, что удержало бы человека, в этом пути нет.</li>
+<li><span class="lbl v">Видно</span><b>Привычки нет.</b> 61 из 66 (92%) заходили в приложение только в один день. Игру начинали 11 из 66 (17%), и ни один не играл в два разных дня. Медиана времени в приложении за весь пробный период — 3,1 минуты.</li>
+<li><span class="lbl v">Видно</span><b>Продлевают те, кто продуктом не пользуется.</b> У 12 человек прошло продление. Ни один из них не начинал игру и ни один не заходил в приложение после списания. Медиана их времени в приложении — 1,2 минуты. <span class="lbl p">Предположение</span> Платят по инерции, поэтому ко второму списанию стоит ждать возвратов и споров по платежам; в PostHog их не видно.</li>
+<li><span class="lbl v">Видно</span><b>Что нравится — сертификат.</b> Что-то делали с сертификатом 40 из 66 (61%), скачали 26, поделились 8. Среди них сами отменили 6 из 40 (15%), среди остальных — 7 из 26 (27%). Это связь, причина не доказана.</li>
+<li><span class="lbl v">Видно</span><b>Трафик: продаёт только Meta, почти всё — США.</b> С 16.10, когда в PostHog появилась воронка, Google дал 5 522 захода в воронку и 2 покупки (0,04%). Meta — от 1,8% до 4,4% в зависимости от метки (<code>utm_source</code> 4, 19, 22). 65 из 66 покупателей из США. Покупатели почти только с телефонов (iOS — 47 из 50 сопоставленных с воронкой). В воронке на 63 человек с ошибкой оплаты приходится 49 успешных оплат.</li>
+<li><b>Что делать первым.</b> Сразу, без теста: добавить предложение в путь отмены и разобраться с ошибками оплаты вместе с Primer/FunnelFox; Диме — данные по Google. Тест 1: личный IQ-результат и план тренировок прямо на экране результата. При нынешнем потоке, около 4 покупателей в день, тест на 100+ человек в группе идёт около 2 месяцев. Тесты имеет смысл запускать, когда трафик вырастет.</li>
+</ol>
+</section>
+
+<nav class="toc" aria-label="Разделы">
+<a href="#map">Карта пути</a><a href="#arch">Типы пути</a><a href="#people">Каждый покупатель</a><a href="#features">Функции</a><a href="#why">Почему и когда отменяют</a><a href="#seg">Срезы</a><a href="#tests">Тесты</a><a href="#limits">Ограничения</a><a href="#gloss">Словарь и источники</a>
+</nav>
+
+<section id="map">
+<h2>Карта пути</h2>
+<p>Человек приходит из рекламы на f.foxiq.app/test-iq и проходит IQ-квиз из 40+ вопросов. Дальше он оставляет почту, видит пейволл и платит $1 за пробный период подписки. Приложение открывается по автологину (<code>/auto-login</code>) сразу на экране IQ-результата. Красным отмечены шаги, где теряется больше всего людей.</p>
+<div class="tbl"><table>
+<thead><tr><th>Шаг</th><th class="r">Людей</th><th class="r">От предыдущего</th><th>Событие</th></tr></thead>
+<tbody>
+<tr class="st"><td colspan="4"><b>Воронка FunnelFox</b>, 16–28.10 МСК (раньше 16.10 воронка в PostHog не приходила)</td></tr>
+<tr><td>Загрузили воронку</td><td class="r num">7 605</td><td class="r">—</td><td><code>funnel_start</code></td></tr>
+<tr><td><b>Ответили на первый вопрос</b></td><td class="r num">2 427</td><td class="r num"><span class="chip crit">33%</span></td><td><code>screen_index = 1</code> из 7 452 открывших intro; 5 522 захода — Google, из них дошли 1 489</td></tr>
+<tr><td>Дошли до конца квиза (loader)</td><td class="r num">734</td><td class="r num">30%</td><td><code>screen_index = 48</code></td></tr>
+<tr><td>Оставили почту</td><td class="r num">583</td><td class="r num">79%</td><td><code>funnel_email_submit</code></td></tr>
+<tr><td><b>Начали оплату</b></td><td class="r num">137</td><td class="r num"><span class="chip crit">23%</span></td><td><code>funnel_purchase_start</code> из 586 открывших оплату</td></tr>
+<tr><td><b>Оплатили</b></td><td class="r num">49</td><td class="r num"><span class="chip crit">36%</span></td><td><code>funnel_purchase_success</code>; ошибка оплаты — 63 человека, экран «failed payment» видели 92; Apple Pay открыли 47, закрыли 25</td></tr>
+<tr class="st"><td colspan="4"><b>Приложение</b>, все 66 покупателей с 12.10 (<code>subscription_started</code>)</td></tr>
+<tr><td>Открыли приложение</td><td class="r num">66</td><td class="r">100%</td><td>есть события с <code>$lib = web</code></td></tr>
+<tr><td>Увидели IQ-результат</td><td class="r num">66</td><td class="r">100%</td><td><code>iq_result_shown</code>, у всех с баллом — 137</td></tr>
+<tr><td>Действие с сертификатом</td><td class="r num">40</td><td class="r num">61%</td><td><code>certificate_*</code>; скачали 26, поделились 8</td></tr>
+<tr><td><b>Начали игру</b></td><td class="r num">11</td><td class="r num"><span class="chip crit">17%</span></td><td><code>game_started</code>; урок — 4, тест личности — 3</td></tr>
+<tr><td><b>Вернулись в другой день</b></td><td class="r num">5</td><td class="r num"><span class="chip crit">8%</span></td><td>события в 2+ днях по МСК</td></tr>
+<tr class="st"><td colspan="4"><b>Итог пробного периода</b> у 32 человек, у которых он уже закончился</td></tr>
+<tr><td>Продлили (прошло списание)</td><td class="r num">12</td><td class="r num">38%</td><td><code>subscription_renewed</code></td></tr>
+<tr><td>Отменили сами до списания</td><td class="r num">13</td><td class="r num">41%</td><td><code>subscription_cancelled</code>, <code>reason = user_initiated</code></td></tr>
+<tr><td>Не списалось</td><td class="r num">7</td><td class="r num">22%</td><td><code>subscription_expired</code>, <code>reason = payment_failed</code>, до этого отмены не было</td></tr>
+</tbody></table></div>
+<p class="small muted">Пробный период у части покупателей 7 дней, у части 14: продление или окончание приходят через 166–168 или 334 часа после оплаты. Ещё 34 человека в пробном периоде, итога у них пока нет. Длину пробного периода по человеку в PostHog не видно.</p>
+</section>
+
+<section id="arch">
+<h2>Четыре типа пути</h2>
+<p>Покупатели разделены по поведению за пробный период, а не по итогу. Каждый человек попадает ровно в один тип, проверка идёт сверху вниз: заходил в 2+ дня → начинал игру, урок или тест → делал что-то с сертификатом → остальные. Полоса — итог: <span class="chip ok">продлили</span> <span class="chip crit">отменили сами</span> <span class="chip warn">не списалось</span> <span class="chip plain">ещё в пробном</span>. Источник «нет в воронке» — покупатели 13–16.10, до появления воронки в PostHog.</p>
+<div class="arch">
+<div class="card"><div class="top"><h3>Сертификат — и всё</h3><span class="share">33 · 50%</span></div>
+<p>Видит результат 137, вводит имя для сертификата, скачивает его (22 из 33) и больше в приложении ничего не делает. Один день, медиана 1,9 минуты.</p><div class='mini' role='img' aria-label='продлили 7, отменили 4, не списалось 4, в пробном 18'><span class='g-good' style='width:21.2%'></span><span class='g-crit' style='width:12.1%'></span><span class='g-warn' style='width:12.1%'></span><span class='g-neutral' style='width:54.5%'></span></div><p class='small muted'>Продлили 7 · отменили сами 4 · не списалось 4 · ещё в пробном 18</p>
+<dl class="kv"><dt>Скачали сертификат</dt><dd>22 из 33</dd><dt>Источник</dt><dd>Meta 22 — 10, нет в воронке — 9, Meta 4 — 8, Meta 19 — 5, Google — 1</dd></dl>
+<p><b>Что нужно:</b> Следующий шаг после сертификата — тренировка, которая «поднимет балл», и причина вернуться завтра. Самый массовый тип и больше всего продлений.</p></div>
+<div class="card"><div class="top"><h3>Посмотрел результат и ушёл</h3><span class="share">16 · 24%</span></div>
+<p>Открыл приложение по автологину, увидел результат и вышел. Медиана 1,2 минуты. 4 из 16 отменили сами, все в первые 30 минут или на 6-й день.</p><div class='mini' role='img' aria-label='продлили 4, отменили 4, не списалось 2, в пробном 6'><span class='g-good' style='width:25.0%'></span><span class='g-crit' style='width:25.0%'></span><span class='g-warn' style='width:12.5%'></span><span class='g-neutral' style='width:37.5%'></span></div><p class='small muted'>Продлили 4 · отменили сами 4 · не списалось 2 · ещё в пробном 6</p>
+<dl class="kv"><dt>Источник</dt><dd>Meta 22 — 5, Meta 19 — 4, нет в воронке — 4, Meta 4 — 3</dd></dl>
+<p><b>Что нужно:</b> Результат, который ощущается личным, и сразу понятное «что дальше». Продлевают и они (4) — платят, не пользуясь продуктом.</p></div>
+<div class="card"><div class="top"><h3>Попробовал тренировку</h3><span class="share">12 · 18%</span></div>
+<p>В первый день начал игру (чаще всего fox-memory), урок или тест, медиана 8,2 минуты. Больше в другие дни не приходил.</p><div class='mini' role='img' aria-label='продлили 1, отменили 3, не списалось 1, в пробном 7'><span class='g-good' style='width:8.3%'></span><span class='g-crit' style='width:25.0%'></span><span class='g-warn' style='width:8.3%'></span><span class='g-neutral' style='width:58.3%'></span></div><p class='small muted'>Продлили 1 · отменили сами 3 · не списалось 1 · ещё в пробном 7</p>
+<dl class="kv"><dt>Источник</dt><dd>Meta 22 — 4, Meta 19 — 3, Meta 4 — 2, Google, без метки, нет в воронке — по 1</dd></dl>
+<p><b>Что нужно:</b> Повод вернуться: серия дней, напоминание, видимый рост балла. Пока продлил 1 из 5 с итогом — продукт их не удерживает.</p></div>
+<div class="card"><div class="top"><h3>Возвращается</h3><span class="share">5 · 8%</span></div>
+<p>Заходил в 2+ днях (один человек — в 5). Медиана 7,1 минуты. Двое из пяти отменили, трое ещё в пробном.</p><div class='mini' role='img' aria-label='продлили 0, отменили 2, не списалось 0, в пробном 3'><span class='g-good' style='width:0.0%'></span><span class='g-crit' style='width:40.0%'></span><span class='g-warn' style='width:0.0%'></span><span class='g-neutral' style='width:60.0%'></span></div><p class='small muted'>Продлили 0 · отменили сами 2 · не списалось 0 · ещё в пробном 3</p>
+<dl class="kv"><dt>Источник</dt><dd>Meta 19 — 2, нет в воронке — 2, Meta 22 — 1</dd></dl>
+<p><b>Что нужно:</b> Слишком мало людей для выводов. Главная аудитория подписки, её надо растить.</p></div>
+</div>
+</section>
+
+<section id="people">
+<h2>Каждый покупатель</h2>
+<details><summary>Таблица: 66 строк, по дате покупки</summary>
+<div class="tbl"><table style="min-width:900px">
+<thead><tr><th>ID</th><th>Дата</th><th>Источник</th><th>Тип пути</th><th>Итог</th><th class="r">Мин в приложении</th><th class="r">IQ</th><th class="r">Серт.</th><th class="r">Скачал</th><th class="r">Игра</th><th class="r">Дней</th><th>Отмена через</th></tr></thead>
+<tbody>
+<tr><td class='num'>9ae1b7c6</td><td class='num'>13.10</td><td>нет в воронке PostHog</td><td>Посмотрел результат и ушёл</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>0.9</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>dfa16f93</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Попробовал тренировку</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>10.6</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>97308fc6</td><td class='num'>14.10</td><td>Meta (4)</td><td>Попробовал тренировку</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>7.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>14 ч · вне приложения</td></tr>
+<tr><td class='num'>d51ff82b</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>0.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>65199cc3</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Посмотрел результат и ушёл</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>0.0</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>610bc97c</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>0.3</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>ef46d139</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>6.7</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>6 мин · вне приложения</td></tr>
+<tr><td class='num'>0d7fd82f</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>0.8</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>ccc4f9fc</td><td class='num'>14.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>4.1</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>cd2b45da</td><td class='num'>14.10</td><td>нет в воронке PostHog</td><td>Посмотрел результат и ушёл</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>1.2</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>9d4f5b47</td><td class='num'>15.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>5.6</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7fec128c</td><td class='num'>15.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>9.9</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>b99434ea</td><td class='num'>15.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>8.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>8cbe813e</td><td class='num'>15.10</td><td>нет в воронке PostHog</td><td>Возвращается</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>1.2</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>2</td><td>2 ч · в приложении</td></tr>
+<tr><td class='num'>e18b5552</td><td class='num'>15.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>c5f9cea1</td><td class='num'>16.10</td><td>нет в воронке PostHog</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.1</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>fc3f87ed</td><td class='num'>16.10</td><td>нет в воронке PostHog</td><td>Возвращается</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>95.0</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>5</td><td>—</td></tr>
+<tr><td class='num'>c6c16c97</td><td class='num'>16.10</td><td>Meta (4)</td><td>Посмотрел результат и ушёл</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>5.0</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>6 мин · в приложении</td></tr>
+<tr><td class='num'>c9380e20</td><td class='num'>17.10</td><td>Meta (22)</td><td>Возвращается</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>7.1</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>2</td><td>—</td></tr>
+<tr><td class='num'>5337aa4a</td><td class='num'>17.10</td><td>Meta (22)</td><td>Попробовал тренировку</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>4.5</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>0 мин · в приложении</td></tr>
+<tr><td class='num'>730eb599</td><td class='num'>17.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>3.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>6 мин · в приложении</td></tr>
+<tr><td class='num'>636d4a8a</td><td class='num'>17.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>3.4</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>8a7303bc</td><td class='num'>17.10</td><td>Meta (19)</td><td>Попробовал тренировку</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>1.7</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7edc90d0</td><td class='num'>17.10</td><td>Meta (22)</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.7</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>b6e94c06</td><td class='num'>17.10</td><td>Meta (22)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.1</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>2d7145de</td><td class='num'>18.10</td><td>Meta (22)</td><td>Посмотрел результат и ушёл</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>1.3</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>4f0ea17e</td><td class='num'>18.10</td><td>Meta (22)</td><td>Посмотрел результат и ушёл</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>9.6</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>12 мин · вне приложения</td></tr>
+<tr><td class='num'>ca43ebd1</td><td class='num'>18.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>0.4</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7b80f0b5</td><td class='num'>18.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.9</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>966b0336</td><td class='num'>18.10</td><td>Meta (22)</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>7.1</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7c0e2d14</td><td class='num'>18.10</td><td>Meta (19)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>5.1</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>a3e03ee9</td><td class='num'>18.10</td><td>Google</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>8.9</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>5c96ab0e</td><td class='num'>18.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.1</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>42bb6ea5</td><td class='num'>19.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>4.7</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7bbc1e70</td><td class='num'>19.10</td><td>Meta (19)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>21.3</td><td class='r'>—</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>4c5d5fff</td><td class='num'>19.10</td><td>Meta (22)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>123.6</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>6ea374d9</td><td class='num'>20.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>3.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>4e5b730e</td><td class='num'>20.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>3.8</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>9ddccd6f</td><td class='num'>21.10</td><td>Meta (19)</td><td>Посмотрел результат и ушёл</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>0.7</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>30 мин · в приложении</td></tr>
+<tr><td class='num'>16f01d59</td><td class='num'>21.10</td><td>Meta (19)</td><td>Сертификат — и всё</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>27.0</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>144 ч · вне приложения</td></tr>
+<tr><td class='num'>c3519783</td><td class='num'>21.10</td><td>Meta (19)</td><td>Возвращается</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>3.5</td><td class='r'>—</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>2</td><td>—</td></tr>
+<tr><td class='num'>4cccce41</td><td class='num'>21.10</td><td>Meta (19)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>12.6</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>86c63687</td><td class='num'>21.10</td><td>Meta (19)</td><td>Возвращается</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>12.3</td><td class='r'>—</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>2</td><td>6 мин · в приложении</td></tr>
+<tr><td class='num'>af912a96</td><td class='num'>21.10</td><td>Meta (19)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.8</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>72567c2d</td><td class='num'>21.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip warn'>не списалось</span></td><td class='r num'>0.6</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>4c63c58e</td><td class='num'>22.10</td><td>Meta (19)</td><td>Сертификат — и всё</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>0.2</td><td class='r'>—</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>65a689c1</td><td class='num'>22.10</td><td>Meta (22)</td><td>Посмотрел результат и ушёл</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>0.0</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>98ad3dcb</td><td class='num'>22.10</td><td>Meta (19)</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>20.3</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>234b56f4</td><td class='num'>22.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>0.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>7e75c517</td><td class='num'>22.10</td><td>Meta (19)</td><td>Посмотрел результат и ушёл</td><td><span class='chip ok'>продлил (оплатил)</span></td><td class='r num'>0.0</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>6356c958</td><td class='num'>23.10</td><td>Meta (19)</td><td>Посмотрел результат и ушёл</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>0.0</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>150 ч · вне приложения</td></tr>
+<tr><td class='num'>16c7540d</td><td class='num'>23.10</td><td>Meta (19)</td><td>Сертификат — и всё</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>0.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>155 ч · вне приложения</td></tr>
+<tr><td class='num'>11921c7b</td><td class='num'>27.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>2.8</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>033109c6</td><td class='num'>27.10</td><td>Google</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>0.5</td><td class='r'>—</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>059bdd89</td><td class='num'>28.10</td><td>нет в воронке PostHog</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.1</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>bd01ef81</td><td class='num'>28.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>6.3</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>9a2bfd0d</td><td class='num'>28.10</td><td>без метки</td><td>Попробовал тренировку</td><td><span class='chip crit'>отменил сам</span></td><td class='r num'>16.0</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>6 мин · в приложении</td></tr>
+<tr><td class='num'>2d6b37a0</td><td class='num'>28.10</td><td>Meta (4)</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>0.5</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>42defc56</td><td class='num'>28.10</td><td>Meta (22)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>4.7</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>aeff4fc5</td><td class='num'>28.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>5.8</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>2465219b</td><td class='num'>28.10</td><td>Meta (4)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>3.7</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>cafa42f5</td><td class='num'>28.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>0.2</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>c7092078</td><td class='num'>28.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.7</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>91156faa</td><td class='num'>28.10</td><td>Meta (22)</td><td>Сертификат — и всё</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.2</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>bffa1853</td><td class='num'>29.10</td><td>Meta (4)</td><td>Посмотрел результат и ушёл</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>1.2</td><td class='r'>137</td><td class='r'>—</td><td class='r'>—</td><td class='r'>—</td><td class='r num'>1</td><td>—</td></tr>
+<tr><td class='num'>54bef7ea</td><td class='num'>29.10</td><td>Meta (4)</td><td>Попробовал тренировку</td><td><span class='chip plain'>ещё в пробном</span></td><td class='r num'>21.5</td><td class='r'>137</td><td class='r'>✓</td><td class='r'>✓</td><td class='r'>✓</td><td class='r num'>1</td><td>—</td></tr>
+</tbody></table></div>
+<p class="small muted">Минуты — сумма промежутков между событиями приложения короче 30 минут, за пробный период до продления или окончания. IQ «—» — у события нет балла (6 человек).</p>
+</details>
+</section>
+
+<section id="features">
+<h2>Функции: чем пользуются и что с этим связано</h2>
+<p>«Пользовались» — сколько из 66 покупателей хоть раз сделали действие. «2+ дня» — делали это в двух и более днях. «Время» — медиана всего времени в приложении у тех, кто пользовался функцией. «Отменили сами» — среди пользовавшихся против остальных; в среднем по всем — 13 из 66 (20%). Это связь, а не причина.</p>
+<div class="tbl"><table>
+<thead><tr><th>Функция</th><th class="r">Пользовались</th><th class="r">2+ дня</th><th class="r">Время</th><th class="r">Отменили сами</th><th>Вывод</th></tr></thead>
+<tbody>
+<tr><td><b>Экран IQ-результата</b><span class="sub"><code>iq_result_shown</code></span></td><td class="r num">66<span class="sub">100%</span></td><td class="r num">2</td><td class="r num">3,1 мин</td><td class="r num">13 из 66<span class="sub">20%</span></td><td><span class="chip crit">Переделать</span><span class="sub">Балл 137 у всех 60 с записанным баллом. Обещание «узнай свой IQ» не выполнено, результат не личный.</span></td></tr>
+<tr><td><b>Сертификат</b><span class="sub"><code>certificate_click / name_submitted / downloaded / shared</code></span></td><td class="r num">40<span class="sub">61%</span></td><td class="r num">2</td><td class="r num">3,5 мин</td><td class="r num">6 из 40<span class="sub">15% (без — 7 из 26, 27%)</span></td><td><span class="chip ok">Оставить, усилить</span><span class="sub">Самое популярное действие. Скачали 26 (отменили 3, 12%), поделились 8 (отменили 0). Но после сертификата человек ничего больше не делает.</span></td></tr>
+<tr><td><b>Игры</b><span class="sub"><code>game_started</code>, 9 игр, чаще fox-memory</span></td><td class="r num">11<span class="sub">17%</span></td><td class="r num">0</td><td class="r num">10,6 мин</td><td class="r num">2 из 11<span class="sub">18%</span></td><td><span class="chip warn">Переделать вход</span><span class="sub">Кто начал — проводит в 3 раза больше времени, но не возвращается. Из 3 игроков с итогом не продлил никто.</span></td></tr>
+<tr><td><b>Серия дней</b><span class="sub"><code>streak_day</code></span></td><td class="r num">10<span class="sub">15%</span></td><td class="r num">0</td><td class="r num">11,6 мин</td><td class="r num">2 из 10</td><td><span class="chip warn">Не работает</span><span class="sub">Все 10 — только «день 1». Серия не продолжается ни у кого.</span></td></tr>
+<tr><td><b>Уроки</b><span class="sub"><code>lesson_completed</code></span></td><td class="r num">4<span class="sub">6%</span></td><td class="r num">0</td><td class="r num">13,3 мин</td><td class="r num">1 из 4</td><td><span class="chip plain">Мало данных</span></td></tr>
+<tr><td><b>Тесты личности</b><span class="sub"><code>test_started</code></span></td><td class="r num">3<span class="sub">5%</span></td><td class="r num">0</td><td class="r num">4,5 мин</td><td class="r num">1 из 3</td><td><span class="chip plain">Мало данных</span></td></tr>
+<tr><td><b>Настройки</b><span class="sub"><code>settings_open</code></span></td><td class="r num">6<span class="sub">9%</span></td><td class="r num">0</td><td class="r num">11,5 мин</td><td class="r num">3 из 6</td><td><span class="chip plain">Путь к отмене</span><span class="sub">Половина открывших настройки отменили: отсюда идут в «управление подпиской».</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="why">
+<h2>Почему и когда отменяют</h2>
+<div class="facts">
+<div class="fact"><div class="v num">13 из 66</div><div class="l">отменили сами в пробном периоде (20%)</div></div>
+<div class="fact"><div class="v num">10 мин</div><div class="l">медиана от оплаты до отмены; 8 из 13 — в первый час</div></div>
+<div class="fact"><div class="v num">7 из 7</div><div class="l">нажавших «Отменить» в приложении подтвердили отмену</div></div>
+<div class="fact"><div class="v num">0 из 13</div><div class="l">начали тренировку до отмены</div></div>
+</div>
+<div class="card">
+<h3>Когда</h3>
+<ul class="list">
+<li><span class="lbl v">Видно</span>Первый час — 8 человек (0–30 минут после оплаты). Потом через 2 часа — 1, через 14 часов — 1, на 6-й день, за сутки до списания, — 3 (144–155 часов).</li>
+<li><span class="lbl v">Видно</span>Через приложение (<code>subscription_manage_open → subscription_cancel_click → subscription_cancel_confirm</code>) — 7, все в первые 2 часа. Остальные 6 — вне приложения: событие отмены пришло с сервера без кнопки в приложении. <span class="lbl n">Не знаем</span> Откуда именно (письмо, поддержка, страница FunnelFox) — в PostHog не видно.</li>
+<li><span class="lbl v">Видно</span>Между «Отменить» и «Подтвердить» проходят секунды: экрана с предложением или вопросом о причине нет.</li>
+</ul>
+<h3>Что успели сделать до отмены</h3>
+<ul class="list">
+<li><span class="lbl v">Видно</span>Все 13 видели результат 137. С сертификатом что-то делали 6, скачали 3. Игру, урок или тест не начинал никто.</li>
+<li><span class="lbl p">Предположение</span>Ранние отмены — люди, которые пришли за одним результатом теста и не хотят подписку. Результат получен, дальше платить не за что. Второй вариант: результат 137 выглядит неправдоподобно, и человек перестаёт доверять продукту. Проверить можно опросом в пути отмены и записями сессий.</li>
+<li><span class="lbl n">Не знаем</span>Причины словами. Опроса в пути отмены нет; ответы воронки отмены FunnelFox, если она есть, в PostHog не приходят.</li>
+</ul>
+<h3>Не списалось</h3>
+<ul class="list">
+<li><span class="lbl v">Видно</span>7 человек не отменяли, но списание не прошло (<code>reason = payment_failed</code>). 6 из них — покупатели 13–15.10 с 14-дневным пробным периодом. <span class="lbl n">Не знаем</span> Отказ банка это или нехватка денег — смотреть в Primer.</li>
+</ul>
+</div>
+</section>
+
+<section id="seg">
+<h2>Срезы: источник, гео, воронка</h2>
+<div class="tbl"><table>
+<thead><tr><th>Источник (<code>utm_source</code>)</th><th class="r">Заходы в воронку</th><th class="r">Оплатили в воронке</th><th class="r">Конверсия</th><th class="r">Покупатели в приложении</th><th>Итог у покупателей</th></tr></thead>
+<tbody>
+<tr><td>Meta, метка 22</td><td class="r num">812</td><td class="r num">20</td><td class="r num">2,5%</td><td class="r num">20</td><td>продлили 4 · отменили 3 · в пробном 13</td></tr>
+<tr><td>Meta, метка 19</td><td class="r num">321</td><td class="r num">14</td><td class="r num">4,4%</td><td class="r num">14</td><td>продлили 3 · отменили 5 · в пробном 6</td></tr>
+<tr><td>Meta, метка 4</td><td class="r num">565</td><td class="r num">10</td><td class="r num">1,8%</td><td class="r num">13</td><td>продлил 1 · отменили 2 · не списалось 1 · в пробном 9</td></tr>
+<tr><td>Google (cpc)</td><td class="r num">5 522</td><td class="r num">2</td><td class="r num"><span class="chip crit">0,04%</span></td><td class="r num">2</td><td>в пробном 2</td></tr>
+<tr><td>Без метки</td><td class="r num">385</td><td class="r num">3</td><td class="r num">0,8%</td><td class="r num">1</td><td>отменил 1</td></tr>
+<tr><td>Нет в воронке PostHog</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r num">16</td><td>продлили 4 · отменили 2 · не списалось 6 · в пробном 4</td></tr>
+</tbody></table></div>
+<ul class="list">
+<li><span class="lbl v">Видно</span>Воронка 16–28.10 МСК. Метки 4, 19, 22 — реклама Meta: в ссылках есть <code>fbclid</code> и ID кампаний Meta. <span class="lbl n">Не знаем</span> Что значат номера (кабинет, байер) — спросить Диму.</li>
+<li><span class="lbl v">Видно</span>Google: 5 522 захода, до первого вопроса дошли 1 489 (27%), оплатили 2. В ссылках площадки вроде <code>hub.gadget2reviews.com</code>, то есть показы в контекстно-медийной сети. <span class="lbl p">Предположение</span> Это нецелевой трафик, его стоит пересмотреть вместе с Димой.</li>
+<li><span class="lbl v">Видно</span><b>С воронки или мимо воронки.</b> 50 из 66 покупателей найдены в воронке по почте. 15 из 16 ненайденных купили 13–16.10, когда события воронки в PostHog ещё не приходили, один купил 28.10. Покупок мимо воронки в данных не видно. Сравнить «с воронки / мимо» нельзя: мимо воронки покупателей нет.</li>
+<li><span class="lbl v">Видно</span><b>Гео.</b> 65 из 66 покупателей — США, 1 — Армения. В воронке 95% заходов из США (7 226 из 7 605), из других стран оплат не было. Сравнивать страны не на чем.</li>
+<li><span class="lbl v">Видно</span><b>Устройство.</b> В воронке 45 из 49 оплат — с телефона. В <code>subscription_started</code> у 62 из 66 <code>platform = ios</code>, но все 66 пользуются веб-приложением (<code>$lib = web</code>). <span class="lbl p">Предположение</span> Здесь <code>platform</code> — устройство при покупке, а не iOS-приложение. Веб и iOS в отчёте не смешаны.</li>
+</ul>
+</section>
+
+<section id="tests">
+<h2>Тесты</h2>
+<p>Объём посчитан для двух вариантов (A/B 50/50) с вероятностью ошибки 5% и мощностью 80%. Поток — около 4 покупателей в день: 66 за 12–29.10, с паузой 24–26.10. При таком потоке любой тест на 100+ человек в группе идёт около двух месяцев. Сроки ниже даны для 4 покупателей в день; при 10 в день они сокращаются в 2,5 раза.</p>
+<div class="tbl"><table style="min-width:900px">
+<thead><tr><th></th><th>Тест и гипотеза</th><th>Варианты</th><th>Где</th><th>Главная метрика</th><th>Объём и срок</th></tr></thead>
+<tbody>
+<tr><td class="num"><b>T1</b></td><td><b>Личный IQ-результат и план тренировок на экране результата</b><span class="sub">Проблема: у всех 137, после результата и сертификата нечего делать, 0 из 13 отменивших не начинали тренировку. Объединяет гипотезы 1 и 2 из foxiq/hypotheses.md, чтобы не тратить на них по два месяца отдельно.</span></td><td>A: как сейчас. B: балл по ответам квиза, разбор сильных и слабых сторон и кнопка «Начать тренировку» с прогнозом роста.</td><td>Приложение, флаг <code>iq_result_variant</code> по человеку при первом входе</td><td>Начали игру в день покупки: 17% → 32%<span class="sub">Защитная: отмена в первые 24 часа (сейчас 10 из 66, 15%); скачивание сертификата (39%)</span></td><td>128 на группу, 256 покупателей — около 64 дней</td></tr>
+<tr><td class="num"><b>T2</b></td><td><b>Напоминания в дни 2–6</b><span class="sub">Проблема: 92% заходят один день, а продлевают не пользующиеся продуктом.</span></td><td>A: как сейчас. B: письмо каждый день пробного периода с заданием и текущей серией дней.</td><td>Почта и приложение</td><td>Заходили в 2+ дня в пробном: 8% → 20%<span class="sub">Защитная: отмена в пробном; отписки от писем</span></td><td>121 на группу — около 61 дня. Запускать после T1 или параллельно, распределив людей независимо</td></tr>
+<tr><td class="num"><b>T3</b></td><td><b>Еженедельный замер IQ</b><span class="sub">Гипотеза 3 из foxiq/hypotheses.md. Пока рано: до 2-й недели доходят единицы, базу посчитать не на чем.</span></td><td>—</td><td>Приложение</td><td>Активность в дни 8–14</td><td>Отложить до роста трафика и результатов T1–T2</td></tr>
+</tbody></table></div>
+<div class="card">
+<h3>Исправить сразу, без теста</h3>
+<ul class="list">
+<li><b>Путь отмены.</b> Между «Отменить» и «Подтвердить» показывать вопрос о причине и предложение под неё (пауза, скидка, план тренировок). 7 из 7 подтверждают отмену; потока, около 3–4 нажатий в неделю, для A/B не хватит. Сравнивать «до и после», с этой оговоркой.</li>
+<li><b>Ошибки оплаты в воронке.</b> 63 человека с <code>funnel_purchase_fail</code> против 49 оплат, Apple Pay закрыли 25 из 47. Разобрать причины отказов в Primer и FunnelFox.</li>
+<li><b>Google-трафик.</b> 0,04% конверсии: передать Диме.</li>
+<li><b>Трекинг.</b> Добавить в <code>subscription_started</code> длину пробного периода, а в событие отмены — канал отмены (приложение, письмо, поддержка). Без этого вывод о каналах неполный.</li>
+</ul>
+<h3>Порядок</h3>
+<p>1) Исправления выше — сейчас. 2) T1 — как только готова разработка. 3) T2 — после T1 или параллельно, если поток вырастет. 4) T3 — после T1 и T2.</p>
+</div>
+</section>
+
+<section id="limits">
+<h2>Ограничения данных</h2>
+<ul class="list">
+<li><b>Только PostHog.</b> Нет Primer, поэтому не видно реальных списаний, сумм, возвратов, споров по платежам и причин отказов банка. Нет данных подписок FunnelFox, поэтому не видно длины пробного периода по человеку, цен после него и ответов в воронке отмены. Нет записей сессий: не видно, на чём застревают, «злых тапов» и ошибок интерфейса. Нужен доступ к этим источникам, данные здесь не придуманы.</li>
+<li><b>Деньги в отчёте не считались</b> — по правилам их не считают по PostHog.</li>
+<li><b>Молодые данные.</b> У 34 из 66 пробный период не закончился. Итог «продлил / отменил» есть только у 32 человек.</li>
+<li><b>Воронка в PostHog — только с 16.10.</b> Источник покупателей 13–16.10 неизвестен (16 человек).</li>
+<li><b>Длина пробного периода разная</b> (7 или 14 дней). Видно только по времени продления; почему разная — не знаем.</li>
+<li><b>Маленькая выборка.</b> Различия в 1–3 человека могут быть случайными. Все связи — не причины.</li>
+<li><b>Время в приложении</b> оценено по промежуткам между событиями: после последнего события в сессии время не учитывается, поэтому оценка занижена.</li>
+</ul>
+</section>
+
+<section id="gloss">
+<h2>Словарь и источники</h2>
+<dl class="gloss">
+<dt>Покупатель</dt><dd>Человек с событием <code>subscription_started</code> в <code>project = foxiq</code> с 12.10 00:00 МСК (пробная подписка, $1, план monthly).</dd>
+<dt>Продлил</dt><dd>Есть <code>subscription_renewed</code>: прошло первое списание после пробного периода.</dd>
+<dt>Отменил сам</dt><dd><code>subscription_cancelled</code> с <code>reason = user_initiated</code> до продления или окончания пробного периода.</dd>
+<dt>Не списалось</dt><dd><code>subscription_expired</code> с <code>reason = payment_failed</code> без отмены перед этим.</dd>
+<dt>Тип пути</dt><dd>Сегмент по поведению за пробный период: 2+ дня → тренировка → сертификат → остальные.</dd>
+<dt>Источники</dt><dd>PostHog (ph.app-inkfolio-reader.pro, проект Azora): события <code>foxiq</code> — с 12.10, <code>foxiq_ff</code> — с 16.10. Выгрузка 29.10.2026, 13:55 МСК. Связка воронки и приложения — по <code>person.properties.email</code>. Тестовые исключены по списку FoxIQ из playbook/posthog.md, <code>is_test</code>, <code>environment = dev</code> и меткам <code>utm_campaign = 88888888 / {campaignid}</code>.</dd>
+</dl>
+</section>
+</div>
+</body>
+</html>

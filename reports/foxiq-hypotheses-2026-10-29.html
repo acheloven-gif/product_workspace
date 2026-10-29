@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxIQ: гипотезы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~960px), same visual system as the Japan payments report. Summary, product map, archetypes, every user, features, what recordings show, why people cancel, ideal paths with LTV calculator, tests, limits, glossary. */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15202a; --muted:#56636f; --line:#dbe2e7; --soft:#eef3f5;
+  --accent:#0d5f6f; --accent-soft:#e3f1f3;
+  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf2e1; --ok:#0b7a4b; --ok-soft:#e5f5ec; --info:#3a4fb8; --info-soft:#eaedfb;
+  --bar:#2a78d6; --bar2:#c8d6dc;
+  --s-good:#0ca30c; --s-warn:#fab219; --s-crit:#d03b3b; --s-neutral:#b9c6cd;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100;
+  --f-body:"Golos Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:46px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.12rem;font-weight:650}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:flex;flex-direction:column;gap:12px}
+header .meta{color:var(--muted);font-size:.95rem;max-width:72ch}
+section{display:flex;flex-direction:column;gap:16px}
+section > p, .card > p{max-width:72ch}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:2px 9px;border-radius:999px;white-space:nowrap;vertical-align:2px}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.info{background:var(--info-soft);color:var(--info)}
+.chip.plain{background:var(--soft);color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:none}
+tr.tot td{background:var(--soft);font-weight:600}
+td.r,th.r{text-align:right}
+td .sub{display:block;color:var(--muted);font-size:.8rem}
+td.bar{width:32%}
+.barline{display:flex;align-items:center;gap:8px}
+.barline .b{height:10px;border-radius:0 4px 4px 0;background:var(--bar);display:inline-block;flex:none}
+.barline .b.lo{background:var(--s-crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h4{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+ul.list,ol.list{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact .l{font-size:.84rem;color:var(--muted);line-height:1.35}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0;max-width:74ch}
+.steps{counter-reset:st;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps > li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:flex;flex-direction:column;gap:6px}
+.steps > li::before{content:counter(st);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps .meta2{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--muted)}
+.steps .meta2 b{color:var(--ink);font-weight:600}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:8px 16px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,[data-tip]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.92rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details > summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--muted)}
+details[open] > summary::before{content:"▾"}
+details .tbl{border:none;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+/* stacked 100% bar */
+.stack{display:flex;gap:2px;height:24px;background:var(--surface)}
+.stack .seg{height:100%;min-width:3px}
+.stack .seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem}
+.legend .k{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.g-good{background:var(--s-good)} .g-warn{background:var(--s-warn)} .g-crit{background:var(--s-crit)} .g-neutral{background:var(--s-neutral)}
+.g-c1{background:var(--c1)} .g-c2{background:var(--c2)} .g-c3{background:var(--c3)} .g-c4{background:var(--c4)}
+/* column chart */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;height:190px;border-bottom:1px solid var(--line);padding-top:8px}
+.cols .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.cols .c .val{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+.cols .c .col{width:24px;max-width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.cols-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.25}
+/* calculator */
+.calc table{min-width:640px}
+.calc td input{width:100%;max-width:120px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc td.inp{width:150px}
+.calc tr.out td{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc tr.out td:first-child{font-family:var(--f-body)}
+.calc tr.head td{background:var(--soft);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:.88rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+.delta-up{color:var(--ok)} .delta-down{color:var(--crit)}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+.wrap{max-width:960px}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.arch .card{gap:9px}
+.arch .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arch .share{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.mini{display:flex;height:10px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.mini span{height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.flow .st b{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.flow .st.hot{border-color:var(--crit);background:var(--crit-soft)}
+.flow .arrow{align-self:center;color:var(--muted);font-family:var(--f-mono)}
+.ja{font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",var(--f-body)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.filters label{font-size:.84rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.filters select,.filters input{font:inherit;font-size:.9rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:150px}
+#ppl td .story{display:block;font-size:.8rem;color:var(--muted);line-height:1.45;margin-top:3px}
+#ppl table{min-width:760px}
+.hyp{display:flex;flex-direction:column;gap:12px}
+.hyp .card h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cols2 > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.days{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.days li{display:grid;grid-template-columns:62px 1fr;gap:8px}
+.days li b{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+.calc2 .inputs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.9rem}
+.calc2 .inputs input{width:110px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc2 .out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{font-family:var(--f-mono);font-size:1.6rem;font-weight:600}
+button.b.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+@media (max-width:720px){.cols2,.calc2{grid-template-columns:1fr}}
+
+@media (max-width:560px){h1{font-size:1.65rem} .card{padding:16px} dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} .cols .c .col{width:18px} .cols-x{font-size:.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+tr.st td{border-top:none;padding-top:0}
+#ppl tbody tr:not(.st) td{border-bottom:none}
+
+.lbl{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.lbl.v{background:var(--ok-soft);color:var(--ok)} .lbl.p{background:var(--warn-soft);color:var(--warn)} .lbl.n{background:var(--info-soft);color:var(--info)}
+</style></head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">FoxIQ · веб · гипотезы и тесты</span>
+  <h1>FoxIQ: гипотезы и как их проверяем</h1>
+  <p class="meta">Гипотезы построены от проблем из разбора пути покупателей (<a href="foxiq-product-journeys-2026-10-29.html">FoxIQ: путь покупателей</a>). Метод — «до и после», без A/B: при текущем потоке A/B занимает около двух месяцев на тест. Данные «до» — PostHog, 66 покупателей с 12.10 по 29.10.2026, время МСК, тестовые аккаунты исключены.</p>
+  <nav class="toc small"><a href="#short">Коротко</a><a href="#base">Исходные цифры</a><a href="#hyp">Гипотезы</a><a href="#fair">Честное сравнение</a><a href="#order">Порядок</a><a href="#limits">Ограничения</a><a href="#src">Как считали</a></nav>
+</header>
+
+<section id="short">
+  <h2>Коротко</h2>
+  <div class="summary">
+    <ol>
+      <li><b>Главная проблема — после покупки нечего делать.</b> У всех IQ 137, 92% заходят один день, в день покупки начали игру 17%. Ни один из 13 отменивших не начинал тренировку.</li>
+      <li><b>Гипотеза 1 — личный IQ-результат и план тренировок.</b> Ожидаем, что доля начавших игру в день покупки вырастет с 17% до 30%+.</li>
+      <li><b>Гипотеза 2 — напоминания в дни 2–6.</b> Ожидаем, что доля заходивших в 2+ дня за пробный период вырастет с 8% до 20%.</li>
+      <li><b>Гипотеза 3 — удержание в пути отмены.</b> Ожидаем, что после нажатия «Отменить» останутся 15–25% (сейчас 0 из 7).</li>
+      <li><b>Еженедельный замер IQ откладываем:</b> до второй недели доходят единицы, базу не посчитать.</li>
+      <li><b>Почему «до и после»:</b> поток около 4 покупателей в день. A/B для гипотезы 1 — 128 на группу, около 64 дней; для гипотезы 2 — 121 на группу, около 61 дня. «До и после» даёт ориентир за 2,5–4 недели.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="base">
+  <h2>Исходные цифры («до»)</h2>
+  <p class="muted small">PostHog, project = foxiq, 12–29.10.2026, МСК, люди (person_id), 66 покупателей, тестовые исключены.</p>
+  <div class="facts">
+    <div class="fact"><span class="v">66</span><span class="l">покупателей за 12–29.10, около 4 в день</span></div>
+    <div class="fact"><span class="v">17%</span><span class="l">начали игру в день покупки</span></div>
+    <div class="fact"><span class="v">8%</span><span class="l">заходили в 2+ дня за пробный период</span></div>
+    <div class="fact"><span class="v">15%</span><span class="l">отменили в первые 24 часа (10 из 66)</span></div>
+    <div class="fact"><span class="v">39%</span><span class="l">скачали сертификат</span></div>
+    <div class="fact"><span class="v">0 из 7</span><span class="l">передумали в пути отмены</span></div>
+  </div>
+</section>
+
+<section id="hyp" class="hyp">
+  <h2>Гипотезы</h2>
+
+  <div class="card">
+    <h3>1. Личный IQ-результат и план тренировок <span class="chip warn">первой</span></h3>
+    <div class="cols2">
+      <div><span class="h4">Проблема</span><p>У всех IQ 137, после результата и сертификата делать нечего. 0 из 13 отменивших не начинали тренировку.</p></div>
+      <div><span class="h4">Что меняем</span><p>Балл считаем по ответам квиза (одинаково для пришедших с воронки и из онбординга), показываем разбор сильных и слабых сторон, прогноз роста и кнопку «Начать тренировку».</p></div>
+      <div><span class="h4">Метод</span><p>Выкатываем всем. «До» — 12–29.10, 66 покупателей. «После» — первые 66 покупателей после релиза, около 2,5 недели.</p></div>
+      <div><span class="h4">Метрики</span><p><b>Главная:</b> начали игру в день покупки.<br><b>Защитные:</b> отмена в первые 24 часа, скачивание сертификата.</p></div>
+    </div>
+    <div class="note"><b>Ожидаем:</b> доля начавших игру в день покупки вырастет с 17% до 30%+; отмена в первые 24 часа не выше 15%. <span class="lbl p">Предположение</span> Рост на 1–3 п.п. считаем отсутствием эффекта.</div>
+  </div>
+
+  <div class="card">
+    <h3>2. Напоминания в дни 2–6 <span class="chip plain">после первой</span></h3>
+    <div class="cols2">
+      <div><span class="h4">Проблема</span><p>92% заходят только в один день. Продлевают и те, кто продуктом не пользуется (12 продливших не играли), поэтому они рискуют отменить позже или вернуть деньги.</p></div>
+      <div><span class="h4">Что меняем</span><p>Письмо в каждый день пробного периода (дни 2–6) с заданием на сегодня и текущей серией дней.</p></div>
+      <div><span class="h4">Метод</span><p>Запускаем после окончания теста 1. «До» — 2,5 недели после релиза гипотезы 1, «после» — 2,5 недели. Плюс неделя, чтобы закончились пробные периоды. Итого около 3,5 недели.</p></div>
+      <div><span class="h4">Метрики</span><p><b>Главная:</b> заходили в 2+ дня за пробный период.<br><b>Защитные:</b> отмены в пробном, отписки от писем.</p></div>
+    </div>
+    <div class="note"><b>Ожидаем:</b> доля заходивших в 2+ дня за пробный период вырастет с 8% до 20%; доля отмен в пробном и отписок не растёт. <span class="lbl p">Предположение</span></div>
+  </div>
+
+  <div class="card">
+    <h3>3. Удержание в пути отмены <span class="chip plain">можно параллельно</span></h3>
+    <div class="cols2">
+      <div><span class="h4">Проблема</span><p>Между «Отменить» и «Подтвердить» ничего нет, и все 7 из 7 подтверждают отмену. 8 из 13 отмен — в первый час, медиана 10 минут.</p></div>
+      <div><span class="h4">Что меняем</span><p>Вопрос о причине отмены и предложение под неё: пауза, скидка или план тренировок.</p></div>
+      <div><span class="h4">Метод</span><p>4 недели до и 4 недели после. Нажатий «Отменить» около 3–4 в неделю. Можно запускать параллельно с гипотезами 1–2: этот экран видят уже после их метрик.</p></div>
+      <div><span class="h4">Метрики</span><p><b>Главная:</b> доля оставшихся после нажатия «Отменить».<br><b>Защитная:</b> возвраты денег и жалобы.</p></div>
+    </div>
+    <div class="note"><b>Ожидаем:</b> доля оставшихся после нажатия «Отменить» вырастет с 0 из 7 до 15–25%. <span class="lbl p">Предположение</span> Выборка — десятки человек, вывод — ориентир.</div>
+  </div>
+
+  <div class="card">
+    <h3>4. Еженедельный замер IQ <span class="chip plain">отложить</span></h3>
+    <p>Повторный тест из 7 новых вопросов раз в неделю с итогом «IQ +N». Тот же замер даёт повод для письма «результат за неделю». Пока рано: до второй недели доходят единицы, базы нет. Вернёмся после гипотез 1–2 или когда вырастет трафик.</p>
+    <p class="small muted">Метрика, когда начнём: активность в дни 8–14 среди сделавших хотя бы одну тренировку.</p>
+  </div>
+</section>
+
+<section id="fair">
+  <h2>Как сделать сравнение честным</h2>
+  <ul class="list">
+    <li>Сравнивать по сегментам: источник трафика (<code>utm_source</code>), с воронки или мимо неё, гео, поведение.</li>
+    <li>Записывать всё, что ещё менялось в периоде: креативы, цены, воронку, бюджет.</li>
+    <li>Не запускать две гипотезы на одну метрику одновременно. Гипотеза 3 меряет другое, её можно параллельно.</li>
+    <li>Считать людей, а не события. Тестовые аккаунты исключать.</li>
+  </ul>
+</section>
+
+<section id="order">
+  <h2>Порядок</h2>
+  <ol class="steps">
+    <li><b>Исправить сразу, без теста:</b> ошибки оплаты (63 неудачные попытки против 49 оплат), Google-трафик (0,04% конверсии, передать Диме), трекинг (длина пробного периода в <code>subscription_started</code>, канал отмены).</li>
+    <li><b>Гипотеза 1</b> — как только готова разработка, около 2,5 недели.</li>
+    <li><b>Гипотеза 3</b> — параллельно, 4 + 4 недели.</li>
+    <li><b>Гипотеза 2</b> — после гипотезы 1, около 3,5 недели.</li>
+    <li><b>Гипотеза 4</b> — после гипотез 1 и 2.</li>
+  </ol>
+</section>
+
+<section id="limits">
+  <h2>Ограничения</h2>
+  <ul class="list">
+    <li>«До и после» менее надёжно, чем A/B. Разница может быть из-за трафика или сезона, а не из-за изменения. Это ориентир, а не доказательство.</li>
+    <li>Выборки маленькие (66 человек), поэтому различие в 1–3 человека может быть случайным.</li>
+    <li>Деньги, продления и возвраты по PostHog не считаем. Доля продлений после первого месяца — из биллинга (Primer, FunnelFox), доступа пока нет.</li>
+    <li>У 34 из 66 пробный период ещё не закончился.</li>
+  </ul>
+</section>
+
+<section id="src">
+  <h2>Как считали</h2>
+  <dl class="gloss">
+    <dt>Источник</dt><dd>PostHog (ph.app-inkfolio-reader.pro, проект Azora), <code>project = foxiq</code> с 12.10, <code>foxiq_ff</code> с 16.10. Выгрузка 29.10.2026.</dd>
+    <dt>Покупатель</dt><dd>Человек с событием <code>subscription_started</code> с 12.10 00:00 МСК.</dd>
+    <dt>Начал игру</dt><dd>Первый запуск игры, который сделал сам человек, в день покупки. Автоматическое <code>first_run_started</code> не учитываем.</dd>
+    <dt>2+ дня</dt><dd>События приложения в двух и более разных днях (МСК) за пробный период.</dd>
+    <dt>Отмена</dt><dd><code>subscription_cancelled</code> с <code>reason = user_initiated</code>.</dd>
+    <dt>Тестовые</dt><dd>Исключены по списку FoxIQ из <code>playbook/posthog.md</code>, <code>is_test</code>, <code>environment = dev</code>, <code>utm_campaign = 88888888 / {campaignid}</code>.</dd>
+    <dt>Единица</dt><dd>Люди (<code>person_id</code>). Воронку и приложение связали по <code>person.properties.email</code>.</dd>
+  </dl>
+</section>
+
+</div>
+</body>
+</html>

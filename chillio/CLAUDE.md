@@ -8,7 +8,8 @@
 - Приложение: только iOS — [Chillio: Life Planner](https://apps.apple.com/us/app/chillio-life-planner/id6748603301) (Coremove Limited); в Google Play нет. Есть веб-версия (PWA) на my-chillio.com — вход после оплаты. Юрлицо веб-воронки — Digitaloom Inc.
 - Данные FB (срез 10.10): спенд 28д ≈ $2.0M, растёт; tier-1 100%; CPA в выгрузке аномальный — не сравнивать. Источник: reports/fb-shortlist.html.
 - Идея: связать с блокером экранного времени («вместо скролла — сделай дело по дому») — проект Лоренца, см. screen-time/CLAUDE.md.
-- Материалы разбора — references/chillio/, выводы — chillio/analysis.md.
+- Материалы разбора — references/chillio/ (воронки, app, appstore, ads), выводы — chillio/analysis.md.
+- Продуктовая и маркетинговая аналитика (HTML со скринами, 29.10) — chillio/chillio-analytics-2026-10-29.html, задача [Chillio: продуктовая и маркетинговая аналитика конкурента](https://app.clickup.com/t/1249d35ktdg).
 - Черновик ТЗ: задача [Chillio-клон: черновик ТЗ](https://app.clickup.com/t/1249d35jej8) (скринкаст приложен) и файл chillio/tz-draft.md (24.10); структура как у Charisly и memoryOS, блокировка времени в выбранных приложениях — раздел Блока 1.
   Решение Наташи (26.10): делаем нативное iOS-приложение сразу с блокировщиком выбранных приложений (Screen Time API, entitlement Family Controls), веб-версию приложения не делаем.
 - В ClickUp без согласия Наташи ничего не менять.

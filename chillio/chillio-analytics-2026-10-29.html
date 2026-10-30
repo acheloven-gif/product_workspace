@@ -180,7 +180,7 @@ ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
   <div class="eyebrow">Конкурент · продуктовая и маркетинговая аналитика</div>
   <h1>Chillio: продукт, монетизация, отзывы, маркетинг</h1>
   <p class="meta">Chillio — ИИ-планировщик домашних дел с котом-маскотом Chi. Продаётся через веб-воронку (Meta → квиз → оплата на сайте), продукт — веб-приложение и iOS-приложение «Chillio: Life Planner». Данные собраны 22.10–30.10.2026: прохождение воронок, скринкаст приложения после оплаты (24.10), App Store (рейтинг и 288 отзывов), FB-выгрузки web2web (18.05–10.10), Meta Ad Library. Внутренней аналитики конкурента у нас нет — все цифры внешние, у каждой указан источник.</p>
-  <nav class="toc small"><a href="#short">Коротко</a><a href="#product">Продукт</a><a href="#money">Монетизация</a><a href="#reviews">Отзывы</a><a href="#marketing">Маркетинг</a><a href="#chain">Связка</a><a href="#take">Что берём себе</a><a href="#limits">Ограничения и источники</a></nav>
+  <nav class="toc small"><a href="#short">Коротко</a><a href="#product">Продукт</a><a href="#money">Монетизация</a><a href="#reviews">Отзывы</a><a href="#marketing">Маркетинг</a><a href="#chain">Связка</a><a href="#take">Что берём себе</a><a href="#genesis">Genesis?</a><a href="#limits">Ограничения и источники</a></nav>
 </header>
 
 <section id="short">
@@ -411,6 +411,32 @@ ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
 <p class="small">Всё перечисленное уже учтено в ТЗ «Chillio-клон: черновик ТЗ» (iOS-приложение с блокировкой выбранных приложений).</p>
 </section>
 
+<section id="genesis">
+<h2>Кто стоит за Chillio: Genesis или нет (проверка 30.10)</h2>
+<div class="note"><b>Вывод: не знаем; прямой связи с Genesis не нашли.</b> Ни одно юрлицо, бренд или домен Chillio не входит в иск FTC против Genesis Tech, платёжка воронки — не Solid Gate. При этом «серые» практики (отмена только через почту поддержки, списания после отмены, обещания рекламы, которых нет в продукте) видны и без Genesis. <span class="chip plain">Не знаем</span></div>
+<div class="tbl"><table>
+<thead><tr><th>Что проверили</th><th>Что нашли</th><th>Метка</th></tr></thead>
+<tbody>
+<tr><td>Юрлица</td><td>Условия веб-воронки — Digitaloom Inc (Делавэр); iOS-приложение — COREMOVE LIMITED, у разработчика одно приложение (Chillio, релиз 01.08.2025, bundle com.get-chi), сайта разработчика в сторе нет. В открытых реестрах (Кипр, Гонконг, UK) и поиске ни Coremove, ни Digitaloom не нашлись. «Botan App Limited» из нашей задачи — разработчик приложения про растения, связи с Chillio не видно.</td><td><span class="chip info">Видно в данных</span></td></tr>
+<tr><td>Иск FTC против Genesis Tech</td><td>Дело 4:26-cv-05232-HSG, Северный округ Калифорнии, подано 02.06.2026, пресс-релиз 17.06.2026. 15 компаний (кипрские Ltd + делавэрские Inc: Universe Group, Koflimin, Growthmind Labs, Lopofist, Gurudocs, Bramol, VPN MobApps, Evertech, Obrio, GM Unicorn, Spiritual Nebula, Yolo Brothers, AmoMedia, Amoapps, AmoApp) и 8 человек. Продукты: MadMuscles, Harna, Unimeal, Wisey, PDF Guru, PDF Master, Lumi, Nebula. Chillio, Cutio, Coremove, Digitaloom, домены get-chillio / my-chillio в тексте иска (63 стр.) не встречаются.</td><td><span class="chip info">Видно в данных</span></td></tr>
+<tr><td>Схема «Кипр/офшор + Делавэр»</td><td>У Genesis — кипрская компания + делавэрский двойник для американских платежей. У Chillio похоже: делавэрский Inc для веба и отдельный Limited для стора. Но это обычная схема для web2app-студий, сама по себе связи не доказывает.</td><td><span class="chip warn">Предположение</span></td></tr>
+<tr><td>Платёжка воронки</td><td>В коде чекаута (my-chillio.com / get-chillio.app) — IXOPAY (gateway.ixopay.com) и тестовая воронка на Payrails; на экране оплаты — Apple Pay и карта. Solid Gate и PayPal в коде нет. У Genesis по иску основной канал — связка PayPal-аккаунтов (≈$700M за 12 мес.).</td><td><span class="chip info">Видно в данных</span></td></tr>
+<tr><td>Общая кодовая база с другими брендами</td><td>Тот же код воронки обслуживает бренд Cutio (support@get-cutio.com) и домены get-chi.app, your-chillio.com. Аналитика — Amplitude, бэкенд — Google Cloud / Firebase (chillio-prod). Пересечений с известными доменами Genesis не нашли.</td><td><span class="chip info">Видно в данных</span></td></tr>
+<tr><td>Отмена и списания</td><td>App Store: ≈50 из 124 негативных отзывов — «не могу отменить / списывают после отмены». Trustpilot: отмена фактически через support@get-chillio.app, списания после удаления приложения месяцами, BBB Scam Tracker — «нет ссылки, где отменить». В веб-приложении в Account пункт отмены подписки есть (скринкаст 24.10). Отсутствие кнопки отмены в Apple Pay не проверяли.</td><td><span class="chip info">Видно в данных</span></td></tr>
+<tr><td>Креатив ≠ продукт</td><td>В рекламе рыжий кот-маскот, который «учит убираться», фото-анализ, голосовой кот; в приложении кот без взаимодействия, этих функций нет (раздел «Связка»).</td><td><span class="chip info">Видно в данных</span></td></tr>
+</tbody></table></div>
+<h3>Что можно тестить, а что не копировать</h3>
+<div class="tbl"><table>
+<thead><tr><th>Тестить</th><th>Не копировать</th></tr></thead>
+<tbody>
+<tr><td>Боль и крючки креативов: «Every mess is a choice — 6 секунд / 8 минут», стыд за беспорядок, СДВГ, «альтернатива ТикТоку» (наша связка с блокировщиком)</td><td>Обещания функций, которых нет в продукте (кот-тренер, фото-анализ, голос) — у нас в креативах только то, что есть в приложении</td></tr>
+<tr><td>Квиз → персональный план → пейволл со скидкой и таймером, тарифы 1 / 4 / 12 недель, PDF-бонус в корзине</td><td>Мелкий шрифт про автопродление, «вводная» цена без явной цены продления рядом с кнопкой</td></tr>
+<tr><td>Апсейлы после оплаты</td><td>Апсейлы без явной кнопки «пропустить», добавление товаров в корзину без согласия</td></tr>
+<tr><td>Удержание: письма и пуши «кот грустит»</td><td>Отмена только через почту поддержки; списания после отмены — у нас отмена в один шаг внутри приложения (своей платёжки нет — iOS через App Store)</td></tr>
+</tbody></table></div>
+<p class="small">Как проверяли: код страниц воронки и чекаута (30.10.2026), iTunes Lookup по id 6748603301 и разработчику 1856899391, текст иска FTC (63 стр.) — поиск по всем именам и доменам Chillio, веб-поиск по юрлицам, Trustpilot и BBB (по выдаче поиска). Не проверяли: реестр Делавэра по Digitaloom, WHOIS доменов, страницы Chillio в Ad Library (нужен вход).</p>
+</section>
+
 <section id="limits">
 <h2>Ограничения данных</h2>
 <ul class="small">
@@ -429,6 +455,7 @@ ul{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
 <li>Meta Ad Library: объявления 1702390084405757, 2138926620024715, 29009002318723818, 882541918022977; креативы из ссылок выгрузок — references/chillio/ads/.</li>
 <li>ScreensDesign: screensdesign.com/apps/chillio-life-planner.</li>
 <li>BigSpy: скриншот 10 объявлений от Наташи, 30.10.2026 — references/chillio/spy/.</li>
+<li>Проверка «Genesis или нет», 30.10.2026: код воронки get-chillio.app / my-chillio.com; FTC v. Genesis Tech (дело 4:26-cv-05232-HSG): ftc.gov/news-events/news/press-releases/2026/06/ftc-sues-stop-sprawling-enterprise-operating-unlawful-subscription-schemes и текст иска ftc.gov/system/files/ftc_gov/pdf/Growthmind-Wisey-Complaint.pdf; TechCrunch 17.06.2026; Trustpilot get-chillio.app; BBB Scam Tracker.</li>
 </ul>
 </section>
 </div>

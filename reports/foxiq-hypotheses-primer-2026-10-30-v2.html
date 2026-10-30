@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxIQ: гипотезы и Primer v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~960px), same visual system as the Japan payments report. Summary, product map, archetypes, every user, features, what recordings show, why people cancel, ideal paths with LTV calculator, tests, limits, glossary. */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15202a; --muted:#56636f; --line:#dbe2e7; --soft:#eef3f5;
+  --accent:#0d5f6f; --accent-soft:#e3f1f3;
+  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf2e1; --ok:#0b7a4b; --ok-soft:#e5f5ec; --info:#3a4fb8; --info-soft:#eaedfb;
+  --bar:#2a78d6; --bar2:#c8d6dc;
+  --s-good:#0ca30c; --s-warn:#fab219; --s-crit:#d03b3b; --s-neutral:#b9c6cd;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100;
+  --f-body:"Golos Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:46px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.12rem;font-weight:650}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:flex;flex-direction:column;gap:12px}
+header .meta{color:var(--muted);font-size:.95rem;max-width:72ch}
+section{display:flex;flex-direction:column;gap:16px}
+section > p, .card > p{max-width:72ch}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:2px 9px;border-radius:999px;white-space:nowrap;vertical-align:2px}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.info{background:var(--info-soft);color:var(--info)}
+.chip.plain{background:var(--soft);color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:none}
+tr.tot td{background:var(--soft);font-weight:600}
+td.r,th.r{text-align:right}
+td .sub{display:block;color:var(--muted);font-size:.8rem}
+td.bar{width:32%}
+.barline{display:flex;align-items:center;gap:8px}
+.barline .b{height:10px;border-radius:0 4px 4px 0;background:var(--bar);display:inline-block;flex:none}
+.barline .b.lo{background:var(--s-crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h4{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+ul.list,ol.list{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact .l{font-size:.84rem;color:var(--muted);line-height:1.35}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0;max-width:74ch}
+.steps{counter-reset:st;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps > li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:flex;flex-direction:column;gap:6px}
+.steps > li::before{content:counter(st);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps .meta2{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--muted)}
+.steps .meta2 b{color:var(--ink);font-weight:600}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:8px 16px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,[data-tip]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.92rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details > summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--muted)}
+details[open] > summary::before{content:"▾"}
+details .tbl{border:none;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+/* stacked 100% bar */
+.stack{display:flex;gap:2px;height:24px;background:var(--surface)}
+.stack .seg{height:100%;min-width:3px}
+.stack .seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem}
+.legend .k{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.g-good{background:var(--s-good)} .g-warn{background:var(--s-warn)} .g-crit{background:var(--s-crit)} .g-neutral{background:var(--s-neutral)}
+.g-c1{background:var(--c1)} .g-c2{background:var(--c2)} .g-c3{background:var(--c3)} .g-c4{background:var(--c4)}
+/* column chart */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;height:190px;border-bottom:1px solid var(--line);padding-top:8px}
+.cols .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.cols .c .val{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+.cols .c .col{width:24px;max-width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.cols-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.25}
+/* calculator */
+.calc table{min-width:640px}
+.calc td input{width:100%;max-width:120px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc td.inp{width:150px}
+.calc tr.out td{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc tr.out td:first-child{font-family:var(--f-body)}
+.calc tr.head td{background:var(--soft);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:.88rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+.delta-up{color:var(--ok)} .delta-down{color:var(--crit)}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+.wrap{max-width:960px}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.arch .card{gap:9px}
+.arch .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arch .share{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.mini{display:flex;height:10px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.mini span{height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.flow .st b{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.flow .st.hot{border-color:var(--crit);background:var(--crit-soft)}
+.flow .arrow{align-self:center;color:var(--muted);font-family:var(--f-mono)}
+.ja{font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",var(--f-body)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.filters label{font-size:.84rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.filters select,.filters input{font:inherit;font-size:.9rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:150px}
+#ppl td .story{display:block;font-size:.8rem;color:var(--muted);line-height:1.45;margin-top:3px}
+#ppl table{min-width:760px}
+.hyp{display:flex;flex-direction:column;gap:12px}
+.hyp .card h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cols2 > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.days{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.days li{display:grid;grid-template-columns:62px 1fr;gap:8px}
+.days li b{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+.calc2 .inputs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.9rem}
+.calc2 .inputs input{width:110px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc2 .out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{font-family:var(--f-mono);font-size:1.6rem;font-weight:600}
+button.b.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+@media (max-width:720px){.cols2,.calc2{grid-template-columns:1fr}}
+
+@media (max-width:560px){h1{font-size:1.65rem} .card{padding:16px} dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} .cols .c .col{width:18px} .cols-x{font-size:.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+tr.st td{border-top:none;padding-top:0}
+#ppl tbody tr:not(.st) td{border-bottom:none}
+
+.lbl{display:inline-block;font-size:.72rem;font-weight:600;padding:1px 7px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.lbl.v{background:var(--ok-soft);color:var(--ok)} .lbl.p{background:var(--warn-soft);color:var(--warn)} .lbl.n{background:var(--info-soft);color:var(--info)}
+</style></head>
+<body><main class="wrap">
+<header><span class="eyebrow">FoxIQ · веб · 30 октября 2026 · версия 2</span><h1>FoxIQ: гипотезы по всем пришедшим с воронки и улучшения по Primer</h1>
+<p class="meta">Часть 1 — гипотезы, где база метрик — <b>все, кто загрузил воронку FoxIQ</b> (<code>project = foxiq_ff</code>, с 16.10), а для изменений в приложении — все, кто дошёл до приложения с воронки. Часть 2 — выгрузка Primer: оплата $1, первое списание, повторы, отказы и что с ними делать. PostHog: 16.10 00:00 – 30.10 19:50 МСК, люди, тестовые исключены по <code>playbook/posthog.md</code>. Primer: <code>payments-29.csv</code>, транзакции FoxIQ 12.10–30.10.</p>
+<nav class="toc"><a href="#short">Коротко</a><a href="#flow">Поток и воронка</a><a href="#hyp">Часть 1. Гипотезы</a><a href="#order">Порядок</a><a href="#primer">Часть 2. Primer</a><a href="#fix">Что улучшить и кто</a><a href="#diff">Что исправлено</a><a href="#gloss">Как считали</a></nav></header>
+
+<section id="short"><h2>Коротко</h2>
+<div class="summary"><ol>
+<li><b>Поток — 565 человек в день, а не 5.</b> С 16 по 29.10 воронку загрузили 7 905 человек (в среднем 565 в день). Из них Meta — 139 в день в среднем и 192 в день в дни с трафиком, Google — 399 в день. <span class="lbl v">Видно</span></li>
+<li><b>Google почти не покупает.</b> 5 895 человек из Google → 2 оплатили пробный период (0,03%). Meta: 2 079 → 54 (2,6%). Все гипотезы считаем по Meta, Google — отдельный вопрос трафика к Диме. <span class="lbl v">Видно</span></li>
+<li><b>Главная потеря в воронке — между чекаутом и оплатой.</b> Meta: открыли чекаут 402 человека, начали оплату 109, оплатили 54. Из тех, кто пытался платить, проходит половина: у карт, введённых вручную, — 30% людей, у Apple Pay — 61%; 3-D Secure не проводится ни разу. <span class="lbl v">Видно</span></li>
+<li><b>Деньги теряются на первом списании.</b> Из 1 476 человек Meta с 16 по 22.10 первое списание $29,99 прошло у 8 (0,54%, 5 на 1 000 заходов). На FoxIQ (Stripe) проходит 12% автосписаний, в других проектах той же выгрузки на Adyen по картам США — 40%. <span class="lbl v">Видно</span></li>
+<li><b>В приложении нет «второго шага».</b> С воронки до приложения дошли 77 человек, 21 из них — без оплаты. Тренировку в первые 24 часа начали 14 из 77 (18%), заходили 2+ дня за первую неделю — 2 из 52 (4%). <span class="lbl v">Видно</span></li>
+<li><b>Первым делом — платёжка, а не продукт.</b> Починка автосписаний и оплаты $1 даёт больше денег на 1 000 заходов, чем любая продуктовая гипотеза, и проверяется быстрее. <span class="lbl p">Предположение</span></li>
+</ol></div>
+<div class="facts">
+<div class="fact"><span class="v">565 / день</span><span class="l">загрузили воронку, 16–29.10, люди</span></div>
+<div class="fact"><span class="v">2,6%</span><span class="l">Meta: загрузил воронку → оплатил $1 (54 из 2 079)</span></div>
+<div class="fact"><span class="v">0,03%</span><span class="l">Google: то же (2 из 5 895)</span></div>
+<div class="fact"><span class="v">0,54%</span><span class="l">Meta 16–22.10: заход → первое списание (8 из 1 476)</span></div>
+<div class="fact"><span class="v">$185</span><span class="l">выручка Primer на 1 000 заходов Meta, когорта 16–22.10</span></div>
+<div class="fact"><span class="v">12% / 40%</span><span class="l">успешных автосписаний: FoxIQ (Stripe) / другие проекты (Adyen, карты США)</span></div>
+</div></section>
+
+<section id="flow"><h2>Поток и воронка: все пришедшие</h2>
+<p>Люди (<code>person_id</code> воронки), 16.10 00:00 – 30.10 19:50 МСК. Источник — <code>utm_source</code> первого события человека: <code>4</code>, <code>19</code>, <code>22</code> — Meta, <code>google</code> — Google Ads, остальное (без метки, <code>googlemail</code>) — «другое». Каждый шаг — доля от загрузивших воронку.</p>
+<div class="tbl"><table>
+<thead><tr><th>Шаг</th><th class="r">Meta</th><th class="r">Google</th><th class="r">Другое</th><th class="r">Все</th></tr></thead>
+<tbody>
+<tr><td>Загрузили воронку (<code>funnel_start</code>)</td><td class="r num">2 079</td><td class="r num">5 895</td><td class="r num">509</td><td class="r num">8 483</td></tr>
+<tr><td>Дошли до 3-го экрана</td><td class="r num">992 · 47,7%</td><td class="r num">1 266 · 21,5%</td><td class="r num">185 · 36,3%</td><td class="r num">2 443 · 28,8%</td></tr>
+<tr><td>Оставили почту</td><td class="r num">409 · 19,7%</td><td class="r num">249 · 4,2%</td><td class="r num">51 · 10,0%</td><td class="r num">709 · 8,4%</td></tr>
+<tr><td>Открыли чекаут</td><td class="r num">402 · 19,3%</td><td class="r num">236 · 4,0%</td><td class="r num">69 · 13,6%</td><td class="r num">707 · 8,3%</td></tr>
+<tr><td>Начали оплату (<code>funnel_purchase_start</code>)</td><td class="r num">109 · 5,2%</td><td class="r num">31 · 0,5%</td><td class="r num">5 · 1,0%</td><td class="r num">145 · 1,7%</td></tr>
+<tr><td>Оплатили пробный $1</td><td class="r num">54 · 2,6%</td><td class="r num">2 · 0,03%</td><td class="r num">1 · 0,2%</td><td class="r num">57 · 0,67%</td></tr>
+<tr><td>Дошли до приложения (оплатили или нет)</td><td class="r num">72 · 3,5%</td><td class="r num">3</td><td class="r num">2</td><td class="r num">77 · 0,91%</td></tr>
+<tr><td>Начали тренировку в первые 24 часа</td><td class="r num">11</td><td class="r num">—</td><td class="r num">—</td><td class="r num">14</td></tr>
+</tbody></table></div>
+<div class="card"><p class="h4">Поток по дням, люди, МСК</p>
+<div class="tbl" style="border:none"><table><thead><tr><th>День</th><th class="r">16</th><th class="r">17</th><th class="r">18</th><th class="r">19</th><th class="r">20</th><th class="r">21</th><th class="r">22</th><th class="r">23</th><th class="r">24</th><th class="r">25</th><th class="r">26</th><th class="r">27</th><th class="r">28</th><th class="r">29</th></tr></thead>
+<tbody><tr><td>Meta</td><td class="r num">41</td><td class="r num">138</td><td class="r num">211</td><td class="r num">203</td><td class="r num">354</td><td class="r num">241</td><td class="r num">288</td><td class="r num">19</td><td class="r num">6</td><td class="r num">1</td><td class="r num">0</td><td class="r num">44</td><td class="r num">151</td><td class="r num">248</td></tr>
+<tr><td>Все</td><td class="r num">41</td><td class="r num">1 995</td><td class="r num">2 129</td><td class="r num">1 043</td><td class="r num">389</td><td class="r num">269</td><td class="r num">506</td><td class="r num">61</td><td class="r num">72</td><td class="r num">38</td><td class="r num">8</td><td class="r num">390</td><td class="r num">739</td><td class="r num">373</td></tr>
+<tr><td>Оплатили $1</td><td class="r num">1</td><td class="r num">7</td><td class="r num">8</td><td class="r num">3</td><td class="r num">2</td><td class="r num">7</td><td class="r num">6</td><td class="r num">2</td><td class="r num">0</td><td class="r num">0</td><td class="r num">0</td><td class="r num">3</td><td class="r num">10</td><td class="r num">3</td></tr></tbody></table></div>
+<p class="small muted">Провал 23–26.10 — нет трафика Meta. Пик 17–19.10 — Google (до 1 900 человек в день, оплат почти нет). 30.10 — неполный день (591 человек, 5 оплат), в средние не входит. «Все» по дням — человек считается в каждом дне, когда загружал воронку, поэтому сумма чуть больше 7 905.</p></div>
+<p class="small"><span class="lbl v">Видно</span> ~65 «пользователей в день» на дашборде «базовый пульс» — это новые персоны приложения, ~565 в день — загрузки воронки, ~4 в день — оплаты $1. В гипотезах ниже база — загрузки воронки (Meta), объёмы и сроки — от потока Meta 192 человека в день в дни с трафиком.</p>
+<p class="small"><span class="lbl n">Не знаем</span> Почему из чекаута Meta уходят 293 из 402 (73%), не начав оплату: нужен просмотр записей сессий воронки FunnelFox. Гипотезы на этот шаг пока нет — сначала записи.</p>
+</section>
+
+<section id="hyp"><h2>Часть 1. Гипотезы</h2>
+<p>Формат Кати: гипотеза → проблема из данных → что меняем → метрики (база — все пришедшие с воронки) → сейчас → ожидаем → метод → объём и срок. Объём — по формуле для двух долей, α = 5% (двусторонний), мощность 80%. Онбординг пришедшим с воронки не показывается (0 из 77), поэтому гипотез про онбординг нет; 5 человек с онбордингом пришли не с воронки и в расчёт не входят.</p>
+<div class="hyp">
+
+<div class="card"><h3>1. Автосписание продлений <span class="chip crit">первой · деньги</span></h3>
+<p><b>Гипотеза.</b> Если повторные списания FoxIQ будут уходить с правильной настройкой сохранённой карты (или пойдут через Adyen, как у других проектов), то первое списание $29,99 будет проходить хотя бы у половины тех, у кого оно наступило, и на 1 000 заходов Meta придётся 9 первых списаний вместо 5.</p>
+<dl class="kv">
+<dt>Проблема</dt><dd><span class="lbl v">Видно</span> Meta, заходы 16–22.10: 1 476 человек → 33 оплатили $1 → у 27 наступило первое списание (6 отменили раньше) → прошло у 8 (30% попыток). По всем покупателям Primer: первое $29,99 — 10 из 43, все автосписания — 14 из 118 (12%), 76 из 78 отказов — <code>generic_decline</code> без кода совета банка. В других проектах той же выгрузки (Adyen, карты банков США) автосписания проходят в 137 из 345 (40%).</dd>
+<dt>Что меняем</dt><dd>Платёжную настройку, продукт не трогаем: проверить с Primer/Stripe, сохраняется ли карта при оплате $1 для списаний без участия покупателя (для Stripe — признак off-session при первой оплате, для Apple Pay — токен для повторных платежей); если нет — исправить или перевести FoxIQ на Adyen.</dd>
+<dt>Главная метрика</dt><dd>Первое списание прошло / загрузили воронку (Meta). <b>Сейчас 0,54%</b> (8 из 1 476, заходы 16–22.10 МСК, списания до 30.10). <b>Ожидаем 0,9%</b> (половина из 1,8% дошедших до списания).</dd>
+<dt>Вспомогательная</dt><dd>Первое списание прошло / наступило: 30% (8 из 27) → 55%.</dd>
+<dt>Защитные</dt><dd>Возвраты и чарджбеки (Stripe; в выгрузке возвратов 0), доля отмен до списания (сейчас 6 из 33).</dd>
+<dt>Метод</dt><dd>«До и после» по когортам заходов: настройка платёжки меняется сразу для всех, разделить на группы нельзя. Срезы: Apple Pay / карта, кредитная / дебетовая / предоплаченная.</dd>
+<dt>Объём и срок</dt><dd>По главной метрике — 8 354 захода Meta «после» (0,54% → 0,9%) ≈ 44 дня трафика + 7 дней пробного периода ≈ 7 недель. По вспомогательной — 59 наступивших списаний (30% → 55%) ≈ 16 дней + 7 ≈ 3,5 недели: первый вывод — по ней, подтверждение — по главной.</dd>
+</dl>
+<p class="small"><span class="lbl p">Предположение</span> Причина отказов — настройка, а не бедные покупатели: при той же аудитории США на Adyen проходит втрое больше. Но это другие продукты и цены — связь, не доказательство. Ожидаемое значение — оценка.</p></div>
+
+<div class="card"><h3>2. Оплата $1 в воронке: 3-D Secure и второй способ оплаты <span class="chip crit">вторая · сразу как исправление</span></h3>
+<p><b>Гипотеза.</b> Если при оплате картой включить 3-D Secure там, где банк его требует, а после отказа сразу предлагать Apple Pay / Google Pay или другую карту, то больше пришедших с воронки оплатят пробный период.</p>
+<dl class="kv">
+<dt>Проблема</dt><dd><span class="lbl v">Видно</span> Meta: начали платить 113 человек (по PostHog и Primer), оплатили 54 (48%). В Primer: Apple Pay — оплатили 61 из 100 человек, карта вручную — 13 из 44, Google Pay — 2 из 4. 3-D Secure не проводился ни в одной из 176 попыток $1; 12 отказов (10 человек) — «нужна аутентификация». 14 попыток по предоплаченным картам (13 человек) отклонены, не дойдя до Stripe. После отказа повторили только 25 из 79, сменили способ — 6; из 72 неоплативших ушли после первой попытки 54.</dd>
+<dt>Что меняем</dt><dd>В Primer/Stripe — 3-D Secure по требованию банка для карт. В воронке FunnelFox — после отказа экран «Оплата не прошла — попробуйте Apple Pay или другую карту» с понятной причиной (нет средств / банк отклонил / нужна проверка).</dd>
+<dt>Главная метрика</dt><dd>Загрузил воронку → оплатил пробный (Meta). <b>Сейчас 2,6%</b> (54 из 2 079, 16–30.10 МСК). <b>Ожидаем 3,2%</b> (вернуть 1 из 5 неоплативших после попытки).</dd>
+<dt>Вспомогательная</dt><dd>Начал оплату → оплатил: 48% (54 из 113) → 60%.</dd>
+<dt>Защитные</dt><dd>Первое списание прошло / наступило (не должно падать: 3-D Secure и смена карты не должны приводить больше предоплаченных карт), чарджбеки и фрод.</dd>
+<dt>Метод</dt><dd>Экран повтора — A/B в FunnelFox (эксперименты там есть: в выгрузке есть <code>ff_experiment_id</code>). 3-D Secure — настройка для всех, «до и после».</dd>
+<dt>Объём и срок</dt><dd>По главной метрике A/B — 12 167 заходов Meta на группу (2,6% → 3,2%) ≈ 127 дней, «до и после» ≈ 64 дня — слишком долго. По вспомогательной — 261 начавший оплату на группу (48% → 60%): ~8 в день → A/B ≈ 65 дней, «до и после» ≈ 33 дня. <b>Вывод:</b> делать как исправление без ожидания теста, цифры «до и после» смотреть как ориентир.</dd>
+</dl>
+<p class="small"><span class="lbl p">Предположение</span> Часть отказов «нет средств» (15 человек) не вернуть ни 3-D Secure, ни повтором — поэтому ожидаем 1 из 5, а не больше.</p></div>
+
+<div class="card"><h3>3. Личный IQ-результат и план тренировок <span class="chip warn">третья · продукт</span></h3>
+<p><b>Гипотеза.</b> Если пришедший с воронки сразу увидит не одинаковый для всех балл, а результат по своим ответам квиза, сильные и слабые стороны и кнопку «Начать тренировку» с первой игрой под слабую сторону, то больше людей начнёт тренироваться в первые сутки.</p>
+<dl class="kv">
+<dt>Проблема</dt><dd><span class="lbl v">Видно</span> Результат показан всем 77 дошедшим до приложения, балл у всех одинаковый — 137 (79 человек с <code>iq_result_shown</code>, все с 137). Тренировку в первые 24 часа начали 14 из 77 (18%), урок прошли 5. Отменили сами — 13 из 57 оплативших, 9 из них в первые сутки.</dd>
+<dt>Что меняем</dt><dd>Экран результата: балл по ответам квиза, сильные и слабые стороны, прогноз («через 4 недели при 10 минутах в день») и одна кнопка на первую игру.</dd>
+<dt>Главная метрика</dt><dd>Дошёл до приложения с воронки → начал тренировку (<code>game_started</code>) в первые 24 часа. <b>Сейчас 18%</b> (14 из 77, 16–30.10 МСК). <b>Ожидаем 30%.</b> В пересчёте на всех загрузивших воронку — 0,17% (14 из 8 483).</dd>
+<dt>Защитные</dt><dd>Отмена в первые 24 часа (9 из 57 оплативших, 16%), скачивание сертификата (20 из 77, 26%).</dd>
+<dt>Метод</dt><dd>A/B 50/50 по флагу PostHog (экран можно разделить по человеку). Только пришедшие с воронки. Срезы: Meta / Google, оплатил / без оплаты.</dd>
+<dt>Объём и срок</dt><dd>205 человек на группу (18% → 30%). До приложения доходит ~5,5 человек в день → A/B ≈ 75 дней, «до и после» ≈ 38 дней. Если трафик Meta вырастет вдвое — вдвое быстрее.</dd>
+</dl>
+<p class="small"><span class="lbl p">Предположение</span> Ожидаемое значение — оценка. Связь «играл → не отменил» не доказана: до отмены почти никто не играл, но причинность не проверена.</p></div>
+
+<div class="card"><h3>4. Без оплаты — экран повторной оплаты <span class="chip warn">параллельно</span></h3>
+<p><b>Гипотеза.</b> Если человеку, у которого в воронке не прошла оплата, при входе в приложение показать «Оплата не прошла» и другой способ оплаты, а результат — после оплаты, то часть таких людей оформит пробный период.</p>
+<dl class="kv">
+<dt>Проблема</dt><dd><span class="lbl v">Видно</span> Из 77 дошедших до приложения 21 (27%) не оплатил: у 20 в воронке была ошибка оплаты, по автологину они попали в приложение и увидели результат. Пейволл видели 14 из 21, оформили подписку — 0.</dd>
+<dt>Что меняем</dt><dd>При входе без подписки — экран повторной оплаты (Apple Pay / Google Pay / другая карта) вместо бесплатного результата.</dd>
+<dt>Главная метрика</dt><dd>Дошёл до приложения без оплаты → оплатил пробный. <b>Сейчас 0%</b> (0 из 21, 16–30.10). <b>Ожидаем 15%.</b> На всех загрузивших воронку Meta это +0,1 п. п. к конверсии в оплату (2,6% → ~2,7%).</dd>
+<dt>Защитные</dt><dd>Жалобы в поддержку, повторные отказы банка.</dd>
+<dt>Метод</dt><dd>«До и после»: группа маленькая (~1,5 человека в день), делить её пополам бессмысленно. Аудитория не пересекается с гипотезой 3 — можно параллельно.</dd>
+<dt>Объём и срок</dt><dd>48 человек «после» (0% → 15%) ≈ 32 дня.</dd>
+</dl>
+<p class="small"><span class="lbl p">Предположение</span> Если команда решит просто закрыть доступ без оплаты — тест не нужен, это исправление.</p></div>
+
+<div class="card"><h3>5. Письма в дни 2–6 пробного периода <span class="chip plain">после гипотезы 3</span></h3>
+<p><b>Гипотеза.</b> Если в дни 2–6 присылать письмо с одной тренировкой на сегодня и счётчиком серии, то больше пришедших с воронки вернутся в приложение хотя бы на второй день.</p>
+<dl class="kv">
+<dt>Проблема</dt><dd><span class="lbl v">Видно</span> Из 52 дошедших до приложения, у кого прошло 7+ дней, заходили в 2+ разных дня за первую неделю 2 (4%). Пушей на вебе нет, письма только транзакционные.</dd>
+<dt>Что меняем</dt><dd>Письма дни 2–6 (на базе логики писем возврата из задачи Дани).</dd>
+<dt>Главная метрика</dt><dd>Дошёл до приложения с воронки → заходил в 2+ дня за первые 7 дней. <b>Сейчас 4%</b> (2 из 52). <b>Ожидаем 10%.</b></dd>
+<dt>Защитные</dt><dd>Отписки, отмены в пробном периоде.</dd>
+<dt>Метод</dt><dd>A/B по человеку (письмо / нет письма) — разделить легко. Запускать после гипотезы 3, чтобы не смешивать эффекты.</dd>
+<dt>Объём и срок</dt><dd>266 человек на группу (4% → 10%) ≈ 97 дней при ~5,5 в день + 7 дней ожидания. При текущем трафике — долго; разумно, только если трафик Meta вырастет.</dd>
+</dl>
+<p class="small"><span class="lbl n">Не знаем</span> Часть заходов могла записаться на вторую, безымянную персону автологина — «2+ дня» может быть немного занижено.</p></div>
+
+<div class="card"><h3>Без теста: удержание в пути отмены</h3>
+<p class="small"><span class="lbl v">Видно</span> «Отменить» нажали 6 человек, подтвердили 6. Нажатий — меньше одного в два дня, честный тест займёт месяцы. Экран причины отмены и предложение (пауза / план тренировок) — делать как стандартную практику, без теста.</p></div>
+</div></section>
+
+<section id="order"><h2>Порядок</h2>
+<ol class="steps">
+<li><b>Сейчас:</b> разбор автосписаний с Primer/Stripe (гипотеза 1) и 3-D Secure (гипотеза 2) — Катя, Дима. Google-трафик — Диме.</li>
+<li><b>Экран повтора оплаты в воронке</b> (гипотеза 2) — Даша, как исправление.</li>
+<li><b>Гипотеза 3</b> (личный результат) — как только разработка готова; A/B ≈ 75 дней или «до и после» ≈ 38 дней.</li>
+<li><b>Гипотеза 4</b> — параллельно с 3 (другая аудитория), либо просто закрыть доступ без оплаты.</li>
+<li><b>Гипотеза 5</b> — после 3.</li>
+</ol>
+<p class="small"><span class="lbl p">Предположение</span> Пока автосписание проходит у 3 из 10, любая продуктовая гипотеза почти не меняет деньги: даже если человек остался, списание не проходит.</p>
+</section>
+
+<section id="primer"><h2>Часть 2. Primer: что видно</h2>
+<p>Транзакции FoxIQ из общей выгрузки: <code>statementDescriptor = FoxIQ</code> или проект FunnelFox FoxIQ. 324 транзакции, из них 30 (15 почт) тестовых по списку <code>playbook/posthog.md</code> — исключены, осталось 294. Только USD, процессор Stripe. Период по полю <code>date</code>: 11.10 23:00 – 30.10 14:15 (в выгрузке время помечено как UTC). Пробный период — $1 сразу, через 7 дней — $29,99 в месяц.</p>
+<div class="facts">
+<div class="fact"><span class="v">76 из 148</span><span class="l">человек оплатили $1 (51%); с первой попытки — 69 (47%)</span></div>
+<div class="fact"><span class="v">10 из 43</span><span class="l">первое списание $29,99 прошло (23%)</span></div>
+<div class="fact"><span class="v">0 из 31</span><span class="l">повтор $20,99 на 9-й день</span></div>
+<div class="fact"><span class="v">3 из 16</span><span class="l">повтор $15,00 на 14-й день</span></div>
+<div class="fact"><span class="v">$450,89</span><span class="l">вся выручка, из неё $374,89 — продления; возвратов 0</span></div>
+<div class="fact"><span class="v">0 из 176</span><span class="l">попыток $1 с 3-D Secure</span></div>
+</div>
+
+<h3>Оплата $1 (при покупке)</h3>
+<div class="tbl"><table><thead><tr><th>Срез</th><th class="r">Людей оплатили / пытались</th><th class="r">Попыток прошло / всего</th><th>Что видно</th></tr></thead><tbody>
+<tr><td>Apple Pay</td><td class="r num">61 / 100 · 61%</td><td class="r num">61 / 116</td><td>80% покупателей платят Apple Pay.</td></tr>
+<tr><td>Карта вручную</td><td class="r num">13 / 44 · 30%</td><td class="r num">13 / 56</td><td>Вдвое хуже Apple Pay; 14 попыток по предоплаченным картам отклонены до Stripe.</td></tr>
+<tr><td>Google Pay</td><td class="r num">2 / 4</td><td class="r num">2 / 4</td><td>Мало данных.</td></tr>
+<tr><td>Дебетовые / кредитные / предоплаченные (попытки)</td><td class="r num">—</td><td class="r num">40/90 · 19/41 · 15/40</td><td>Кредитные и дебетовые — ~45%, предоплаченные — 38%.</td></tr>
+<tr><td>Источник Google (попытки)</td><td class="r num">—</td><td class="r num">2 / 17</td><td>Meta: 73 / 153.</td></tr>
+</tbody></table></div>
+<div class="tbl"><table><thead><tr><th>Почему не оплатили $1 (последний отказ, люди, 72 человека)</th><th class="r">Людей</th></tr></thead><tbody>
+<tr><td>Банк отклонил без причины (<code>REFER_TO_CARD_ISSUER</code>)</td><td class="r num">21</td></tr>
+<tr><td>Нет средств (<code>INSUFFICIENT_FUNDS</code>)</td><td class="r num">15</td></tr>
+<tr><td>Отклонено до Stripe (все — предоплаченные карты вручную)</td><td class="r num">11</td></tr>
+<tr><td>Нужна аутентификация 3-D Secure (<code>AUTHENTICATION_REQUIRED</code>)</td><td class="r num">9</td></tr>
+<tr><td>Банк не разрешает (<code>DO_NOT_HONOR</code>)</td><td class="r num">8</td></tr>
+<tr><td>Прочее (ошибка, банк недоступен, неверная карта, без причины)</td><td class="r num">8</td></tr>
+</tbody></table></div>
+<p class="small"><span class="lbl v">Видно</span> После отказа попробовали ещё раз 25 человек из 79 с отказом, сменили способ оплаты — 6; оплатили после отказа — 7.</p>
+
+<h3>Первое списание и сетка повторов</h3>
+<div class="tbl"><table><thead><tr><th>Попытка</th><th class="r">Когда</th><th class="r">Сумма</th><th class="r">Прошло / попыток</th></tr></thead><tbody>
+<tr><td>1 — первое списание</td><td class="r num">через 6,9 дня</td><td class="r num">$29,99</td><td class="r num">10 / 43 · 23%</td></tr>
+<tr><td>2 — повтор</td><td class="r num">через 8,9 дня</td><td class="r num">$20,99</td><td class="r num">0 / 31</td></tr>
+<tr><td>3 — повтор</td><td class="r num">через 13,9 дня</td><td class="r num">$15,00</td><td class="r num">3 / 16 · 19%</td></tr>
+</tbody></table></div>
+<div class="tbl"><table><thead><tr><th>Первое списание по типу карты</th><th class="r">Прошло / попыток</th></tr></thead><tbody>
+<tr><td>Кредитные</td><td class="r num">6 / 12</td></tr>
+<tr><td>Дебетовые</td><td class="r num">3 / 19</td></tr>
+<tr><td>Предоплаченные (14 из 15 покупателей с такой картой — банк Sutton Bank)</td><td class="r num">0 / 10</td></tr>
+<tr><td>Apple Pay / карта вручную</td><td class="r num">8 / 34 · 2 / 9</td></tr>
+</tbody></table></div>
+<p class="small"><span class="lbl v">Видно</span> 76 из 78 отказов автосписаний — <code>generic_decline</code> без кода совета банка; «нет средств» — 1. Покупателей, у кого прошло 7+ дней, — 58: 13 отменили до списания, 13 заплатили хотя бы одно продление, у остальных все попытки отклонены или ещё идут.</p>
+<p class="small"><span class="lbl v">Видно</span> Сравнение в той же выгрузке: другие проекты (Azora и др., Adyen) — автосписания по картам банков США проходят в 137 из 345 (40%), FoxIQ (Stripe) — в 14 из 118 (12%).</p>
+<p class="small"><span class="lbl p">Предположение</span> Обезличенные отказы почти всех автосписаний обычно значат, что карта сохранена без разрешения на списания без участия покупателя или повторные платежи уходят без нужных признаков подписки. Вторая причина — предоплаченные и дебетовые карты, на которых нет $29,99: её не починить, но можно не пускать такие карты в пробный период.</p>
+<p class="small"><span class="lbl n">Не знаем</span> Чарджбеков и споров в выгрузке нет — смотреть в Stripe. Как именно настроено сохранение карты — видно только в Primer/Stripe.</p>
+</section>
+
+<section id="fix"><h2>Что улучшить и кто</h2>
+<div class="tbl"><table><thead><tr><th>Что</th><th>Почему (данные)</th><th>Кто</th></tr></thead><tbody>
+<tr><td><b>Разобрать автосписания с Primer/Stripe:</b> сохраняется ли карта при оплате $1 для списаний без покупателя, какие признаки у повторных платежей, есть ли у Apple Pay токен для повторных платежей. Если не чинится — перевести FoxIQ на Adyen, как другие проекты.</td><td>12% автосписаний против 40% на Adyen; 76 из 78 отказов — <code>generic_decline</code>.</td><td>Катя, Дима (+ Даня)</td></tr>
+<tr><td><b>Сетка повторов:</b> убрать $20,99 на 9-й день, повторять полную сумму в другое время суток / через 3–5 дней, скидку оставить последней попыткой; повторять по совету банка, если он есть.</td><td>$20,99 через 2 дня — 0 из 31; $15 через 14 дней — 3 из 16.</td><td>Катя, Дима</td></tr>
+<tr><td><b>3-D Secure</b> для карт по требованию банка (Stripe / Primer), особенно при отказе <code>AUTHENTICATION_REQUIRED</code> — сразу повторить с проверкой.</td><td>0 из 176 попыток с 3-D Secure; 10 человек отклонены как «нужна аутентификация».</td><td>Катя, Дима</td></tr>
+<tr><td><b>Предоплаченные карты:</b> одно правило для всех способов. Сейчас вручную они отклоняются до Stripe, а через Apple Pay проходят на $1 и ни разу не продлеваются. Варианты: не пускать в пробный и через Apple Pay или сразу просить другую карту.</td><td>Первое списание по предоплаченным — 0 из 10; 13 человек отклонены до Stripe.</td><td>Катя, Дима (решение), Даша (текст в воронке)</td></tr>
+<tr><td><b>Экран после отказа в воронке:</b> понятная причина и кнопки Apple Pay / Google Pay / другая карта.</td><td>Сменили способ только 6 из 79 с отказом; Apple Pay проходит вдвое чаще карты.</td><td>Даша (FunnelFox)</td></tr>
+<tr><td><b>Доступ без оплаты:</b> закрыть или экран повторной оплаты (гипотеза 4).</td><td>21 человек без оплаты в приложении, 0 оплатили.</td><td>Наташа → Даня</td></tr>
+<tr><td><b>Google-трафик:</b> 5 895 человек → 2 оплаты, до 3-го экрана доходит 21,5% (Meta — 47,7%).</td><td>Primer: из Google 2 оплаты из 17 попыток.</td><td>Дима</td></tr>
+<tr><td><b>Трекинг:</b> отдельное событие «списание отклонено», не писать отмену пользователем при отказе банка, тип оплаты в <code>subscription_started</code>.</td><td>Отказ банка сейчас пишется как <code>subscription_cancelled</code>.</td><td>Даня</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="diff"><h2>Что исправлено по сравнению с прошлой версией</h2>
+<ul class="list">
+<li>База метрик — все загрузившие воронку (8 483 человека, Meta 2 079), а не 70 покупателей. Для изменений в приложении — все дошедшие до приложения с воронки (77), включая не оплативших.</li>
+<li>Поток для сроков — 192 человека Meta в день (565 всего), до приложения — ~5,5 в день; срок каждого теста пересчитан от этого потока.</li>
+<li>Google и Meta разделены: Google почти не конвертируется и в объёмы тестов не входит.</li>
+<li>Primer пересчитан от сырой выгрузки: первое списание 10 из 43 (было «10 из 45»), повтор $20,99 — 0 из 31 (было «0 из 40»), $15 — 3 из 16 (было «3 из 24»): раньше в знаменатель попадали тестовые и покупатели до 12.10. Добавлены 3-D Secure, предоплаченные карты, отказы до Stripe и сравнение с Adyen.</li>
+<li>Новая гипотеза — оплата $1 в воронке (3-D Secure и второй способ). Гипотеза «удержание при отмене» — без теста.</li>
+</ul></section>
+
+<section id="gloss"><h2>Словарь и как считали</h2>
+<dl class="gloss">
+<dt>Загрузил воронку</dt><dd>Человек (<code>person_id</code>) с <code>funnel_start</code> в <code>project = foxiq_ff</code>, 16.10 00:00 – 30.10 19:50 МСК. Исключены: почты по тест-фильтру из <code>playbook/posthog.md</code> (35 человек), <code>utm_campaign</code> = <code>88888888</code> / <code>{campaignid}</code>. Анонимов без почты тест-фильтр не отсекает.</dd>
+<dt>Источник</dt><dd><code>utm_source</code> первого события человека в воронке: <code>4</code>, <code>19</code>, <code>22</code> — Meta; <code>google</code> — Google Ads.</dd>
+<dt>3-й экран</dt><dd><code>funnel_screen_open</code> с <code>screen_index ≥ 2</code>.</dd>
+<dt>Оплатил пробный</dt><dd>Хотя бы одно: <code>funnel_purchase_success</code>, <code>subscription_started</code> в <code>foxiq</code> по той же почте, оплата $1 со статусом SETTLED в Primer по той же почте. Сверка: 55 по <code>funnel_purchase_success</code>, 54 по <code>subscription_started</code>, 54 по Primer → вместе 57.</dd>
+<dt>Дошёл до приложения</dt><dd>Почта из воронки есть у персоны <code>foxiq</code> с событиями <code>$lib = 'web'</code> (не только серверные <code>$set</code>). Безымянные персоны автологина без почты не учтены.</dd>
+<dt>Начал тренировку</dt><dd><code>game_started</code> в первые 24 часа после первого события приложения (<code>first_run_started</code> не берём — срабатывает сам).</dd>
+<dt>2+ дня</dt><dd>События приложения в 2+ разных календарных дня МСК за первые 7 дней; только те, у кого прошло 7+ дней.</dd>
+<dt>Отменил сам</dt><dd><code>subscription_cancelled</code> больше чем за 2 минуты до <code>subscription_expired</code> (иначе это отказ банка).</dd>
+<dt>Первое списание</dt><dd>Первая транзакция Primer с <code>ff_initiation_type = mit</code> после оплаты $1 по той же почте.</dd>
+<dt>Объём теста</dt><dd>n на группу = (1,96·√(2p̄(1−p̄)) + 0,84·√(p₁(1−p₁)+p₂(1−p₂)))² / (p₁−p₂)²; срок A/B = 2n / поток в день, «до и после» = n / поток.</dd>
+</dl>
+<p class="small muted"><b>Перепроверено независимыми запросами:</b> поток Meta 16–29.10 — 1 945 человек отдельным запросом по <code>funnel_start</code> (тот же результат, что в таблице по дням); оплатившие — 55 / 54 / 54 по трём независимым источникам; дошедшие до приложения — 74 запросом-JOIN в HogQL против 77 в расчёте по людям (разница — 3 человека, у которых почта есть только на второй персоне воронки), начали тренировку — 13 против 14; балл 137 — у всех 79 человек с <code>iq_result_shown</code>. Primer — сводки пересчитаны по людям и по транзакциям, сравнение с Adyen — по той же выгрузке. Сырая выгрузка Primer в репозиторий не положена (личные данные), лежит во вложении к задаче.</p>
+</section>
+</main></body></html>

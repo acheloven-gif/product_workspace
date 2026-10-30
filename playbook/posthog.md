@@ -81,17 +81,23 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
 
 ### Тестовые пользователи — исключать
 - **Dev-окружение:** у Ridwan, Nalumi, Charisly события с dev приходят с `environment = 'dev'` — исключать.
-- **FoxIQ (полный список, проверено 30.10.2026):** email с `+` (`%+%@%`), `%@gox-media.com`, `%@yandex.ru`, `%test%`, `%@example.com` (QA: `qa-preview-*`, `test@example.com`), `%@mailinator.com` (проверка воронки: `funnel.review.*`), а также содержащие `k.k.tarasova`, `nikitos.gura`, `dariaivanova`, `eevakenn`, `nedvedyea`, и адреса `kkk@gmail.com`, `myskillhouse2020@gmail.com`. Флаг `is_test` в FoxIQ есть, но всегда `false` — на него не опираться. Данные FoxIQ до ~12.10.2026 — только тесты.
+- **FoxIQ (полный список, проверено 30.10.2026):** email с `+` (`%+%@%`), `%@gox-media.com`, `%@yandex.ru`, `%test%`, `%@example.com` (QA: `qa-preview-*`, `test@example.com`), `%@mailinator.com` (проверка воронки: `funnel.review.*`), а также содержащие `k.k.tarasova`, `nikitos.gura`, `dariaivanova`, `eevakenn`, `nedvedyea`, и адреса `kkk@gmail.com`, `myskillhouse2020@gmail.com`, `ekaasrirahmawati403@gmail.com` (аккаунт Наташи, найден 30.10: вход по magic-link и онбординг). Флаг `is_test` в FoxIQ есть, но всегда `false` — на него не опираться. Данные FoxIQ до ~12.10.2026 — только тесты.
   Под вопросом 1 покупатель (Армения, 28.10) — адрес и детали в задаче ClickUp «Получить полный список исключённых тестовых пользователей…»; если команда подтвердит, что это свой, — дописать сюда.
   Анонимные персоны без почты фильтром по адресу не отсекаются; по IP искать бесполезно (прокси Cloudflare).
   Готовый фильтр HogQL для FoxIQ (вставлять в `WHERE`):
   ```
   AND match(lower(coalesce(toString(person.properties.email),'')),
-    '\\+.*@|gox-media\\.com|@yandex\\.ru|test|@example\\.com|mailinator|k\\.k\\.tarasova|nikitos\\.gura|dariaivanova|eevakenn|nedvedyea|^kkk@gmail\\.com$|^myskillhouse2020@gmail\\.com$') = 0
+    '\\+.*@|gox-media\\.com|@yandex\\.ru|test|@example\\.com|mailinator|k\\.k\\.tarasova|nikitos\\.gura|dariaivanova|eevakenn|nedvedyea|^kkk@gmail\\.com$|^myskillhouse2020@gmail\\.com$|^ekaasrirahmawati403@gmail\\.com$') = 0
   AND coalesce(toString(properties.utm_campaign),'') NOT IN ('88888888','{campaignid}')
   ```
 - Тестовые проходы воронок с «пустышками» в метках (`utm_campaign=88888888`) и незаполненными шаблонами (`{campaignid}`).
 - **FoxIQ (найдено 29.10):** события воронки `foxiq_ff` приходят в PostHog только с 16.10.2026 — источник покупателей до этой даты не виден. `utm_source` = `4`, `19`, `22` — реклама Meta (в ссылке `fbclid`), `google` — Google Ads. В `subscription_started` свойство `platform` (`ios`/`web`) — похоже, устройство при покупке: все такие покупатели пользуются веб-приложением. `subscription_expired` с `reason = payment_failed` приходит и после отмены пользователем — «отказ банка» считать только без предшествующей `subscription_cancelled`. `first_run_started` срабатывает автоматически на экране результата — не метрика старта тренировки (для этого `game_started`). В `iq_result_shown` есть `iq_score`, `is_test`, `environment`.
+- **FoxIQ (найдено 30.10):**
+  - **Отказ банка пишется как отмена.** При неудачном списании `subscription_cancelled` (`reason = user_initiated`) и `subscription_expired` (`reason = payment_failed`) приходят в одну секунду. Самостоятельная отмена — только `subscription_cancelled` больше чем за ~2 минуты до `subscription_expired`.
+  - **Две персоны на покупателя.** У части покупателей заход по `/auto-login` записан на безымянную персону. Склеивать по параметру `session_id` в `$current_url` автологина.
+  - **С ошибкой оплаты в воронке тоже попадают в приложение** по автологину (видят результат и пейволл `placement = iq_certificate`). Покупателей считать только по `subscription_started`.
+  - **Дашборд «FoxIQ — базовый пульс», график «Новые пользователи по дням»** считает все новые персоны, около 80% из них — серверные персоны из воронки. Пользователей приложения считать по `$lib = 'web'`.
+  - Записи сессий FoxIQ есть (таблица `raw_session_replay_events`, снимки — API `session_recordings/{id}/snapshots`). Событий `$rageclick` и `$exception` нет.
 - Для остальных приложений полных списков пока нет. Если цифры странные — сначала проверить, нет ли внутренних аккаунтов, и дописать их сюда.
 
 ---

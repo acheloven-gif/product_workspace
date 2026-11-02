@@ -7,3 +7,6 @@
 - `impulse-*` — iq.mental-impulse.com (поток skill4): квиз ~22 экрана → загрузка плана с вопросами → e-mail.
 - `myiq-*` — myiq.com/start: тест на 40 заданий с заданиями на память; экран расчёта закрыт Cloudflare.
 - `elevate-landing`, `mv-landing` — лендинги Elevate и Mindvalley Superbrain (без квиза).
+- `memoryos-paywall-1102-1`, `impulse-mail-*`, `impulse-paywall-*` — повторное прохождение 02.11 с почтой Наташи до пейволла (без оплаты).
+
+Страница-галерея: `memoryos/memoryos-analogs-page.html` (сборка `python3 memoryos/build-analogs-page.py`, стили `memoryos/analogs-page.css`), опубликована как Artifact https://claude.ai/artifact/3ydDQyTKaUAR9nUGUD77hS.

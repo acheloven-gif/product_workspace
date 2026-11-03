@@ -61,3 +61,24 @@ dialog form{margin:0}
 
 .news ul{margin:4px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:.92rem}
 .url a{color:var(--accent)}
+/* v2 layout: summary card, wide table, compact per-app sections */
+.card-sum{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.card-sum ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:80ch}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;min-width:980px;background:var(--surface);font-size:.86rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--accent-soft);color:var(--ink);font-weight:600;font-size:.78rem}
+td a{color:var(--accent)}
+.num{font-variant-numeric:tabular-nums}
+.lnk a{overflow-wrap:anywhere}
+.chip.quiz{background:var(--accent-soft);color:var(--accent)}
+.chip.test{background:var(--gold-soft);color:var(--gold)}
+.chip.none{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.fhead h2{margin-right:6px}
+.about{max-width:75ch}
+.meta2{font-size:.88rem;color:var(--muted)}
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,200px));gap:12px}
+.shots .shot{flex:none}
+td .chip{white-space:nowrap}
+td.lnk{min-width:200px}
+td.lnk a{overflow-wrap:normal;word-break:break-word}

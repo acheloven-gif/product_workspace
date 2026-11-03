@@ -1,4 +1,4 @@
-# Страница «Воронки аналогов memoryOS» (Artifact): сначала сводная таблица, потом по каждому приложению 2–3 скрина.
+# Страница «Воронки аналогов memoryOS» (Artifact): плитки-цифры, короткая таблица, по 2–3 скрина на приложение; подробности — во всплывающих подсказках (data-tip).
 #   python3 memoryos/build-analogs-page.py → memoryos/memoryos-analogs-page.html
 # Скрины — references/memoryos/analogs/ и references/memoryos/funnel/. Стили — memoryos/analogs-page.css.
 import base64, io, os, html
@@ -82,21 +82,79 @@ APPS = [
        screens=[('analogs/elevate-landing.jpg', 'Elevate: лендинг'), ('analogs/mv-landing.jpg', 'Mindvalley: курс')]),
 ]
 
-def links(a): return '<br>'.join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(t)}</a>' for u, t in a['links'])
-def chip(t): return f'<span class="chip {"test" if t.startswith("Сначала") else ("none" if t.startswith("Без") else "quiz")}">{esc(t)}</span>'
 
-rows = ''.join(f'''<tr><td><a href="#{a['id']}"><b>{esc(a['name'])}</b></a></td><td>{chip(a['type'])}</td><td class="num">{esc(a['q'])}</td>
-<td>{esc(a['mail'])}</td><td class="num">{esc(a['price'])}</td><td class="num">{esc(a['ads'])}</td><td class="lnk">{links(a)}</td><td>{esc(a['walked'])}</td></tr>''' for a in APPS)
+# Коротко для таблицы и карточек: вопросов, вход, продление, реклама (коротко), что берём
+SHORT = {
+ 'memoryos':        ('19', '$15,19', '$49,99 / 4 нед', '$0,51M', 'Квиз целиком — основа клона'),
+ 'cognitivegrowth': ('25', '$0,99', '$12,99 / нед', '$0,18M', 'Закрытый результат на пейволле'),
+ 'myiq':            ('43', '—', '—', '$5,5M', 'Задания «запомни → вспомни» в тесте'),
+ 'intellio':        ('27', '$19,99', '$39,99 / 4 нед', '$0,22M', 'Отчёт виден частично, остальное — после оплаты'),
+ 'selfery':         ('37', '$15,19', '$49,99 / мес', '$0,07M', 'Тест с заданиями на память — лучший ROAS'),
+ 'testora':         ('45', '—', '—', '$0,90M', 'Только для сравнения'),
+ 'impulse':         ('20', '$19,99', '$39,98 / 4 нед', '$1,5–1,8M (май)', 'Вопросы во время загрузки плана'),
+ 'nibble':          ('30', '$15,19', '$38,95 / 4 нед', '—', 'Экран «сейчас → цель», блок про скроллинг'),
+ 'headway':         ('~28', '$19,99', '$39,98 / 4 нед', '—', 'Ориентир по ценам'),
+ 'inflow':          ('~36', '—', '$47,99 / мес', '—', 'Результат-шкала перед пейволлом'),
+ 'mygrowth':        ('26', '—', '—', '$0,52M', 'Только для сравнения'),
+ 'nofunnel':        ('—', '—', '~$40 / год', '—', 'Ежедневная тренировка в продукте'),
+}
 
-def section(a):
+def tip(t): return f' data-tip="{esc(t)}" tabindex="0"'
+
+def typechip(t):
+    if t.startswith('Сначала'): return '<span class="chip test">🧠 IQ-тест</span>'
+    if t.startswith('Без'): return '<span class="chip none">без квиза</span>'
+    return '<span class="chip quiz">📝 опрос</span>'
+
+def row(a):
+    q, entry, renew, ads, take = SHORT[a['id']]
+    u = a['links'][0][0]
+    return (f'<tr><td><a href="#{a["id"]}" class="nm">{esc(a["name"])}</a></td>'
+            f'<td{tip(a["type"])}>{typechip(a["type"])}</td>'
+            f'<td class="r num"{tip(a["q"])}>{esc(q)}</td>'
+            f'<td class="r num"{tip(a["price"])}>{esc(entry)}</td>'
+            f'<td class="num"{tip(a["price"])}>{esc(renew)}</td>'
+            f'<td class="num"{tip(a["ads"] + " — спенд за 28 дней, FB-выгрузки")}>{esc(ads)}</td>'
+            f'<td{tip("Прошли: " + a["walked"])}><a href="{esc(u)}" target="_blank" rel="noopener">открыть ↗</a></td></tr>')
+
+def card(a):
+    q, entry, renew, ads, take = SHORT[a['id']]
     shots = ''.join(f'<button class="shot" type="button" data-cap="{esc(c)}"><img src="{img(p)}" alt="{esc(c)}" loading="lazy"><span>{esc(c)}</span></button>' for p, c in a['screens'])
-    return f'''<section class="funnel" id="{a['id']}">
-<div class="fhead"><h2>{esc(a['name'])}</h2>{chip(a['type'])}</div>
-<p class="about">{esc(a['about'])}</p>
-<p class="meta2"><b>Вопросов:</b> {esc(a['q'])} · <b>Цена:</b> {esc(a['price'])} · <span class="lnk">{links(a)}</span></p>
-<div class="shots">{shots}</div></section>'''
+    lk = ' · '.join(f'<a href="{esc(u)}" target="_blank" rel="noopener">{esc(t)} ↗</a>' for u, t in a['links'])
+    return (f'<section class="app" id="{a["id"]}"><div class="ah"><h3>{esc(a["name"])}</h3>{typechip(a["type"])}'
+            f'<span class="pill"{tip(a["q"])}>❓ {esc(q)}</span><span class="pill"{tip(a["price"])}>💵 {esc(entry)}</span>'
+            f'<span class="info"{tip(a["about"] + " Прошли: " + a["walked"] + ".")}>ⓘ подробнее</span></div>'
+            f'<p class="take">👉 {esc(take)}</p><div class="shots">{shots}</div><p class="lk small">{lk}</p></section>')
+
+KPI = [('🔍', '12', 'воронок прошли', 'Пройдены 02–03.11.2026 с мобильного браузера из США, без оплаты. Почту вводили, где её просят до пейволла.'),
+       ('🧠', '5', 'начинают с IQ-теста', 'CognitiveGrowth, MyIQ, Intellio, Selfery, Testora: 25–45 заданий с таймером → «считаем результат» → пейволл с закрытым отчётом.'),
+       ('📝', '6', 'начинают с опроса', 'memoryOS, Impulse, Nibble, Headway, Inflow, MyGrowth: 19–36 вопросов о целях и болях → «персональный план» → e-mail → пейволл.'),
+       ('💵', '$15–20', 'вход за 4 недели', 'Общая сетка ниши: 4 недели $15,19–19,99, продление ~$39–50. У Nibble первые платежи как у memoryOS, у Headway — как у Impulse.'),
+       ('🏆', '1,4', 'лучший ROAS — Selfery', 'Selfery: IQ-тест с заданиями на память, ROAS 1,40–1,44 (FB, август). Самый большой спенд — MyIQ, $5,5M за 28 дней.')]
+kpis = ''.join(f'<div class="kpi"{tip(t)}><span class="ki">{i}</span><span class="kv">{v}</span><span class="kl">{l}</span></div>' for i, v, l, t in KPI)
+
+JS = """
+const d=document.getElementById('zoom'),zi=document.getElementById('zoom-img'),zc=document.getElementById('zoom-cap');
+document.querySelectorAll('.shot').forEach(b=>b.addEventListener('click',()=>{zi.src=b.querySelector('img').src;zi.alt=b.dataset.cap;zc.textContent=b.dataset.cap;d.showModal();}));
+d.addEventListener('click',e=>{if(e.target===d)d.close();});
+(function(){
+  const tip=document.createElement('div');tip.id='tip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
+  let cur=null;
+  function place(x,y){const w=tip.offsetWidth,h=tip.offsetHeight,vw=innerWidth,vh=innerHeight;let nx=Math.min(x+14,vw-w-8),ny=y+16;if(ny+h>vh-8)ny=y-h-12;tip.style.left=Math.max(8,nx)+'px';tip.style.top=Math.max(8,ny)+'px';}
+  function show(el,x,y){cur=el;tip.textContent=el.dataset.tip;tip.hidden=false;place(x,y);}
+  function hide(){cur=null;tip.hidden=true;}
+  document.addEventListener('mouseover',e=>{const el=e.target.closest('[data-tip]');if(el)show(el,e.clientX,e.clientY);else if(cur)hide();});
+  document.addEventListener('mousemove',e=>{if(cur)place(e.clientX,e.clientY);});
+  document.addEventListener('focusin',e=>{const el=e.target.closest('[data-tip]');if(el){const r=el.getBoundingClientRect();show(el,r.left,r.bottom);}});
+  document.addEventListener('focusout',hide);
+  document.addEventListener('click',e=>{const el=e.target.closest('[data-tip]');if(el&&!e.target.closest('a,button')){if(cur===el)hide();else{const r=el.getBoundingClientRect();show(el,r.left,r.bottom);}}else if(!el)hide();});
+  addEventListener('scroll',hide,{passive:true});
+})();
+"""
 
 CSS = open(os.path.join(S, 'analogs-page.css'), encoding='utf-8').read()
+rows = ''.join(row(a) for a in APPS)
+cards = ''.join(card(a) for a in APPS)
 page = f'''<title>Воронки аналогов memoryOS</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,38 +162,37 @@ page = f'''<title>Воронки аналогов memoryOS</title>
 <style>{CSS}</style>
 <main class="wrap">
 <header class="hero">
-<p class="eyebrow">memoryOS-клон · разбор конкурентов · версия 2 · 03.11.2026</p>
-<h1>Воронки аналогов memoryOS</h1>
-<p class="lede">12 воронок, пройденных 02–03.11 с мобильного браузера из США, без оплаты (почту вводили, где её просят до пейволла). Нажмите на скрин, чтобы открыть крупно. Реклама — спенд за 28 дней из наших FB-выгрузок (срез 10.10, если не указано иное).</p>
+<p class="eyebrow">memoryOS-клон · конкуренты · 03.11.2026</p>
+<h1>🧠 Воронки аналогов memoryOS</h1>
+<p class="lede">Наведите на цифру или ячейку — появятся подробности. Нажмите на скрин — откроется крупно.</p>
+<div class="kpis">{kpis}</div>
 </header>
-
-<section class="card-sum">
-<h2>Главное</h2>
-<ul>
-<li><b>Два типа воронок.</b> «Сначала IQ-тест» (CognitiveGrowth, MyIQ, Intellio, Selfery, Testora): 25–45 заданий с таймером → «считаем результат» → пейволл с закрытым отчётом. «Опрос о себе» (memoryOS, Impulse, Nibble, Headway, Inflow, MyGrowth): 18–36 вопросов о целях и болях → «персональный план» → e-mail → пейволл.</li>
-<li><b>Самые большие деньги — у тестов:</b> MyIQ $5,5M за 28 дней, лучший ROAS — Selfery (1,4), у него задания на память внутри теста.</li>
-<li><b>Цены в нише общие:</b> 4 недели $15,19–19,99 → продление ~$39–50. У Nibble первые платежи как у memoryOS, у Headway — как у Impulse.</li>
-<li><b>В мнемонике крупный игрок один — memoryOS.</b> Для клона: база — копия квиза memoryOS; вариант B — мини-тест памяти → «индекс памяти» по шкале (как у Inflow) → закрытый отчёт (как у Intellio, Selfery).</li>
-</ul>
+<section class="sum">
+<h2>Что берём в клон</h2>
+<ol>
+<li><b>База</b> — квиз memoryOS как есть.</li>
+<li><b>Вариант B</b> — мини-тест памяти → «индекс памяти» по шкале → закрытый отчёт на пейволле.</li>
+<li><b>Цена</b> — по сетке ниши: $15–20 за 4 недели.</li>
+</ol>
 </section>
-
 <section>
-<h2>Сводная таблица</h2>
-<div class="tw"><table>
-<thead><tr><th>Приложение</th><th>Тип воронки</th><th>Вопросов до e-mail</th><th>E-mail до пейволла</th><th>Цена: первый платёж → продление</th><th>Реклама FB, 28 дн.</th><th>Ссылка</th><th>Докуда прошли</th></tr></thead>
+<h2>Все воронки</h2>
+<div class="tw"><table class="lite">
+<thead><tr><th>Приложение</th><th>Тип</th><th class="r">Вопросов</th><th class="r">Вход</th><th>Продление</th><th>Реклама, 28 дн.</th><th>Воронка</th></tr></thead>
 <tbody>{rows}</tbody></table></div>
-<p class="foot">Если ссылка не открывается: у нас из США все 12 открылись 03.11. Часть воронок (Intellio, Selfery, MyGrowth, Testora) может не открываться из других стран или с блокировщиком рекламы — попробуйте через VPN США.</p>
+<p class="foot">Не открывается Intellio, Selfery, MyGrowth или Testora — попробуйте через VPN США без блокировщика рекламы.</p>
 </section>
-
-{''.join(section(a) for a in APPS)}
-
-<footer class="foot"><p>Источники: прохождение воронок 02–03.11.2026 (memoryOS — также 20–22.10), FB-выгрузки #5–#9 (18.05–10.10.2026), App Store. Полный отчёт с выводами — memoryos/memoryos-analogs-v2-2026-11-03.html в репозитории.</p></footer>
+<section class="apps">
+<h2>Скрины по каждому</h2>
+{cards}
+</section>
+<footer class="foot"><p>Источники: прохождение воронок 02–03.11.2026, FB-выгрузки 18.05–10.10.2026, App Store. Полный отчёт — memoryos/memoryos-analogs-v2-2026-11-03.html.</p></footer>
 </main>
 <dialog id="zoom" aria-label="Экран крупно"><form method="dialog"><button class="close" type="submit" aria-label="Закрыть">×</button></form><img id="zoom-img" alt=""><p id="zoom-cap"></p></dialog>
-<script>
-const d=document.getElementById('zoom'),zi=document.getElementById('zoom-img'),zc=document.getElementById('zoom-cap');
-document.querySelectorAll('.shot').forEach(b=>b.addEventListener('click',()=>{{zi.src=b.querySelector('img').src;zi.alt=b.dataset.cap;zc.textContent=b.dataset.cap;d.showModal();}}));
-d.addEventListener('click',e=>{{if(e.target===d)d.close();}});
-</script>'''
+<script>{JS}</script>'''
 open(OUT, 'w', encoding='utf-8').write(page)
 print(OUT, os.path.getsize(OUT))
+
+# отдельный файл с полной HTML-обёрткой (для вложения и пересылки)
+full = '<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">' + page.replace('</style>', '</style></head><body>', 1) + '</body></html>'
+open(os.path.join(S, 'memoryos-analogs-funnels-2026-11-03.html'), 'w', encoding='utf-8').write(full)

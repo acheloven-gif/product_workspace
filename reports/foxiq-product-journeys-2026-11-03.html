@@ -217,6 +217,9 @@ button.showppl{align-self:flex-start;margin-top:4px}
 .tcard .tk{color:var(--muted)}
 .steps2{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
 .steps2 li{padding:2px 4px;border-radius:6px} .steps2 li:hover{background:var(--soft)}
+.pflow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.84rem}
+.pflow .ps{background:var(--accent-soft);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.pflow .ps:hover{border-color:var(--accent)}
 
 #ppl tbody tr:not(.st) td{border-bottom:none}
 #ppl .chip{white-space:normal;line-height:1.3;padding:3px 9px}
@@ -440,53 +443,33 @@ button.showppl{align-self:flex-start;margin-top:4px}
 
 <section id="ideal">
 <h2>Идеальные пути с максимальным LTV</h2>
-<p class="small muted">🧩 Собраны из того, что уже работает в данных. A — основа, B–D добавляются. Деньги — допущения в калькуляторе ниже; отказ банка оставлен как сейчас.</p>
-<div class="paths">
-<div class="card"><h3>🅰️ Неделя после сертификата</h3><p class="small muted">Для типов «забрал сертификат и ушёл» и «посмотрел результат и ушёл» — 44 человека из 65.</p>
-<ol class="days">
-<li><b>День 0</b><span>Результат, посчитанный по ответам: сильная и слабая стороны. После сертификата — понятный следующий шаг на сегодня и на завтра (что именно — выбрать по данным теста T1).</span></li>
-<li><b>+5′</b><span>После первой игры — план на 7 дней: «завтра — память, послезавтра — логика», и согласие на письмо-напоминание.</span></li>
-<li><b>Дни 1–5</b><span>Письмо с кнопкой входа без пароля; на главной — тренировка дня вместо «0/5 done», серия дней.</span></li>
-<li><b>День 6</b><span>За сутки до списания — экран и письмо: что получено за неделю, сколько стоит месяц, как отменить.</span></li>
-<li><b>Месяц 2+</b><span>Повторный IQ-замер раз в месяц, чтобы был виден рост; новые игры по сильной и слабой стороне.</span></li>
-</ol>
-<div class="tags"><span class="chip info">следующий шаг после сертификата</span><span class="chip info">план на неделю</span><span class="chip info">напоминание по почте</span></div>
-<p class="small">В калькуляторе: отмена в триале 17% вместо 24%, второй месяц 45%. LTV за 6 месяцев — <b class="num">$20,72</b> против $13,06 сейчас.</p></div>
-
-<div class="card"><h3>🎮 B. Игрок</h3><p class="small muted">Для тех, кто пробовал игры, — 12 человек: кто начал игру, играет около 6 минут, но на другой день не возвращается.</p>
-<ol class="days">
-<li><b>День 0</b><span>После игры — «твой рекорд сегодня» и вызов на завтра: та же игра, уровень выше.</span></li>
-<li><b>Дни 1–6</b><span>Набор дня из трёх игр (память, логика, внимание) по 2 минуты; серия дней видна на главной, меню из четырёх вкладок на месте.</span></li>
-<li><b>Неделя</b><span>Недельный «IQ-пульс»: короткий замер и график, как изменился результат.</span></li>
-</ol>
-<div class="tags"><span class="chip info">вызов на завтра</span><span class="chip info">набор дня</span><span class="chip info">недельный замер</span></div>
-<p class="small">В калькуляторе: отмена 19%, второй месяц 40%, дальше 78%. LTV — <b class="num">$18,30</b>.</p></div>
-
-<div class="card"><h3>🧪 C. Серия результатов</h3><p class="small muted">Для тех, кто пришёл за результатом: тесты-результаты в приложении уже есть, их открыли 9 из 64. Это идея для проверки, данных в её пользу пока мало.</p>
-<ol class="days">
-<li><b>День 0</b><span>После IQ — «Ваш следующий результат завтра: тип личности».</span></li>
-<li><b>Дни 1–4</b><span>По одному тесту-результату в день: личность, языки любви, черты внимания, детские паттерны; каждый — с сертификатом или карточкой, которой можно поделиться.</span></li>
-<li><b>День 5</b><span>Сводный портрет «IQ + личность» — повод остаться на месяц.</span></li>
-</ol>
-<div class="tags"><span class="chip info">тест в день</span><span class="chip info">сводный портрет</span></div>
-<p class="small">В калькуляторе: отмена 20%, второй месяц 38%, дальше 76%. LTV — <b class="num">$16,93</b>.</p></div>
-
-<div class="card"><h3>🚪 D. Отмена с выбором</h3><p class="small muted">Для 15 отменивших, 9 из них — в первый час.</p>
-<ol class="days">
-<li><b>Отмена</b><span>Один экран: «Почему уходите?» — «нужен был только результат», «дорого», «не нравятся тренировки», «другое»; кнопка «Отменить» видна сразу.</span></li>
-<li><b>Ответ</b><span>«Только результат» → оставить доступ к сертификату и предложить неделю тренировок; «дорого» → пауза на месяц; «не нравятся» → подборка игр по сильной стороне.</span></li>
-<li><b>После</b><span>Доступ до конца оплаченного периода; события отмены и причина — в PostHog.</span></li>
-</ol>
-<div class="tags"><span class="chip info">вопрос о причине</span><span class="chip info">пауза</span><span class="chip info">без сброса сессии</span></div>
-<p class="small">В калькуляторе: отмена в триале 17%, второй месяц 35%. LTV — <b class="num">$17,60</b>. Главная польза — причины отмен, которых сейчас нет.</p></div>
-</div>
+<p class="hint">Как мог бы продолжаться путь после сертификата — и сколько денег это даст. Гипотезы и метрики — в разделе «Тесты»; наведите на шаг, чтобы увидеть подробности.</p>
+<div class="tgrid"><div class="tcard">
+<div class="th"><span class="tcode">A</span><b>📜 Неделя после сертификата</b></div>
+<p class="small muted" data-tip="Типы «забрал сертификат и ушёл» (28) и «посмотрел результат и ушёл» (19)." tabindex="0">Для 47 из 65: «сертификат и ушёл» и «результат и ушёл»</p>
+<div class="pflow"><span class="ps" data-tip="Балл по ответам квиза: сильная и слабая сторона." tabindex="0">День 0: результат</span><span class="tarr">→</span><span class="ps" data-tip="Как сейчас — имя, PDF, поделиться." tabindex="0">сертификат</span><span class="tarr">→</span><span class="ps" data-tip="Экран «что дальше» сразу после сертификата: игра или тест на завтра." tabindex="0">задание на завтра</span><span class="tarr">→</span><span class="ps" data-tip="Письмо со ссылкой входа без пароля, на главной — задание дня вместо «0/5 done»." tabindex="0">дни 1–6: письмо → вход</span><span class="tarr">→</span><span class="ps" data-tip="Повторный IQ-замер раз в месяц, чтобы был виден рост." tabindex="0">месяц 2+: повторный замер</span></div>
+<div class="tr" data-tip="Допущения: отмена в триале 17% вместо 24%, второй месяц 45%, дальше 78%. Отказ банка — как сейчас, 50%." tabindex="0"><span class="tk">💰 LTV, 6 мес</span><span class="tv"><b>$20,72</b> против $13,06 сейчас</span></div>
+<div class="tr"><span class="tk">🧪 Проверка</span><span class="tv"><a href="#tests">тест T1</a></span></div>
+</div><div class="tcard">
+<div class="th"><span class="tcode">B</span><b>🎮 Игрок</b></div>
+<p class="small muted" data-tip="Кто начал игру, играет около 6 минут, но на другой день не возвращается никто." tabindex="0">Для 13 из 65: «пробовал игры»</p>
+<div class="pflow"><span class="ps" data-tip="Как сейчас." tabindex="0">День 0: игра</span><span class="tarr">→</span><span class="ps" data-tip="После игры: «твой рекорд» и та же игра завтра на уровень выше." tabindex="0">рекорд + вызов на завтра</span><span class="tarr">→</span><span class="ps" data-tip="3 игры по 2 минуты: память, логика, внимание; серия дней на главной." tabindex="0">дни 1–6: набор дня</span><span class="tarr">→</span><span class="ps" data-tip="Короткий замер и график, как изменился результат." tabindex="0">неделя: IQ-пульс</span></div>
+<div class="tr" data-tip="Допущения: отмена 19%, второй месяц 40%, дальше 78%. Отказ банка — как сейчас." tabindex="0"><span class="tk">💰 LTV, 6 мес</span><span class="tv"><b>$18,30</b> против $13,06 сейчас</span></div>
+<div class="tr"><span class="tk">🧪 Проверка</span><span class="tv"><a href="#tests">тест T1 (вариант B — игра)</a></span></div>
+</div><div class="tcard">
+<div class="th"><span class="tcode">C</span><b>🧪 Серия результатов</b></div>
+<p class="small muted" data-tip="Идея для проверки: тесты-результаты в приложении есть, но открыли их 9 из 64 — данных в пользу пока мало." tabindex="0">Для тех, кто пришёл за результатом</p>
+<div class="pflow"><span class="ps" data-tip="Как сейчас." tabindex="0">День 0: IQ</span><span class="tarr">→</span><span class="ps" data-tip="«Завтра — ваш тип личности»." tabindex="0">анонс на завтра</span><span class="tarr">→</span><span class="ps" data-tip="Личность, языки любви, черты внимания, детские паттерны; у каждого — карточка, которой можно поделиться." tabindex="0">дни 1–4: тест в день</span><span class="tarr">→</span><span class="ps" data-tip="«IQ + личность» — повод остаться на месяц." tabindex="0">день 5: сводный портрет</span></div>
+<div class="tr" data-tip="Допущения: отмена 20%, второй месяц 38%, дальше 76%. Отказ банка — как сейчас." tabindex="0"><span class="tk">💰 LTV, 6 мес</span><span class="tv"><b>$16,93</b> против $13,06 сейчас</span></div>
+<div class="tr"><span class="tk">🧪 Проверка</span><span class="tv"><a href="#tests">тест T2</a></span></div>
+</div></div>
 </section>
 
 <section id="calc">
 <h2>Калькулятор LTV</h2>
 <p class="small muted">💰 LTV за 6 месяцев на покупателя. «Сейчас»: отмены 24,1% и отказ банка 50,0% — факт по 58 закончившим триал; цена месяца $26,53 — средний чек Primer. Продления, возвраты, комиссии — допущения. Расходов на рекламу в данных нет — впишите CAC.</p>
 <div class="btns" role="group" aria-label="Пути">
-<button class="b" data-preset="now">Сейчас</button><button class="b" data-preset="A">A. Неделя после сертификата</button><button class="b" data-preset="B">B. Игрок</button><button class="b" data-preset="C">C. Серия результатов</button><button class="b" data-preset="D">D. Отмена с выбором</button>
+<button class="b" data-preset="now">Сейчас</button><button class="b" data-preset="A">A. Неделя после сертификата</button><button class="b" data-preset="B">B. Игрок</button><button class="b" data-preset="C">C. Серия результатов</button>
 </div>
 <div class="calc2">
 <div class="card"><div class="inputs">

@@ -318,8 +318,8 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <section id="features">
 <h2>Функции: чем пользуются, что нравится, что переделать</h2>
 <div class="fgrid">
-<div class="fc crit"><div class="fh">🧠 Результат IQ<span class="chip crit">Переделать</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:100.0%"></span></span><span class="hv num">64 из 64</span></div><p class="small">Балл у всех 137. «Start training →» видели 61, нажали 18.</p></div>
-<div class="fc ok"><div class="fh">📜 Сертификат<span class="chip ok">Усилить</span></div><div class="hb"><span class="hl">Имя</span><span class="ht"><span class="hf " style="width:56.2%"></span></span><span class="hv num">36</span></div><div class="hb"><span class="hl">PDF</span><span class="ht"><span class="hf " style="width:37.5%"></span></span><span class="hv num">24</span></div><p class="small">Самое частое действие. Для 16 человек — последний экран.</p></div>
+<div class="fc crit"><div class="fh">🧠 Результат IQ<span class="chip crit">Починить балл</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:100.0%"></span></span><span class="hv num">64 из 64</span></div><p class="small">Открывают все — это первый экран после оплаты, здесь проблемы нет. Чинить нужно сам балл: 137 у всех при любых ответах. Кнопку «Start training →» нажимает каждый четвёртый.</p></div>
+<div class="fc ok"><div class="fh">📜 Сертификат<span class="chip ok">Оставить</span></div><div class="hb"><span class="hl">Имя</span><span class="ht"><span class="hf " style="width:56.2%"></span></span><span class="hv num">36</span></div><div class="hb"><span class="hl">PDF</span><span class="ht"><span class="hf " style="width:37.5%"></span></span><span class="hv num">24</span></div><p class="small">С самим сертификатом всё в порядке: его берут чаще всего. Слабое — то, что после него: для 16 человек это последний экран, следующего шага нет.</p></div>
 <div class="fc warn"><div class="fh">🏠 Главная<span class="chip warn">Переделать</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:54.7%"></span></span><span class="hv num">35</span></div><p class="small">Встречает «0/5 done» и «0-day streak». Карточку тренировки нажали 8.</p></div>
 <div class="fc ok"><div class="fh">🎮 Игры<span class="chip ok">Проверить</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:17.2%"></span></span><span class="hv num">11</span></div><p class="small">⏱️ Кто начал — играет около 6 минут, 8 из 11 доиграли. На другой день играть не вернулся никто.</p></div>
 <div class="fc"><div class="fh">🧪 Тесты личности<span class="chip plain">Мало данных</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:14.1%"></span></span><span class="hv num">9</span></div><p class="small">Открывают, но надолго не задерживаются.</p></div>
@@ -328,9 +328,9 @@ button.showppl{align-self:flex-start;margin-top:4px}
 </div>
 <div class="card"><h3>📣 Источники: отменяют одинаково</h3>
 <div class="tbl"><table><thead><tr><th>utm_source</th><th class="r">Решили</th><th class="r">✅ Оплатили</th><th class="r">❌ Отменили</th><th class="r">🏦 Отказ банка</th></tr></thead><tbody>
-<tr><td>Meta 19</td><td class="r num">28</td><td class="r num">7</td><td class="r num">8</td><td class="r num">13</td></tr>
-<tr><td>Meta 22</td><td class="r num">22</td><td class="r num">6</td><td class="r num">6</td><td class="r num">10</td></tr>
-<tr><td>Meta 4</td><td class="r num">11</td><td class="r num">2</td><td class="r num">2</td><td class="r num">7</td></tr>
+<tr><td>Meta 19</td><td class="r num">28</td><td class="r num">7<span class="sub">25%</span></td><td class="r num">8<span class="sub">29%</span></td><td class="r num">13<span class="sub">46%</span></td></tr>
+<tr><td>Meta 22</td><td class="r num">19</td><td class="r num">6<span class="sub">32%</span></td><td class="r num">3<span class="sub">16%</span></td><td class="r num">10<span class="sub">53%</span></td></tr>
+<tr><td>Meta 4</td><td class="r num">11</td><td class="r num">2<span class="sub">18%</span></td><td class="r num">2<span class="sub">18%</span></td><td class="r num">7<span class="sub">64%</span></td></tr>
 </tbody></table></div><p class="small muted">Рынок один — США.</p></div>
 </section>
 
@@ -347,16 +347,41 @@ button.showppl{align-self:flex-start;margin-top:4px}
 </div>
 <div class="cols2">
 <div class="card"><h3>👻 Кто ещё заходит</h3><ul class="list">
-<li>36 человек с неуспешной оплатой попали в приложение, 20 увидели пейволл, купили 0.</li>
-<li>86 анонимов на странице входа; в 16 записях — «Send me a link» и дальше ничего.</li>
+<li><b>28 человек без оплаты</b> попали в приложение (подробно — карточка ниже).</li>
+<li><b>72 анонима на странице входа</b> — люди, которые открыли web.foxiq.app, не будучи залогинены, и так и не вошли (подробно — ниже).</li>
 <li>«65 в день» в PostHog — серверные персоны из воронки; пользователей приложения 0–17 в день.</li>
-</ul><p class="small muted">За весь период 12.10–03.11.</p></div>
+</ul><p class="small muted">Весь период 12.10–03.11.</p></div>
 <div class="card"><h3>❌ Отмена и онбординг</h3><ul class="list">
 <li>«Cancel subscription?» → «Yes, cancel» — 8 человек; «Keep subscription» — 0.</li>
 <li>Событий воронки отмены FoxIQ в PostHog нет; у Azora есть (<code>cancellation_survey_completed</code>).</li>
 <li>✅ Онбординг покупателям с воронки не показывается — 0 из 64, баг не подтвердился.</li>
 </ul></div>
 </div>
+<details class="small"><summary>💳 Вход в приложение без оплаты: как это происходит и что сделать — развернуть</summary><div class="pad">
+<div class="facts">
+<div class="fact"><span class="v">28</span><span class="l">человек с неуспешной оплатой $1 зашли в приложение</span></div>
+<div class="fact"><span class="v">18</span><span class="l">ушли из воронки через экран «Your results are saved! · Download FoxIQ»</span></div>
+<div class="fact"><span class="v">20</span><span class="l">увидели пейволл в приложении на сертификате</span></div>
+<div class="fact"><span class="v">0</span><span class="l">оплатили потом</span></div>
+</div>
+<p><b>Как это происходит (видно в данных).</b> Аккаунт создаётся, как только человек оставил почту в воронке. Дальше: пейволл → оплата $1 не прошла (экран «Payment Didn’t Go Through» видели 13 из 28) → повторный пейволл → кнопка, которая ведёт на экран <code>cta_skip_paywall</code> «Your results are saved! · Download FoxIQ» (последний экран воронки у 18 из 28) → автовход в приложение по ссылке с <code>session_id</code>. От отказа банка до входа в приложение — меньше минуты.</p>
+<p><b>Что они получают.</b> Результат IQ видят все 28. Сертификат закрыт пейволлом (<code>placement = iq_certificate</code>, видели 20). Но игры (5 человек), тесты (6) и трек уроков (7) открывались без подписки; пейволл на тестах видели только 3.</p>
+<p><b>Как отследить.</b> Primer: оплата $1 со статусом DECLINED и ни одной SETTLED на эту почту. PostHog: экран воронки <code>cta_skip_paywall</code> или <code>failed_payment_message</code> и вход в приложение без <code>subscription_started</code>. Можно собрать отдельную когорту в PostHog.</p>
+<p><b>Что можно сделать (решение — Дима, Никита и разработчик).</b></p>
+<ul class="list">
+<li>При автовходе сервер приложения проверяет статус подписки (он знает его из вебхука FunnelFox). Нет подписки — сразу экран «оплата не прошла» с повтором оплаты по той же цене $1, а не главная.</li>
+<li>Закрыть пейволлом все платные разделы одинаково (сейчас игры и трек открываются).</li>
+<li>Либо осознанно оставить вход без оплаты как «пробный просмотр», но тогда считать конверсию из него — сейчас 0 из 28.</li>
+</ul></div></details>
+<details class="small"><summary>🕵️ 72 анонима на странице входа: кто это — развернуть</summary><div class="pad">
+<p><b>Кто это (видно в данных).</b> Люди, которые открыли web.foxiq.app без входа в аккаунт и в PostHog так и не вошли: почты у персоны нет, автовхода нет. 45 начали со страницы входа <code>/auth</code>, 17 — со ссылки из письма, 6 — с главной.</p>
+<ul class="list">
+<li><b>Что делали</b> (53 записи): 23 ничего не нажали; 14 ввели почту и получили «We sent a sign-in link…»; 16 после входа дошли до главной; у 3 — «Invalid or expired token» (ссылка из письма устарела).</li>
+<li><b>Чья почта видна на экране</b> (19 человек): 3 — наши покупатели (вход с другого устройства или браузера), 4 — те, у кого не прошла оплата, 2 — свои тестовые, 10 — почты, которых нет ни в воронке FoxIQ, ни в оплатах 12–30.10.</li>
+<li><b>Всплеск 16.10:</b> 31 из 72 за один день, в основном Канада, Великобритания и Австралия, хотя реклама FoxIQ идёт на США. Откуда он — не знаем: это может быть внешняя ссылка, проверка или боты.</li>
+</ul>
+<p><b>Нам это важно?</b> Почти нет: в метрики покупателей они не входят. Из полезного — 3 покупателя не смогли войти с другого устройства и 3 упёрлись в просроченную ссылку. Стоит сделать ссылку из письма долгоживущей и показывать «Get a new link» сразу.</p>
+</div></details>
 </section>
 
 <section id="rage">

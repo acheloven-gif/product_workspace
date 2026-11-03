@@ -200,6 +200,9 @@ details .pad{padding:4px 16px 16px}
 .hb:hover{background:var(--soft)}
 #tip{background:#3a241b;color:#fff8f3;font-size:.84rem;line-height:1.4;padding:8px 11px;border-radius:10px;max-width:300px;box-shadow:0 8px 24px rgba(120,60,30,.25)}
 .hint{font-size:.82rem;color:var(--muted)}
+.ppl-wrap > summary{font-size:1.05rem;padding:16px 18px}
+.ppl-wrap[open] > summary{border-bottom:1px solid var(--line)}
+button.showppl{align-self:flex-start;margin-top:4px}
 
 #ppl tbody tr:not(.st) td{border-bottom:none}
 #ppl .chip{white-space:normal;line-height:1.3;padding:3px 9px}
@@ -237,7 +240,7 @@ details .pad{padding:4px 16px 16px}
 
 <p class="hint">💡 Наведите на плитку, полосу или шаг — появится расшифровка, как считали.</p>
 <nav class="toc" aria-label="Разделы">
-<a href="#map">Карта продукта</a><a href="#arch">Типы пути</a><a href="#features">Функции</a><a href="#rec">Записи сессий</a><a href="#rage">Злые тапы</a><a href="#why">Почему отменяют</a><a href="#ideal">Идеальные пути</a><a href="#calc">Калькулятор LTV</a><a href="#tests">Тесты</a><a href="#limits">Ограничения</a><a href="#gloss">Словарь</a><a href="#people">👥 Каждый покупатель</a>
+<a href="#map">Карта продукта</a><a href="#arch">Типы пути</a><a href="#people">👥 Каждый покупатель</a><a href="#features">Функции</a><a href="#rec">Записи сессий</a><a href="#rage">Злые тапы</a><a href="#why">Почему отменяют</a><a href="#ideal">Идеальные пути</a><a href="#calc">Калькулятор LTV</a><a href="#tests">Тесты</a><a href="#limits">Ограничения</a><a href="#gloss">Словарь</a>
 </nav>
 
 <section id="map">
@@ -269,31 +272,47 @@ details .pad{padding:4px 16px 16px}
 
 <section id="arch">
 <h2>Пять типов пути</h2>
-<div class="stack" role="img" aria-label="доли типов"><span class="seg" style="width:43,1%;background:var(--c1)"></span><span class="seg" style="width:29.2%;background:var(--c4)" data-tip="📜 Сертификат и ушёл: 28 человек. Оплатили 8, отменили 4, отказ банка 13, в триале 3. На человека $7.00 (Primer)."></span><span class="seg" style="width:20.0%;background:var(--c3)" data-tip="👀 Результат и ушёл: 19 человек. Оплатили 6, отменили 5, отказ банка 6, в триале 2. На человека $10.70 (Primer)."></span><span class="seg" style="width:6.2%;background:var(--c2)" data-tip="🎮 Пробовал игры: 13 человек. Оплатили 1, отменили 4, отказ банка 7, в триале 1. На человека $3.50 (Primer)."></span><span class="seg" style="width:1.5%;background:var(--s-neutral)" data-tip="🔁 Возвращается: 4 человек. Оплатили 0, отменили 1, отказ банка 3, в триале 0. На человека $1.00 (Primer)."></span></div>
+<div class="stack" role="img" aria-label="доли типов"><span class="seg" style="width:43.1%;background:var(--c1)" data-tip="📜 Сертификат и ушёл: 28 чел. (43%). Оплатили 8, отменили 4, отказ банка 13, в триале 3. На человека $7,00 (Primer)."></span><span class="seg" style="width:29.2%;background:var(--c4)" data-tip="👀 Результат и ушёл: 19 чел. (29%). Оплатили 6, отменили 5, отказ банка 6, в триале 2. На человека $10,70 (Primer)."></span><span class="seg" style="width:20.0%;background:var(--c3)" data-tip="🎮 Пробовал игры: 13 чел. (20%). Оплатили 1, отменили 4, отказ банка 7, в триале 1. На человека $3,50 (Primer)."></span><span class="seg" style="width:6.2%;background:var(--c2)" data-tip="🔁 Возвращается: 4 чел. (6%). Оплатили 0, отменили 1, отказ банка 3, в триале 0. На человека $1,00 (Primer)."></span><span class="seg" style="width:1.5%;background:var(--s-neutral)" data-tip="🚫 Не открыл приложение: 1 чел. (2%). Оплатили 0, отменили 1, отказ банка 0, в триале 0."></span></div>
 <div class="legend"><span class="k"><span class="sw g-c1"></span>📜 Сертификат и ушёл 43%</span><span class="k"><span class="sw g-c4"></span>👀 Результат и ушёл 29%</span><span class="k"><span class="sw g-c3"></span>🎮 Пробовал игры 20%</span><span class="k"><span class="sw g-c2"></span>🔁 Возвращается 6%</span><span class="k"><span class="sw g-neutral"></span>🚫 Не открыл 2%</span></div>
 <p class="small muted">По поведению, каждый — в одном типе. Полоса: <span class="chip ok">оплатили</span> <span class="chip crit">отменили</span> <span class="chip warn">отказ банка</span> <span class="chip plain">в триале</span>. Деньги — Primer.</p>
 <div class="arch"><div class="card"><div class="top"><h3>📜 Забрал сертификат и ушёл</h3><span class="share">28 · 43%</span></div>
 <div class="mini" role="img" aria-label="оплатили 8 · отменили 4 · отказ банка 13 · в триале 3"><span class="g-good" style="width:28.6%"></span><span class="g-crit" style="width:14.3%"></span><span class="g-warn" style="width:46.4%"></span><span class="g-neutral" style="width:10.7%"></span></div>
 <p class="small muted">Оплатили 8 · отменили 4 · отказ банка 13 · в триале 3</p>
 <dl class="kv"><dt>💵 На человека</dt><dd class="num">$7,00 <span class="muted">(25 в Primer)</span></dd><dt>📜 Имя / PDF</dt><dd>27 / 19</dd><dt>⏱️ Активно, медиана</dt><dd>34 с</dd><dt>📣 Источник</dt><dd>Meta 27, неизвестно 1</dd></dl>
-<p><b>Что нужно:</b> Следующий шаг после сертификата: сейчас для 15 из 28 это последний экран.</p></div><div class="card"><div class="top"><h3>👀 Посмотрел результат и ушёл</h3><span class="share">19 · 29%</span></div>
+<p><b>Что нужно:</b> Следующий шаг после сертификата: сейчас для 15 из 28 это последний экран.</p><button class="b showppl" data-show-arch="Забрал сертификат и ушёл">👥 Показать этих людей (28)</button></div><div class="card"><div class="top"><h3>👀 Посмотрел результат и ушёл</h3><span class="share">19 · 29%</span></div>
 <div class="mini" role="img" aria-label="оплатили 6 · отменили 5 · отказ банка 6 · в триале 2"><span class="g-good" style="width:31.6%"></span><span class="g-crit" style="width:26.3%"></span><span class="g-warn" style="width:31.6%"></span><span class="g-neutral" style="width:10.5%"></span></div>
 <p class="small muted">Оплатили 6 · отменили 5 · отказ банка 6 · в триале 2</p>
 <dl class="kv"><dt>💵 На человека</dt><dd class="num">$10,70 <span class="muted">(17 в Primer)</span></dd><dt>⏱️ Активно, медиана</dt><dd>30 с</dd><dt>📣 Источник</dt><dd>Meta 19</dd></dl>
-<p><b>Что нужно:</b> Результат, который объясняет, откуда балл и что с ним делать. Деньги здесь самые рискованные: человек не увидел продукт.</p></div><div class="card"><div class="top"><h3>🎮 Попробовал игры в первый день</h3><span class="share">13 · 20%</span></div>
+<p><b>Что нужно:</b> Результат, который объясняет, откуда балл и что с ним делать. Деньги здесь самые рискованные: человек не увидел продукт.</p><button class="b showppl" data-show-arch="Посмотрел результат и ушёл">👥 Показать этих людей (19)</button></div><div class="card"><div class="top"><h3>🎮 Попробовал игры в первый день</h3><span class="share">13 · 20%</span></div>
 <div class="mini" role="img" aria-label="оплатили 1 · отменили 4 · отказ банка 7 · в триале 1"><span class="g-good" style="width:7.7%"></span><span class="g-crit" style="width:30.8%"></span><span class="g-warn" style="width:53.8%"></span><span class="g-neutral" style="width:7.7%"></span></div>
 <p class="small muted">Оплатили 1 · отменили 4 · отказ банка 7 · в триале 1</p>
 <dl class="kv"><dt>💵 На человека</dt><dd class="num">$3,50 <span class="muted">(12 в Primer)</span></dd><dt>🎮 Открывали игры</dt><dd>10 из 13</dd><dt>⏱️ Активно, медиана</dt><dd>256 с</dd><dt>📣 Источник</dt><dd>Meta 12, Google 1</dd></dl>
-<p><b>Что нужно:</b> Повод прийти завтра: игры открывают, но на другой день не возвращаются.</p></div><div class="card"><div class="top"><h3>🔁 Возвращается</h3><span class="share">4 · 6%</span></div>
+<p><b>Что нужно:</b> Повод прийти завтра: игры открывают, но на другой день не возвращаются.</p><button class="b showppl" data-show-arch="Попробовал тренировки в первый день">👥 Показать этих людей (13)</button></div><div class="card"><div class="top"><h3>🔁 Возвращается</h3><span class="share">4 · 6%</span></div>
 <div class="mini" role="img" aria-label="отменили 1 · отказ банка 3"><span class="g-crit" style="width:25.0%"></span><span class="g-warn" style="width:75.0%"></span></div>
 <p class="small muted">Отменили 1 · отказ банка 3</p>
 <dl class="kv"><dt>💵 На человека</dt><dd class="num">$1,00 <span class="muted">(4 в Primer)</span></dd><dt>⏱️ Активно, медиана</dt><dd>72 с</dd><dt>📣 Источник</dt><dd>Meta 4</dd></dl>
-<p><b>Что нужно:</b> Понятная польза за $29.99: ради этих людей и существует подписка.</p></div><div class="card"><div class="top"><h3>🚫 Не открыл приложение</h3><span class="share">1 · 2%</span></div>
+<p><b>Что нужно:</b> Понятная польза за $29.99: ради этих людей и существует подписка.</p><button class="b showppl" data-show-arch="Возвращается">👥 Показать этих людей (4)</button></div><div class="card"><div class="top"><h3>🚫 Не открыл приложение</h3><span class="share">1 · 2%</span></div>
 <div class="mini" role="img" aria-label="отменили 1"><span class="g-crit" style="width:100.0%"></span></div>
 <p class="small muted">Отменили 1</p>
 <dl class="kv"><dt>💵 На человека</dt><dd class="num">$0,00 <span class="muted">(0 в Primer)</span></dd><dt>📣 Источник</dt><dd>Meta 1</dd></dl>
-<p><b>Что нужно:</b> Письмо со ссылкой входа сразу после оплаты.</p></div></div>
-<div class="note">💡 <b>Платят те, кто продуктом не пользуется:</b> «результат и ушёл» — $10.70 на человека, «возвращается» — $1,00. 14 из 15 оплативших после списания не заходили. Отказ банка (29 из 58) — только как факт, платёжку не разбираем.</div>
+<p><b>Что нужно:</b> Письмо со ссылкой входа сразу после оплаты.</p><button class="b showppl" data-show-arch="Не открыл приложение">👥 Показать этих людей (1)</button></div></div>
+<div class="note">💡 <b>Платят те, кто продуктом не пользуется:</b> «результат и ушёл» — $10,70 на человека, «возвращается» — $1,00. 14 из 15 оплативших после списания не заходили. Отказ банка (29 из 58) — только как факт, платёжку не разбираем.</div>
+</section>
+
+<section id="people">
+<details id="ppl-details" class="ppl-wrap"><summary>👥 Каждый покупатель — путь по шагам (65 человек) · развернуть</summary><div class="pad">
+<p class="small muted">Строка — человек, под ней его путь. Время — от оплаты: 14′ — минуты, 6,9 дн — дни. 💵 Деньги — Primer (у купивших после 30.10 — «—»).</p>
+<div class="filters">
+<label for="f-arch">Тип пути<select id="f-arch"><option value="">Все</option><option>Забрал сертификат и ушёл</option><option>Посмотрел результат и ушёл</option><option>Попробовал тренировки в первый день</option><option>Возвращается</option><option>Не открыл приложение</option></select></label>
+<label for="f-out">Итог<select id="f-out"><option value="">Все</option><option>оплатил</option><option>отменил</option><option>отказ банка</option><option>в триале</option></select></label>
+<label for="f-src">Источник<select id="f-src"><option value="">Все</option><option>Meta</option><option>Google</option><option>неизвестно</option><option>письмо</option></select></label>
+<label for="f-q">Профиль начинается с<input id="f-q" placeholder="01M4…" autocomplete="off"></label>
+<span class="small muted" id="ppl-count"></span>
+</div>
+<div class="tbl" id="ppl"><table>
+<thead><tr><th>Профиль</th><th>Источник</th><th>Тип пути</th><th>Итог</th><th class="r">Деньги</th></tr></thead>
+<tbody id="ppl-body"></tbody></table></div>
+</div></details>
 </section>
 
 <section id="features">
@@ -535,21 +554,6 @@ details .pad{padding:4px 16px 16px}
 </ul>
 </div></details></section>
 
-<section id="people">
-<h2>Путь каждого покупателя</h2>
-<p class="small muted">Строка — человек, под ней его путь. Время — от оплаты: 14′ — минуты, 6,9 дн — дни. 💵 Деньги — Primer (у купивших после 30.10 — «—»).</p>
-<div class="filters">
-<label for="f-arch">Тип пути<select id="f-arch"><option value="">Все</option><option>Забрал сертификат и ушёл</option><option>Посмотрел результат и ушёл</option><option>Попробовал тренировки в первый день</option><option>Возвращается</option><option>Не открыл приложение</option></select></label>
-<label for="f-out">Итог<select id="f-out"><option value="">Все</option><option>оплатил</option><option>отменил</option><option>отказ банка</option><option>в триале</option></select></label>
-<label for="f-src">Источник<select id="f-src"><option value="">Все</option><option>Meta</option><option>Google</option><option>неизвестно</option><option>письмо</option></select></label>
-<label for="f-q">Профиль начинается с<input id="f-q" placeholder="01M4…" autocomplete="off"></label>
-<span class="small muted" id="ppl-count"></span>
-</div>
-<div class="tbl" id="ppl"><table>
-<thead><tr><th>Профиль</th><th>Источник</th><th>Тип пути</th><th>Итог</th><th class="r">Деньги</th></tr></thead>
-<tbody id="ppl-body"></tbody></table></div>
-</section>
-
 
 
 
@@ -644,6 +648,15 @@ window.__PRESETS={"now": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c
   document.addEventListener('focusout',hide);
   document.addEventListener('click',function(e){ var el=e.target.closest('[data-tip]'); if(el && e.pointerType!=='mouse'){ var r=el.getBoundingClientRect(); if(cur===el) hide(); else show(el,r.left,r.bottom);} else if(!el) hide(); });
   window.addEventListener('scroll',function(){ if(cur && !matchMedia('(hover:hover)').matches) hide(); },{passive:true});
+})();
+(function(){
+  var d=document.getElementById('ppl-details'), fa=document.getElementById('f-arch');
+  Array.prototype.forEach.call(document.querySelectorAll('[data-show-arch]'),function(b){
+    b.addEventListener('click',function(){ if(fa){ fa.value=b.getAttribute('data-show-arch'); fa.dispatchEvent(new Event('change')); }
+      if(d) d.open=true; document.getElementById('people').scrollIntoView({behavior:'smooth',block:'start'}); });
+  });
+  if(location.hash==='#people' && d) d.open=true;
+  Array.prototype.forEach.call(document.querySelectorAll('a[href="#people"]'),function(a){ a.addEventListener('click',function(){ if(d) d.open=true; }); });
 })();
 
 </script>

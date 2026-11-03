@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Путь покупателей FoxIQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~960px), same visual system as the Azora Japan journeys report (Katya's template). Summary, product map, archetypes, every user, features, what recordings show, why people cancel, ideal paths with LTV calculator, tests, limits, glossary. */
+:root{
+  --bg:#f5f7f8; --surface:#ffffff; --ink:#15202a; --muted:#56636f; --line:#dbe2e7; --soft:#eef3f5;
+  --accent:#0d5f6f; --accent-soft:#e3f1f3;
+  --crit:#b42318; --crit-soft:#fdecea; --warn:#a15c07; --warn-soft:#fdf2e1; --ok:#0b7a4b; --ok-soft:#e5f5ec; --info:#3a4fb8; --info-soft:#eaedfb;
+  --bar:#2a78d6; --bar2:#c8d6dc;
+  --s-good:#0ca30c; --s-warn:#fab219; --s-crit:#d03b3b; --s-neutral:#b9c6cd;
+  --c1:#2a78d6; --c2:#eb6834; --c3:#1baf7a; --c4:#eda100;
+  --f-body:"Golos Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+  --accent:#5cc0d2; --accent-soft:#16323a;
+  --crit:#ff8a7d; --crit-soft:#3a1d1a; --warn:#f3b45a; --warn-soft:#352a17; --ok:#56d39a; --ok-soft:#163126; --info:#9fb0ff; --info-soft:#1f2645;
+  --bar:#3987e5; --bar2:#33434b;
+  --s-neutral:#4a5a63;
+  --c1:#3987e5; --c2:#d95926; --c3:#199e70; --c4:#c98500;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:46px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.12rem;font-weight:650}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:flex;flex-direction:column;gap:12px}
+header .meta{color:var(--muted);font-size:.95rem;max-width:72ch}
+section{display:flex;flex-direction:column;gap:16px}
+section > p, .card > p{max-width:72ch}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:2px 9px;border-radius:999px;white-space:nowrap;vertical-align:2px}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.info{background:var(--info-soft);color:var(--info)}
+.chip.plain{background:var(--soft);color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:none}
+tr.tot td{background:var(--soft);font-weight:600}
+td.r,th.r{text-align:right}
+td .sub{display:block;color:var(--muted);font-size:.8rem}
+td.bar{width:32%}
+.barline{display:flex;align-items:center;gap:8px}
+.barline .b{height:10px;border-radius:0 4px 4px 0;background:var(--bar);display:inline-block;flex:none}
+.barline .b.lo{background:var(--s-crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h4{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+ul.list,ol.list{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact .l{font-size:.84rem;color:var(--muted);line-height:1.35}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0;max-width:74ch}
+.steps{counter-reset:st;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps > li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:flex;flex-direction:column;gap:6px}
+.steps > li::before{content:counter(st);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps .meta2{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--muted)}
+.steps .meta2 b{color:var(--ink);font-weight:600}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:8px 16px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,[data-tip]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.92rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details > summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--muted)}
+details[open] > summary::before{content:"▾"}
+details .tbl{border:none;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+/* stacked 100% bar */
+.stack{display:flex;gap:2px;height:24px;background:var(--surface)}
+.stack .seg{height:100%;min-width:3px}
+.stack .seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem}
+.legend .k{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.g-good{background:var(--s-good)} .g-warn{background:var(--s-warn)} .g-crit{background:var(--s-crit)} .g-neutral{background:var(--s-neutral)}
+.g-c1{background:var(--c1)} .g-c2{background:var(--c2)} .g-c3{background:var(--c3)} .g-c4{background:var(--c4)}
+/* column chart */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;height:190px;border-bottom:1px solid var(--line);padding-top:8px}
+.cols .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.cols .c .val{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+.cols .c .col{width:24px;max-width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.cols-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.25}
+/* calculator */
+.calc table{min-width:640px}
+.calc td input{width:100%;max-width:120px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc td.inp{width:150px}
+.calc tr.out td{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc tr.out td:first-child{font-family:var(--f-body)}
+.calc tr.head td{background:var(--soft);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:.88rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+.delta-up{color:var(--ok)} .delta-down{color:var(--crit)}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+.wrap{max-width:960px}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.arch .card{gap:9px}
+.arch .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arch .share{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.mini{display:flex;height:10px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.mini span{height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.flow .st b{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.flow .st.hot{border-color:var(--crit);background:var(--crit-soft)}
+.flow .arrow{align-self:center;color:var(--muted);font-family:var(--f-mono)}
+.ja{font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",var(--f-body)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.filters label{font-size:.84rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.filters select,.filters input{font:inherit;font-size:.9rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:150px}
+#ppl td .story{display:block;font-size:.8rem;color:var(--muted);line-height:1.45;margin-top:3px}
+#ppl table{min-width:760px}
+.hyp{display:flex;flex-direction:column;gap:12px}
+.hyp .card h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cols2 > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.days{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.days li{display:grid;grid-template-columns:62px 1fr;gap:8px}
+.days li b{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+.calc2 .inputs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.9rem}
+.calc2 .inputs input{width:110px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc2 .out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{font-family:var(--f-mono);font-size:1.6rem;font-weight:600}
+button.b.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+@media (max-width:720px){.cols2,.calc2{grid-template-columns:1fr}}
+
+@media (max-width:560px){h1{font-size:1.65rem} .card{padding:16px} dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} .cols .c .col{width:18px} .cols-x{font-size:.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+tr.st td{border-top:none;padding-top:0}
+#ppl tbody tr:not(.st) td{border-bottom:none}
+#ppl .chip{white-space:normal;line-height:1.3;padding:3px 9px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="eyebrow">FoxIQ · веб · 12 октября – 3 ноября 2026</p>
+<h1>Путь покупателей FoxIQ</h1>
+<p class="meta">Разбор каждого из 94 человек, которые оплатили пробную неделю за $1 с 12.10 00:00 по 03.11 12:00 МСК: что они делали в приложении, на чём застревали, почему отменяли и где теряются деньги. Источники: оплаты Primer (выгрузка из задачи, 324 транзакции FoxIQ с 12.10 по 30.10 17:15 МСК, 76 покупателей), события PostHog (приложение <code>foxiq</code>, воронка <code>foxiq_ff</code>) и 114 записей сессий веб-приложения у 85 покупателей (6,3 часа активного времени). Человек обозначен первыми 10 символами профиля FunnelFox, личных данных в отчёте нет. Тестовые аккаунты исключены по полному списку FoxIQ из <code>playbook/posthog.md</code>; среди 94 покупателей тестовых не оказалось.</p>
+<div class="note small">События веб-приложения FoxIQ в PostHog начинаются 13.10 в 17:00 UTC. Путь 6 человек, купивших 12–13.10, не виден, у них есть только оплаты. Время в выгрузке Primer — UTC, а не UTC+3: у 70 человек, которые есть и в Primer, и в PostHog, оплата и <code>subscription_started</code> совпадают с точностью до 4 минут. Деньги есть только у 76 человек, купивших до 30.10 17:15 МСК; у 18 более поздних покупателей видно только поведение.</div>
+</header>
+
+<section id="summary" class="summary">
+<h2>Коротко</h2>
+<ol>
+<li><b>Результат теста одинаковый у всех.</b> Квиз задаёт 40 вопросов, а приложение показывает каждому «Your IQ Score 137», «Genius», «Higher than 81%» и «Top 19%». В PostHog у всех 171 человека, которым показывали результат с 24.09, <code>iq_score = 137</code>; среди покупателей — 87 из 87. Сами цифры противоречат друг другу: IQ 137 — это примерно верхние 1%, а не 19%. Воронка обещает персональный план тренировок и рост «до +38% за 4 недели»; в приложении после результата — сертификат и главная с «Daily Brain Training 0/5».</li>
+<li><b>Продукт на один заход.</b> 81 из 87 человек, заходивших в приложение, были в нём только в день покупки. Медиана активного времени по записям — 42 секунды на человека за весь период. Главное действие — сертификат: имя ввели 49 (56%), PDF скачали 31 (36%). Хоть одну тренировку открыли 18 (21%), в другой день вернулись 6 (7%).</li>
+<li><b>Решение об отмене принимают в первые минуты.</b> Сами отменили 17 человек, 11 из них — в первые 31 минуту, медиана — 14 минут после оплаты. 9 из 17 отменили кнопкой в приложении за два нажатия: экран не спрашивает причину и ничего не предлагает, «Keep subscription» не нажал никто. Почему уходят, по данным не видно.</li>
+<li><b>Больше всего денег теряется на отказе банка, а не на отменах.</b> Из 58 человек, чей триал закончился (покупки 12–27.10): оплатили месяц 15 (26%), отменили 12 (21%), не прошло списание у 31 (53%). Предоплаченные карты: отказ у 11 из 11; кредитные: оплатили 9 из 16. Трое оплатили только третью попытку — со скидкой, $15 вместо $29.99. Деньги теряются и раньше: у 77 человек не прошла оплата $1, позже заплатили 7.</li>
+<li><b>Платят те, кто продуктом не пользуется.</b> 14 из 15 оплативших после списания в приложение не заходили; 13 из 15 — типы «посмотрел результат и ушёл» и «забрал сертификат и ушёл». Из 25 человек, которые пробовали тренировки или возвращались, оплатил один. Такие деньги неустойчивы: второй месяц, скорее всего, продлят немногие. В воронке обещан 30-дневный возврат денег; возвратов в Primer пока нет.</li>
+<li><b>Что нравится.</b> Кто начал игру, остаётся в ней: на страницах игр медиана — 6 минут, 16 из 18 доиграли хотя бы одну. Тесты личности открыли 11 человек, медиана — около 3 минут. Сертификат — то, ради чего пришли. Злых тапов почти нет: вне игр — у 4 человек из 85.</li>
+<li><b>Что делать и сколько ждать тестов.</b> Первым делом — честный результат по ответам, вторая попытка оплаты после отказа, продолжение сразу после сертификата и вопрос о причине при отмене. Поток — около 4 покупателей в день, а не 65. 65 в день в PostHog — это серверные персоны, которые создаются по почте из воронки; пользователей приложения около 10 в день. Поэтому тесты на покупателях идут 1–3 месяца. Быстрее всего — тест на экране ошибки оплаты (около 7 человек в день, 4 недели). Пять тестов, порядок — в конце отчёта.</li>
+</ol>
+</section>
+
+<nav class="toc" aria-label="Разделы">
+<a href="#map">Карта продукта</a><a href="#arch">Типы пути</a><a href="#people">Каждый покупатель</a><a href="#features">Функции</a><a href="#rec">Записи сессий</a><a href="#rage">Злые тапы</a><a href="#why">Почему отменяют</a><a href="#ideal">Идеальные пути</a><a href="#calc">Калькулятор LTV</a><a href="#tests">Тесты</a><a href="#limits">Ограничения</a><a href="#gloss">Словарь</a>
+</nav>
+
+<section id="map">
+<h2>Карта продукта</h2>
+<p>Покупатель приходит из рекламы Meta (89 из 94 человек; <code>utm_source</code> 19, 22 и 4) или Google (3), проходит IQ-тест в FunnelFox (f.foxiq.app/test-iq) и платит $1 за неделю. Всё остальное происходит в веб-приложении web.foxiq.app, куда человека переводит автовход сразу после оплаты: первое событие в приложении — в среднем (медиана) через 9 секунд после оплаты. Ниже — путь в том виде, в каком его видит покупатель. Красным отмечены шаги, где теряется больше всего людей или денег. Цифры воронки — люди, 17.10–02.11 по МСК, тестовые исключены.</p>
+<div class="flow">
+<div class="st"><b>Квиз</b>40 вопросов; между ними «You Are Doing Faster Than 85%», «Top 19% in Logic so far!»; возраст, образование. Начали 9 167</div>
+<div class="st"><b>Почта</b>«Where Should We Send Your IQ Certificate?». Оставили почту 892</div>
+<div class="st"><b>Пейволл</b>$1 за 7 дней, затем $29.99 в месяц; «97% discount reserved», 30-day money-back. Видели 895</div>
+<div class="st hot"><b>Оплата</b>Открыли 886, начали платить 170, оплатили 63. Экран ошибки оплаты видели 114</div>
+<div class="st"><b>Вход</b>«Signing you in…»; медиана ответа сервера — 1 с, дольше 3 с — у 26 из 85</div>
+<div class="st hot"><b>Результат</b>«Your IQ Score 137», «Genius», «Top 19%», сравнение со знаменитостями. Кнопки «Get a certificate» и «Start training →»</div>
+<div class="st"><b>Сертификат</b>Имя → «Your certificate is ready» → «Download PDF», «Share»</div>
+<div class="st"><b>Главная</b>«Daily Brain Training 0/5», «0-day streak · keep it going», игры, тесты, трек уроков</div>
+<div class="st hot"><b>Отмена</b>Профиль → «Manage or cancel subscription» → «Cancel subscription?» → «Yes, cancel»</div>
+<div class="st hot"><b>Списание</b>7-й день: $29.99; при отказе — 9-й день $20.99 и 14-й день $15</div>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Раздел</th><th>Что внутри</th><th>Что платно</th><th class="r">Открывали из 87</th></tr></thead>
+<tbody>
+<tr><td>Результат IQ<span class="sub">/iq-result</span></td><td>Балл 137, «Genius», «выше 81%», «Famous People's IQ», распределение по возрасту и областям учёбы, «Just a little more training and you'll join the top 2%»</td><td>— (в подписке)</td><td class="r num">87</td></tr>
+<tr><td>Сертификат<span class="sub">/iq-certificate</span></td><td>Ввод имени, PDF «Certificate of Achievement · Classification: Genius», поделиться</td><td>—</td><td class="r num">49<span class="sub">скачали PDF 31</span></td></tr>
+<tr><td>Главная<span class="sub">/</span></td><td>«Daily Brain Training», «Today's workout», быстрые игры, «Insight of the day», серия дней, энергия</td><td>—</td><td class="r num">45</td></tr>
+<tr><td>Игры<span class="sub">/games, 11 игр</span></td><td>Fox Memory, Color Rush, Nonogram, Word Forge, Raindrops, Number Hunt, Shape Rotate и другие</td><td>—</td><td class="r num">18<span class="sub">Fox Memory 15, Color Rush 9, Nonogram 6</span></td></tr>
+<tr><td>Тесты<span class="sub">/tests</span></td><td>Тест личности, языки любви, черты СДВГ, детские паттерны</td><td>—</td><td class="r num">11</td></tr>
+<tr><td>Трек и Explore<span class="sub">/track, /explore</span></td><td>Уроки «Memory · Lesson 1», XP, достижения; подборки</td><td>—</td><td class="r num">9 и 9<span class="sub">урок прошли 6</span></td></tr>
+<tr><td>Профиль и настройки<span class="sub">/profile, /settings</span></td><td>Серия дней, достижения, «Premium active until…», управление подпиской и отмена</td><td>—</td><td class="r num">25<span class="sub">страница подписки 10</span></td></tr>
+</tbody></table></div>
+<p>Внутри приложения покупатель ничего не докупает: апселлов в воронке нет, покупок в приложении у покупателей нет. Всё, что приносит деньги, — триал $1 и списание подписки на 7-й день. Повода вернуться завтра в приложении нет: напоминаний нет, пуши на вебе не работают, письма сейчас только транзакционные.</p>
+</section>
+
+<section id="arch">
+<h2>Шесть типов пути</h2>
+<p>Покупатели разделены по поведению, а не по итогу. Сначала смотрю, зашёл ли человек в приложение, потом — возвращался ли он в другой день (не считая дней, когда он только отменял), открывал ли игры или тесты, брал ли сертификат. Каждый человек попадает ровно в один тип. Полоса под описанием: <span class="chip ok">оплатили</span> <span class="chip crit">отменили</span> <span class="chip warn">отказ банка</span> <span class="chip plain">в триале</span>. «Денег на человека» — по Primer, только у покупателей до 30.10 (76 человек), включая тех, кто ещё в триале.</p>
+<div class="arch">
+<div class="card"><div class="top"><h3>Забрал сертификат и ушёл</h3><span class="share">41 · 44%</span></div>
+<p>Смотрит результат, вводит имя, скачивает PDF и уходит. Последний экран у 25 из 41 — сертификат. Активное время — медиана 36 секунд. Тренировки не открывает, в другой день не приходит.</p><div class="mini" role="img" aria-label="оплатили 8, отменили 4, отказ банка 11, в триале 18"><span class="g-good" style="width:19.5%"></span><span class="g-crit" style="width:9.8%"></span><span class="g-warn" style="width:26.8%"></span><span class="g-neutral" style="width:43.9%"></span></div>
+<p class="small muted">Оплатили 8 · отменили 4 · отказ банка 11 · ещё в триале 18</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">$5,69 <span class="muted">(32 в Primer)</span></dd><dt>Ввели имя / скачали PDF</dt><dd>40 / 27</dd><dt>Открывали главную</dt><dd>11 из 41</dd><dt>Источник</dt><dd>Meta 38, Google 2, неизвестно 1</dd></dl>
+<p><b>Что нужно:</b> Следующий шаг после сертификата. Сейчас сертификат — конец пути, хотя на нём написано «Just a little more training…».</p></div>
+<div class="card"><div class="top"><h3>Посмотрел результат и ушёл</h3><span class="share">21 · 22%</span></div>
+<p>Видит «IQ 137 · Genius» и уходит, не взяв сертификат. Последний экран у 12 из 21 — результат. Активное время — медиана 24 секунды.</p><div class="mini" role="img" aria-label="оплатили 5, отменили 5, отказ банка 6, в триале 5"><span class="g-good" style="width:23.8%"></span><span class="g-crit" style="width:23.8%"></span><span class="g-warn" style="width:28.6%"></span><span class="g-neutral" style="width:23.8%"></span></div>
+<p class="small muted">Оплатили 5 · отменили 5 · отказ банка 6 · ещё в триале 5</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">$8,10 <span class="muted">(19 в Primer)</span></dd><dt>Отменили в первые 2 часа</dt><dd>4 из 5 отменивших</dd><dt>Открывали главную</dt><dd>9 из 21</dd><dt>Источник</dt><dd>Meta 21</dd></dl>
+<p><b>Что нужно:</b> Результат, который объясняет, откуда балл и что с ним делать дальше. Это самые «дорогие» деньги: человек не увидел продукт.</p></div>
+<div class="card"><div class="top"><h3>Попробовал тренировки в первый день</h3><span class="share">19 · 20%</span></div>
+<p>После результата идёт на главную и играет: Fox Memory, Color Rush, Nonogram; 16 из 19 открывали игры. Активное время — медиана 3 минуты, больше всех. На следующий день не приходит.</p><div class="mini" role="img" aria-label="оплатили 1, отменили 4, отказ банка 6, в триале 8"><span class="g-good" style="width:5.3%"></span><span class="g-crit" style="width:21.1%"></span><span class="g-warn" style="width:31.6%"></span><span class="g-neutral" style="width:42.1%"></span></div>
+<p class="small muted">Оплатили 1 · отменили 4 · отказ банка 6 · ещё в триале 8</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">$3,14 <span class="muted">(14 в Primer)</span></dd><dt>Скачали сертификат</dt><dd>2 из 19</dd><dt>Открывали игры</dt><dd>16 из 19</dd><dt>Источник</dt><dd>Meta 17, Google 1, неизвестно 1</dd></dl>
+<p><b>Что нужно:</b> Продолжение завтра и напоминание о нём. Тренировки этим людям интересны, но в приложении нет ни плана, ни причины прийти снова.</p></div>
+<div class="card"><div class="top"><h3>Возвращается</h3><span class="share">6 · 6%</span></div>
+<p>Заходит в двух и более днях, чаще всего на главную и к сертификату; игры открывали двое, тесты — один. Трое из шести отменили, трое получили отказ банка; оплативших нет.</p><div class="mini" role="img" aria-label="оплатили 0, отменили 3, отказ банка 3"><span class="g-crit" style="width:50%"></span><span class="g-warn" style="width:50%"></span></div>
+<p class="small muted">Оплатили 0 · отменили 3 · отказ банка 3</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">$1,00 <span class="muted">(5 в Primer)</span></dd><dt>Открывали игры / тесты</dt><dd>2 / 1 из 6</dd><dt>Источник</dt><dd>Meta 6</dd></dl>
+<p><b>Что нужно:</b> Ради этой аудитории существует подписка. Им нужна понятная польза за $29.99 и оплата, которая проходит.</p></div>
+<div class="card"><div class="top"><h3>Нет данных о пути</h3><span class="share">6 · 6%</span></div>
+<p>Купили 12–13.10, до начала событий приложения в PostHog. Видны только оплаты.</p><div class="mini" role="img" aria-label="оплатили 1, отказ банка 5"><span class="g-good" style="width:16.7%"></span><span class="g-warn" style="width:83.3%"></span></div>
+<p class="small muted">Оплатили 1 · отказ банка 5</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">$6,00</dd><dt>Источник</dt><dd>Meta 6</dd></dl>
+<p><b>Что нужно:</b> Ничего не выводить по этой группе: данных о поведении нет.</p></div>
+<div class="card"><div class="top"><h3>Не открыл приложение</h3><span class="share">1 · 1%</span></div>
+<p>Купил 03.11 и через 29 минут отменил; событий приложения нет. Возможно, пытался войти с другого устройства: на странице входа за период 86 анонимных посетителей (см. «Записи сессий»).</p><div class="mini" role="img" aria-label="отменили 1"><span class="g-crit" style="width:100%"></span></div>
+<p class="small muted">Отменил 1 · в Primer ещё нет</p>
+<dl class="kv"><dt>Денег на человека</dt><dd class="num">—</dd><dt>Источник</dt><dd>Meta 1</dd></dl>
+<p><b>Что нужно:</b> Письмо со ссылкой входа в приложение сразу после оплаты.</p></div>
+</div>
+<div class="note"><b>Деньги сейчас приносят те, кто продуктом не пользуется.</b> На человека больше всего платят типы «посмотрел результат и ушёл» ($8,10) и «забрал сертификат и ушёл» ($5,69), меньше всего — «попробовал тренировки» ($3,14) и «возвращается» ($1,00). 14 из 15 оплативших после списания в приложение не заходили. Такая выручка неустойчива: эти люди вряд ли продлят второй месяц, а обещанный в воронке 30-дневный возврат денег делает её ещё рискованнее. Людей в каждом типе мало (6–41), поэтому разница в долях между типами — ориентир, а не доказательство.</div>
+</section>
+
+<section id="people">
+<h2>Путь каждого покупателя</h2>
+<p>Строка — один человек: дата покупки по МСК, источник, устройство и способ оплаты, тип пути, итог и деньги (триал и списания по Primer; возвратов нет). Под строкой — его путь. Время указано от оплаты триала: 14′ — 14 минут, 6,9 дн — 6,9 дня; «день 1» — следующий календарный день по МСК. У покупателей после 30.10 денег в выгрузке нет, стоит «—». «Злые тапы» — три и больше нажатия в одно место за полторы секунды.</p>
+<div class="filters">
+<label for="f-arch">Тип пути<select id="f-arch"><option value="">Все</option><option>Забрал сертификат и ушёл</option><option>Посмотрел результат и ушёл</option><option>Попробовал тренировки в первый день</option><option>Возвращается</option><option>Нет данных о пути (покупка до 13.10)</option><option>Не открыл приложение</option></select></label>
+<label for="f-out">Итог<select id="f-out"><option value="">Все</option><option>оплатил</option><option>отменил</option><option>отказ банка</option><option>в триале</option></select></label>
+<label for="f-src">Источник<select id="f-src"><option value="">Все</option><option>Meta</option><option>Google</option><option>неизвестно</option></select></label>
+<label for="f-q">Профиль начинается с<input id="f-q" placeholder="01M4…" autocomplete="off"></label>
+<span class="small muted" id="ppl-count"></span>
+</div>
+<div class="tbl" id="ppl"><table>
+<thead><tr><th>Профиль</th><th>Источник</th><th>Тип пути</th><th>Итог</th><th class="r">Деньги</th></tr></thead>
+<tbody id="ppl-body"></tbody></table></div>
+</section>
+
+<section id="features">
+<h2>Функции: чем пользуются, что нравится, что переделать</h2>
+<p>«Открывали» — сколько из 87 человек, заходивших в приложение, хоть раз воспользовались функцией. «2+ дня» — пользовались в двух и более днях по МСК. «Время» — медиана времени на страницах функции по событиям PostHog (от открытия страницы до следующей). Столбец «Отменили» — сколько из оплативших и отменивших отменили; в среднем по всем — 16 из 30 (53%). Отказы банка и тех, кто ещё в триале, этот столбец не учитывает. Это связь, а не причина, и людей мало: разница меньше 20–25 п. п. может быть случайной.</p>
+<div class="tbl"><table>
+<thead><tr><th>Функция</th><th class="r">Открывали</th><th class="r">2+ дня</th><th class="r">Время, медиана</th><th class="r">Отменили</th><th>Вывод</th></tr></thead>
+<tbody>
+<tr><td><b>Результат IQ</b><span class="sub">/iq-result</span><span class="sub">в подписке</span></td>
+<td class="r num">87<span class="sub">100%</span></td><td class="r num">2</td><td class="r num">45 с</td>
+<td class="r num">16 из 30<span class="sub">53%</span></td>
+<td><span class="chip crit">Переделать</span><span class="sub">Ядро продукта, но балл у всех одинаковый — 137, а «выше 81%» и «Top 19%» не сходятся с «Genius». Кнопку «Start training →» видели 83, нажали 24.</span></td></tr>
+<tr><td><b>Сертификат: имя и PDF</b><span class="sub">/iq-certificate</span><span class="sub">в подписке</span></td>
+<td class="r num">49<span class="sub">56%</span></td><td class="r num">2</td><td class="r num">—</td>
+<td class="r num">6 из 14<span class="sub">43%</span></td>
+<td><span class="chip ok">Усилить</span><span class="sub">Самое частое действие: ввели имя 49, скачали PDF 31, поделились 8. Для 25 человек это последний экран — из сертификата никуда не ведут.</span></td></tr>
+<tr><td><b>Главная: Daily Brain Training</b><span class="sub">/</span><span class="sub">в подписке</span></td>
+<td class="r num">45<span class="sub">52%</span></td><td class="r num">3</td><td class="r num">24 с</td>
+<td class="r num">14 из 19<span class="sub">74%</span></td>
+<td><span class="chip warn">Переделать подачу</span><span class="sub">Встречает «0/5 done» и «0-day streak»; карточку тренировки нажали 13 из 43 с записями. Это не продолжение результата, а пустой счётчик.</span></td></tr>
+<tr><td><b>Игры</b><span class="sub">/games, 11 игр</span><span class="sub">в подписке</span></td>
+<td class="r num">18<span class="sub">21%</span></td><td class="r num">0</td><td class="r num">6 мин 11 с</td>
+<td class="r num">3 из 3<span class="sub">—</span></td>
+<td><span class="chip ok">Усилить</span><span class="sub">Кто начал, тот играет: 16 из 18 доиграли хоть одну игру; чаще всего Fox Memory (15). Ни один не вернулся играть на другой день.</span></td></tr>
+<tr><td><b>Тесты личности</b><span class="sub">/tests</span><span class="sub">в подписке</span></td>
+<td class="r num">11<span class="sub">13%</span></td><td class="r num">1</td><td class="r num">2 мин 49 с</td>
+<td class="r num">2 из 5<span class="sub">40%</span></td>
+<td><span class="chip ok">Проверить</span><span class="sub">Тест личности — 6, языки любви — 4, черты СДВГ — 2. Читают долго; среди решивших оплатили 3 из 5, но людей слишком мало для вывода.</span></td></tr>
+<tr><td><b>Трек уроков</b><span class="sub">/track</span><span class="sub">в подписке</span></td>
+<td class="r num">9<span class="sub">10%</span></td><td class="r num">1</td><td class="r num">25 с</td>
+<td class="r num">1 из 2<span class="sub">—</span></td>
+<td><span class="chip plain">Не пользуются</span><span class="sub">Урок прошли 6 человек. Готовая механика «урок в день», но до неё почти не доходят.</span></td></tr>
+<tr><td><b>Explore</b><span class="sub">/explore</span><span class="sub">в подписке</span></td>
+<td class="r num">9<span class="sub">10%</span></td><td class="r num">1</td><td class="r num">21 с</td>
+<td class="r num">1 из 2<span class="sub">—</span></td>
+<td><span class="chip plain">Оставить</span><span class="sub">Заглядывают и уходят.</span></td></tr>
+<tr><td><b>Профиль и серия дней</b><span class="sub">/profile</span><span class="sub">в подписке</span></td>
+<td class="r num">25<span class="sub">29%</span></td><td class="r num">1</td><td class="r num">10 с</td>
+<td class="r num">12 из 13<span class="sub">92%</span></td>
+<td><span class="chip plain">Связь механическая</span><span class="sub">Через профиль идут к отмене подписки, поэтому почти все решившие здесь — отменившие.</span></td></tr>
+<tr><td><b>Отмена подписки</b><span class="sub">/settings/subscription</span><span class="sub">бесплатно</span></td>
+<td class="r num">10<span class="sub">11%</span></td><td class="r num">0</td><td class="r num">28 с</td>
+<td class="r num">9 из 9<span class="sub">100%</span></td>
+<td><span class="chip crit">Переделать</span><span class="sub">Два нажатия, без вопроса о причине и без вариантов. У 3 из 9 после «Yes, cancel» появился экран «Go to sign in».</span></td></tr>
+</tbody></table></div>
+<div class="card">
+<h3>Сравнение по источникам и картам</h3>
+<p>У FoxIQ один рынок — США (92 из 94 покупателей; ещё один из Армении — возможно, свой аккаунт, под вопросом по <code>playbook/posthog.md</code> — и один без страны). Поэтому вместо стран — сравнение по кабинетам Meta и по типу карты среди 63 решивших: 58 закончивших триал и 5 отменивших до его конца. Кабинеты почти не различаются; итог определяет карта.</p>
+<div class="tbl"><table><thead><tr><th>Срез</th><th class="r">Решили</th><th class="r">Оплатили</th><th class="r">Отменили</th><th class="r">Отказ банка</th></tr></thead>
+<tbody>
+<tr><td>Meta, <code>utm_source=19</code></td><td class="r num">28</td><td class="r num">7</td><td class="r num">8</td><td class="r num">13</td></tr>
+<tr><td>Meta, <code>utm_source=22</code></td><td class="r num">22</td><td class="r num">6</td><td class="r num">6</td><td class="r num">10</td></tr>
+<tr><td>Meta, <code>utm_source=4</code></td><td class="r num">11</td><td class="r num">2</td><td class="r num">2</td><td class="r num">7</td></tr>
+<tr><td>Кредитная карта</td><td class="r num">16</td><td class="r num">9</td><td class="r num">3</td><td class="r num">4</td></tr>
+<tr><td>Дебетовая карта</td><td class="r num">31</td><td class="r num">5</td><td class="r num">11</td><td class="r num">15</td></tr>
+<tr><td>Предоплаченная карта</td><td class="r num">11</td><td class="r num">0</td><td class="r num">0</td><td class="r num">11</td></tr>
+</tbody></table></div>
+<p class="small muted">«Решили» — оплатили, отменили или получили отказ банка. По кабинетам в сумме 61: ещё у двоих источник Google или не указан. Тип карты — по BIN в Primer; у 5 человек тип неизвестен. Источник: <code>utm_source</code> из оплаты Primer или из воронки.</p>
+</div>
+</section>
+
+<section id="rec">
+<h2>Что видно в записях сессий</h2>
+<p>114 записей 85 покупателей разобраны по шагам: какие экраны открывались, куда нажимали, какой текст был на экране, ошибки консоли и медленные ответы сервера. Ниже — то, что встречается у многих; число — сколько человек из 85 это видели или делали. Ещё 101 запись — у тех, кто заходил в приложение без покупки; о них — отдельная карточка.</p>
+<div class="cols2">
+<div class="card"><h3>Первые минуты</h3><ul class="list">
+<li>«Signing you in…» видели все 85. Ответ автовхода: медиана — 1 секунда, дольше 3 секунд — у 26 человек.</li>
+<li>Первое нажатие — медиана 23 секунды после начала записи; весь активный путь покупателя — медиана 42 секунды.</li>
+<li>«Your IQ Score», «137», «Top 19%», «Higher than 81%» — у 83 из 85. В сертификате «Classification: Genius» — у 42.</li>
+<li>«Get a certificate» нажали 52, «Get my certificate» — 49, «Download PDF» — 31, «Share» — 8. «Start training →» видели 83, нажали 24.</li>
+</ul></div>
+<div class="card"><h3>Главная и тренировки</h3><ul class="list">
+<li>Главную видели 43: «Let's get smarter today!», «Daily Brain Training 0/5 done», «0-day streak · keep it going», «energy». Карточку тренировки нажали 13.</li>
+<li>Кнопку «Start» в игре нажимали 17 человек, «Play again» — 11.</li>
+<li>Плана тренировок, прогноза роста или напоминания «завтра» на экранах нет. Фраз «+38%» и «Your plan», которые обещает воронка, в записях нет ни у одного человека.</li>
+<li>«FoxIQ Premium is active» и «Premium active until …» — у 42: дата окончания видна, цена следующего списания — нет.</li>
+</ul></div>
+<div class="card"><h3>Ошибки и ожидание</h3><ul class="list">
+<li>Ошибки в консоли — единичные: «AxiosError: Network Error», «Request aborted», «Script error.» — по одной записи. Стабильность — не проблема.</li>
+<li>Медленные ответы (дольше 3 секунд): автовход — у 26, запрос флагов PostHog <code>/flags/</code> — у 13, вход по ссылке из письма — у 8, картинки лис и обложки игр — у 4–7.</li>
+<li>После «Yes, cancel» у 3 из 9 отменивших появился экран «Go to sign in»: похоже, сессия сбрасывается сразу после отмены, хотя доступ обещан «until the end of your current billing period».</li>
+</ul></div>
+<div class="card"><h3>Проверка бага с онбордингом</h3><ul class="list">
+<li>Онбординг (<code>/onboarding</code>, <code>onboarding_started</code>) не показывался ни одному из 87 покупателей с воронки. Баг из задачи на этих данных не подтверждается.</li>
+<li>Онбординг видели 5 человек с почтой, но без оплаты, которые вошли через страницу входа, и тестовые аккаунты.</li>
+</ul></div>
+</div>
+<div class="card"><h3>Кто ещё заходит в приложение</h3>
+<ul class="list">
+<li><b>36 человек, у которых не прошла оплата $1,</b> всё равно попали в приложение по автовходу. 28 увидели результат «137», 20 — пейволл в приложении (<code>placement = iq_certificate</code>), купили 0. Экран подписки в приложении не работает как второй шанс после отказа банка.</li>
+<li><b>86 анонимных посетителей</b> страницы входа (<code>/auth</code>, вход по ссылке из письма): Safari и Chrome на телефоне, 9 — с компьютера. В 16 записях человек вводит почту и нажимает «Send me a link», дальше в этой сессии не идёт. Часть из них — покупатели, которые открывают приложение не в том браузере, где платили: оплата идёт во встроенном браузере Facebook и Instagram. Сколько из них потом вошли, не видно: вход по ссылке начинается новой сессией.</li>
+<li><b>«65 пользователей в день»</b> в PostHog (например, 28.10 — 104, 30.10 — 153 без тестовых) — это все персоны проекта <code>foxiq</code>. Почти все созданы сервером по почте из воронки (<code>posthog-php</code>). Людей с событиями из браузера (<code>$lib = 'web'</code>) — 0–17 в день; покупателей — 0–10 в день, в среднем 4.</li>
+</ul></div>
+<div class="card"><h3>После отмены</h3>
+<p>Экран «Cancel subscription?» с текстом «You'll keep access until the end of your current billing period» и кнопками «Keep subscription» / «Yes, cancel» видели 9 человек. «Keep subscription» не нажал никто, «Yes, cancel» — все 9. Ещё 8 из 17 отменивших отменили не через приложение: где именно — в данных не видно. Позже чем через полчаса после отмены в приложение заходили 4 из 17.</p></div>
+</section>
+
+<section id="rage">
+<h2>Злые тапы: где они и что исправить</h2>
+<p>Злой тап — три и больше нажатия в одно место за полторы секунды. Они есть у 7 из 85 покупателей с записями (8%). У трёх — только в играх: быстрые нажатия на буквы в Word Forge и кнопки в Nonogram и Color Rush — это обычная игра, а не раздражение. Вне игр злые тапы есть у 4 человек. Отдельно я искала нажатия, после которых экран не меняется дольше секунды, на элементах, которые не являются полями ввода, скачиванием или кнопкой «Поделиться». Такие нажатия есть у 32 человек, но половина из них приходится на пустые блоки. Людей слишком мало, чтобы оценить связь с отменой. Чинить это стоит как гигиену первого впечатления, а не как способ снизить отмены.</p>
+<div class="tbl"><table style="min-width:860px">
+<thead><tr><th>Где</th><th>Что происходит</th><th class="r">Людей</th><th>Что исправить</th></tr></thead>
+<tbody>
+<tr><td><b>Результат IQ</b><span class="sub">«Famous People's IQ», графики</span></td>
+<td>Нажимают на имена знаменитостей («Emma Watson», «You»), на «Distribution by Age Group» и «How your score compares in 18–29». Ничего не происходит. Один человек сделал две серии злых тапов на этом списке ещё на экране автовхода.</td>
+<td class="r num">3</td>
+<td>Либо сделать сравнение интерактивным (нажал на знаменитость — увидел, чем отличается его профиль), либо убрать вид кнопки у строк.</td></tr>
+<tr><td><b>Превью сертификата и призывы</b><span class="sub">результат, сертификат</span></td>
+<td>Нажимают на «Official FoxIQ certificate with your name», «Just a little more training and you'll join the top 2%…» и «of people. Set new goals and keep moving forward!». Это текст, а не кнопки.</td>
+<td class="r num">3 и 3</td>
+<td>Превью сертификата должно открывать сертификат, а фраза про «top 2%» — первую тренировку. Если человек нажимает на призыв, он готов действовать.</td></tr>
+<tr><td><b>Главная</b><span class="sub">иллюстрация и заголовок</span></td>
+<td>Шесть нажатий подряд на иллюстрацию «Big mind ♡ / Small steps» и пять — на «Let's get smarter today!» у одного человека; затем он ушёл в игру.</td>
+<td class="r num">1</td>
+<td>Иллюстрация и заголовок запускают тренировку дня.</td></tr>
+<tr><td><b>Автовход</b><span class="sub">«Signing you in…»</span></td>
+<td>Дольше 3 секунд у 26 человек; один тапал по экрану во время загрузки.</td>
+<td class="r num">26</td>
+<td>Показывать прогресс и что будет дальше («Ваш результат готов»), ускорить ответ сервера.</td></tr>
+<tr><td><b>После отмены</b><span class="sub">«Go to sign in»</span></td>
+<td>После «Yes, cancel» человек оказывается на экране входа, хотя доступ должен сохраниться до конца периода.</td>
+<td class="r num">3 из 9</td>
+<td>Не сбрасывать сессию при отмене; показать «Доступ до …, списаний больше не будет».</td></tr>
+</tbody></table></div>
+<div class="card"><h3>Общие правила для разработки</h3><ul class="list">
+<li>Любое нажатие даёт видимый отклик сразу, не позже 0,1 секунды; если ответ дольше — индикатор загрузки.</li>
+<li>Что не нажимается, не выглядит как кнопка; что выглядит как призыв к действию — нажимается и ведёт к этому действию.</li>
+<li>Экран не заканчивается тупиком: после сертификата, игры и теста есть следующий шаг.</li>
+<li>Как проверить результат: доля покупателей с хотя бы одним нажатием без отклика вне игр. Сейчас 32 из 85 (38%), включая нажатия на пустые блоки. Целевое значение — ниже 15%; это ориентир, а не измеренная норма.</li>
+</ul></div>
+</section>
+
+<section id="why" class="hyp">
+<h2>Почему отменяют и почему не платят</h2>
+<p>Гипотезы отсортированы по силе доказательств и по деньгам. Для каждой — что за неё и против неё в данных, как исправить и каким тестом проверить. Опроса при отмене нет, поэтому прямых ответов «почему» в данных нет; всё ниже выведено из поведения. Тёмные паттерны в отмене (спрятанная кнопка, бесконечные экраны) не предлагаю: в США это прямой риск по правилу FTC «click-to-cancel» и законам штатов об автопродлении.</p>
+
+<div class="card"><h3>1. Списание не проходит: половина триалов заканчивается отказом банка <span class="chip crit">сильные доказательства</span></h3>
+<div class="cols2"><div><p class="h4">За</p><ul class="list"><li>Из 58 закончивших триал отказ банка у 31 (53%) — это больше, чем оплатили (15) и отменили (12) вместе.</li><li>Предоплаченные карты — 11 из 11 отказов; кредитные — 9 из 16 оплатили, дебетовые — 5 из 31.</li><li>34 из 35 первых отказов — «REFER_TO_CARD_ISSUER / generic_decline». Это общий отказ банка без кода «нет денег».</li><li>Повторные попытки со скидкой ($20.99 на 9-й день, $15 на 14-й) вернули троих.</li></ul></div>
+<div><p class="h4">Против</p><ul class="list"><li>Часть людей с отказом банка, возможно, отменила бы и сама: в приложение после покупки они почти не заходили.</li><li>Почему банк отказывает, по «generic_decline» не видно: это может быть и нехватка денег, и антифрод на повторное списание.</li></ul></div></div>
+<p><b>Исправить:</b> решить с Катей и Димой (платёжка — их зона), что делать с предоплаченными картами на триале $1: проверку суммы $29.99 при оформлении, разовую покупку результата вместо триала или запрет таких карт. Выяснить, почему стоят повторные попытки со скидкой и устраивает ли такая цена. <b>Проверить:</b> T4.</p></div>
+
+<div class="card"><h3>2. Купили результат, а не подписку: получили его за минуту и уходят <span class="chip crit">сильные доказательства</span></h3>
+<div class="cols2"><div><p class="h4">За</p><ul class="list"><li>81 из 87 были в приложении только в день покупки; медиана активного времени — 42 секунды.</li><li>11 из 17 отменивших сделали это в первые 31 минуту, медиана — 14 минут после оплаты; у 25 человек последний экран — сертификат.</li><li>Воронка продаёт результат и сертификат на почту; план тренировок упомянут как бонус, а в приложении плана нет.</li><li>14 из 15 оплативших после списания в приложение не заходили.</li></ul></div>
+<div><p class="h4">Против</p><ul class="list"><li>Кто начал играть, играет 3–6 минут: продукт может держать. Но играть в другой день не вернулся ни один из 18.</li></ul></div></div>
+<p><b>Исправить:</b> сделать сертификат началом, а не концом: сразу после него — первая 5-минутная тренировка «на основе вашего результата» и понятный план на неделю; на следующий день — письмо со ссылкой входа (письма для возврата уже в разработке у Дани). <b>Проверить:</b> T2.</p></div>
+
+<div class="card"><h3>3. Отказ в оплате $1 теряет почти столько же людей, сколько покупает <span class="chip warn">средние доказательства</span></h3>
+<div class="cols2"><div><p class="h4">За</p><ul class="list"><li>С 12 по 30.10 у 77 человек не прошла оплата $1, позже заплатили 7; за тот же период оплатили 76.</li><li>Экран ошибки оплаты в воронке видели 114 человек за 17.10–02.11.</li><li>36 человек с неуспешной оплатой попали в приложение, 20 увидели там пейволл, купили 0.</li></ul></div>
+<div><p class="h4">Против</p><ul class="list"><li>Те, у кого не проходит $1, скорее всего, не пройдут и $29.99: при второй попытке можно получить ещё больше отказов банка на 7-й день.</li></ul></div></div>
+<p><b>Исправить:</b> на экране ошибки и в пейволле приложения — другой способ оплаты (Apple Pay, Google Pay, другая карта) с той же ценой и понятной причиной отказа. <b>Проверить:</b> T1, защитная метрика — отказ банка на 7-й день.</p></div>
+
+<div class="card"><h3>4. Одинаковый результат подрывает доверие <span class="chip warn">средние доказательства</span></h3>
+<div class="cols2"><div><p class="h4">За</p><ul class="list"><li>У всех 171 человека с 24.09 балл 137 при 40 разных ответах; «Top 19%» в приложении повторяет интерстишл воронки «Top 19% in Logic so far!».</li><li>137 и «Genius» не сходятся с «выше 81%» и «Top 19%».</li><li>В воронке — 30-дневный возврат денег; человек, который сравнит результат с другом, получит основание просить деньги назад.</li></ul></div>
+<div><p class="h4">Против</p><ul class="list"><li>Высокий балл приятен: сертификат скачивает каждый третий. Прямой связи с отменой по данным не видно — результат видят все, и оплатившие, и отменившие.</li></ul></div></div>
+<p>Доказательства средние для риска жалоб и возвратов и слабые для связи с отменами. <b>Исправить:</b> считать балл по ответам квиза и согласовать проценты с баллом; это делать без теста. <b>Проверить:</b> T5 («до и после»).</p></div>
+
+<div class="card"><h3>5. Отмена в два нажатия, причины неизвестны <span class="chip warn">причины не знаем</span></h3>
+<p>9 из 17 отменили кнопкой в приложении: «Cancel subscription» → «Yes, cancel», «Keep subscription» не нажал никто. Причину не спрашивают, поэтому мы не знаем, почему уходят. Трое отменили за сутки до списания (через 6,0–6,5 дня): помнили о дате, хотя писем-напоминаний о списании в данных не видно. <b>Исправить:</b> один экран с вопросом о причине (можно пропустить) и вариантом под причину — пауза, неделя ещё за $1, тренировки на неделю; кнопка «Отменить» на том же экране. <b>Проверить:</b> T3.</p></div>
+</section>
+
+<section id="ideal">
+<h2>Идеальные пути с максимальным LTV</h2>
+<p>Четыре пути собраны из того, что уже работает в данных: люди приходят за результатом и сертификатом, играют, если начали, кредитные карты проходят списание, а отменяют в первый час. Каждый путь закрывает одну из причин потерь. Пути можно совмещать: A — основа, B, C и D добавляются к нему. Деньги посчитаны в калькуляторе ниже на допущениях, а не на фактах: вторых списаний ещё нет, первые продления были 19–30.10.</p>
+<div class="paths">
+<div class="card"><h3>A. Неделя после сертификата</h3><p class="small muted">Для типов «забрал сертификат и ушёл», «посмотрел результат и ушёл» и «попробовал тренировки» — 81 человек из 94.</p>
+<ol class="days">
+<li><b>День 0</b><span>Результат, посчитанный по ответам: сильная и слабая стороны. Сертификат — и сразу «Тренировка №1 для вашей слабой стороны, 5 минут».</span></li>
+<li><b>+5′</b><span>После первой игры — план на 7 дней: «завтра — память, послезавтра — логика», и согласие на письмо-напоминание.</span></li>
+<li><b>Дни 1–5</b><span>Письмо с кнопкой входа без пароля; на главной — тренировка дня вместо «0/5 done», серия дней.</span></li>
+<li><b>День 6</b><span>За сутки до списания — экран и письмо: что получено за неделю, сколько стоит месяц, как отменить.</span></li>
+<li><b>Месяц 2+</b><span>Повторный IQ-замер раз в месяц, чтобы был виден рост; новые игры по сильной и слабой стороне.</span></li>
+</ol>
+<div class="tags"><span class="chip info">тренировка сразу после сертификата</span><span class="chip info">план на неделю</span><span class="chip info">напоминание по почте</span></div>
+<p class="small">В калькуляторе: отмена в триале 15% вместо 21%, второй месяц 45%. LTV за 6 месяцев — <b class="num">$19,88</b> против $13,06 сейчас.</p></div>
+
+<div class="card"><h3>B. Оплата, которая проходит</h3><p class="small muted">Для покупателей с предоплаченными и дебетовыми картами — 42 из 63 решивших, из них отказ банка у 26.</p>
+<ol class="days">
+<li><b>Оплата</b><span>Если карта предоплаченная (по BIN), вместо триала — разовая покупка полного результата и сертификата, без автопродления.</span></li>
+<li><b>Остальные</b><span>Триал $1 как сейчас, на последнем экране — цена, дата списания и как отменить.</span></li>
+<li><b>День 6</b><span>Напоминание о списании с датой и суммой.</span></li>
+<li><b>Отказ</b><span>Письмо «обновите способ оплаты» с Apple Pay / Google Pay вместо скрытых повторных попыток со скидкой.</span></li>
+</ol>
+<div class="tags"><span class="chip info">разовая покупка</span><span class="chip info">напоминание до списания</span><span class="chip info">обновление способа оплаты</span></div>
+<p class="small">В калькуляторе: 17% берут разовую покупку за $9,99 (цена — решение Кати и Димы), отказ банка у остальных — 43%. LTV — <b class="num">$16,49</b>.</p></div>
+
+<div class="card"><h3>C. Вторая попытка оплаты</h3><p class="small muted">Для тех, у кого не прошла оплата $1: 77 человек за 12–30.10, из них потом оплатили 7.</p>
+<ol class="days">
+<li><b>Отказ</b><span>Экран ошибки сразу предлагает другой способ — Apple Pay, Google Pay, другую карту — и объясняет причину простыми словами.</span></li>
+<li><b>Автовход</b><span>Кто попал в приложение без оплаты, видит свой результат и ту же цену $1 на неделю, а не пейволл в конце сертификата.</span></li>
+<li><b>+1 час</b><span>Письмо «результат сохранён — завершите оплату».</span></li>
+</ol>
+<div class="tags"><span class="chip info">другой способ оплаты</span><span class="chip info">письмо после отказа</span></div>
+<p class="small">В калькуляторе: на каждого покупателя ещё 0,16 спасённого (доля спасённых растёт с 9% до 25%). LTV не меняется ($13,06), но на те же деньги рекламы покупателей на 16% больше.</p></div>
+
+<div class="card"><h3>D. Отмена с выбором</h3><p class="small muted">Для 17 отменивших, 11 из них — в первый час.</p>
+<ol class="days">
+<li><b>Отмена</b><span>Один экран: «Почему уходите?» — «нужен был только результат», «дорого», «не нравятся тренировки», «другое»; кнопка «Отменить» видна сразу.</span></li>
+<li><b>Ответ</b><span>«Только результат» → оставить доступ к сертификату и предложить неделю тренировок бесплатно; «дорого» → пауза на месяц; «не нравятся» → подборка игр по сильной стороне.</span></li>
+<li><b>После</b><span>Доступ до конца периода без выхода на «Go to sign in»; письмо с подтверждением отмены.</span></li>
+</ol>
+<div class="tags"><span class="chip info">вопрос о причине</span><span class="chip info">пауза</span><span class="chip info">без сброса сессии</span></div>
+<p class="small">В калькуляторе: отмена в триале 15%, второй месяц 35%. LTV — <b class="num">$16,90</b>. Главная польза — причины отмен, которых сейчас нет.</p></div>
+</div>
+</section>
+
+<section id="calc">
+<h2>Калькулятор LTV</h2>
+<p>LTV — сколько денег за 6 месяцев приносит один покупатель триала после комиссий и возвратов. Кнопки подставляют допущения путей; любое число можно поменять. В варианте «Сейчас» цена триала, отмены и отказы банка — факт по 58 закончившим триал; цена месяца — средний чек первого списания по Primer ($26,53: 10 раз по $29.99 и 3 раза по $15). Продления, возвраты и комиссии — допущения. Второй месяц взят 30%, каждый следующий — 75%. Ориентир рынка из образца по Японии — 42% (медиана первого продления месячных планов у RevenueCat), но 14 из 15 оплативших FoxIQ после списания в приложение не заходили, поэтому взято ниже. Расходов на рекламу в данных отчёта нет — стоимость покупателя впишите сами.</p>
+<div class="btns" role="group" aria-label="Пути">
+<button class="b" data-preset="now">Сейчас</button><button class="b" data-preset="A">A. Неделя после сертификата</button><button class="b" data-preset="B">B. Оплата проходит</button><button class="b" data-preset="C">C. Вторая попытка оплаты</button><button class="b" data-preset="D">D. Отмена с выбором</button>
+</div>
+<div class="calc2">
+<div class="card"><div class="inputs">
+<label for="i-p0">Цена триала, $ на покупателя триала</label><input id="i-p0" inputmode="decimal" value="1">
+<label for="i-up">Апселлы в воронке, $ на покупателя</label><input id="i-up" inputmode="decimal" value="0">
+<label for="i-iap">Покупки в приложении в триале, $ на покупателя</label><input id="i-iap" inputmode="decimal" value="0">
+<label for="i-one">Выбирают разовую покупку без подписки, %</label><input id="i-one" inputmode="decimal" value="0">
+<label for="i-oneP">Цена разовой покупки, $</label><input id="i-oneP" inputmode="decimal" value="9.99">
+<label for="i-c">Отменяют в триале, %</label><input id="i-c" inputmode="decimal" value="20.7">
+<label for="i-d">Отказ банка без восстановления, %</label><input id="i-d" inputmode="decimal" value="53.4">
+<label for="i-M">Цена подписки в месяц, $</label><input id="i-M" inputmode="decimal" value="26.53">
+<label for="i-r2">Продлевают второй месяц, %</label><input id="i-r2" inputmode="decimal" value="30">
+<label for="i-r">Продлевают каждый следующий месяц, %</label><input id="i-r" inputmode="decimal" value="75">
+<label for="i-X">Доплаты подписчика в месяц, $</label><input id="i-X" inputmode="decimal" value="0">
+<label for="i-f">Возвраты и споры, % от подписки</label><input id="i-f" inputmode="decimal" value="3">
+<label for="i-fee">Комиссии платёжных систем, %</label><input id="i-fee" inputmode="decimal" value="5">
+<label for="i-cac">Стоимость покупателя триала в рекламе, $</label><input id="i-cac" inputmode="decimal" value="0">
+<label for="i-k">Спасённые оплаты: доп. покупателей на одного</label><input id="i-k" inputmode="decimal" value="0">
+</div></div>
+<div class="out">
+<div class="facts">
+<div class="fact"><span class="v" id="o-ltv">—</span><span class="l">LTV за 6 месяцев на покупателя триала</span></div>
+<div class="fact"><span class="v" id="o-cac">—</span><span class="l">Стоимость покупателя с учётом спасённых оплат</span></div>
+<div class="fact"><span class="big" id="o-profit">—</span><span class="l">Остаётся после рекламы</span></div>
+</div>
+<p class="small" id="o-pay"></p>
+<div class="tbl"><table style="min-width:0"><thead><tr><th>Период</th><th class="r">Подписчиков из 100</th><th class="r">Накоплено на покупателя</th></tr></thead><tbody id="o-rows"></tbody></table></div>
+</div>
+</div>
+<p class="small muted">Как считается: из 100 покупателей часть берёт разовую покупку; у остальных — цена триала, апселлы и покупки в приложении. В первый месяц платят те, кто не отменил и кому банк не отказал; дальше каждый месяц остаётся заданная доля. С подписки вычитаются возвраты, со всей выручки — комиссии. Возвраты 3% — допущение: в Primer до 30.10 возвратов нет, споров по платежам выгрузка не показывает. «Спасённые оплаты» уменьшают стоимость покупателя: реклама та же, покупателей больше.</p>
+</section>
+
+<section id="tests">
+<h2>Тесты</h2>
+<p>Каждый тест выведен из проблемы, найденной выше. Объём посчитан для двух вариантов с вероятностью ошибки 5% и мощностью 80%. Поток при 12.10–02.11: около 4 покупателей триала в день (87 за 22 дня, из них 4 дня почти без трафика, 23–26.10), около 7 человек в день видят экран ошибки оплаты, около 52 в день открывают оплату. Трафик идёт только из США, поэтому разделить тест по странам нельзя. Тесты на покупателях долгие, их стоит запускать параллельно, если они не пересекаются.</p>
+<div class="tbl"><table style="min-width:900px">
+<thead><tr><th></th><th>Тест и гипотеза</th><th>Варианты</th><th>Где</th><th>Главная метрика</th><th>Объём и срок</th></tr></thead>
+<tbody>
+<tr><td class="num"><b>T1</b></td><td><b>Вторая попытка оплаты</b><span class="sub">Если сразу после отказа предложить другой способ оплаты, часть из 77 потерянных за 12–30.10 заплатит. Сейчас позже платят 7 из 77, в приложении — 0 из 20 увидевших пейволл.</span></td><td>A: как сейчас. B: экран ошибки и пейволл в приложении предлагают Apple Pay, Google Pay или другую карту по той же цене $1 и объясняют причину отказа; через час — письмо «результат сохранён».</td><td>FunnelFox, экран ошибки оплаты; пейволл приложения</td><td>Доля оплативших среди получивших отказ: 9% → 25%<span class="sub">Защитная: отказ банка на 7-й день у спасённых; жалобы</span></td><td>86 на вариант; при ~7 отказах в день — около 4 недель и ещё неделя, чтобы увидеть списание</td></tr>
+<tr><td class="num"><b>T2</b></td><td><b>Тренировка сразу после сертификата и повод прийти завтра</b><span class="sub">81 из 87 уходят в день покупки, у 25 последний экран — сертификат. Человек вернётся, если сразу получит продолжение и напоминание.</span></td><td>A: как сейчас. B: после сертификата — тренировка №1 по слабой стороне результата и план на 7 дней; письмо со ссылкой входа на 1-й и 2-й день.</td><td>Приложение и письма, флаг по профилю</td><td>Вернулись в другой день за первые 7 дней: 7% → 25%<span class="sub">Защитная: отмена в первые сутки; отписки от писем</span></td><td>64 на вариант; при 4 покупателях в день — около 5 недель и ещё неделя на итог триала</td></tr>
+<tr><td class="num"><b>T3</b></td><td><b>Отмена с вопросом о причине</b><span class="sub">Отменяют в два нажатия через 14 минут (медиана), причины не знаем. Вариант под причину удержит часть людей и даст данные.</span></td><td>Не A/B: в отмену заходят около 3 человек в неделю. Выпуск и сравнение четырёх недель до и после. Один экран: причина (можно пропустить) и вариант под неё; кнопка «Отменить» видна сразу; без сброса сессии.</td><td>Приложение, страница подписки</td><td>Доля оставшихся среди открывших отмену (сейчас 0 из 9); распределение причин<span class="sub">Защитная: жалобы, споры по платежам</span></td><td>Четыре недели до и четыре после; эффект виден, только если он больше обычных колебаний по неделям</td></tr>
+<tr><td class="num"><b>T4</b></td><td><b>Предоплаченные карты без триала</b><span class="sub">Предоплаченные карты не проходят списание $29.99: 11 из 11 отказов. Разовая покупка вместо триала даст с них деньги сразу.</span></td><td>A: триал $1 для всех. B: для предоплаченных карт (по BIN) — разовая покупка результата и сертификата без автопродления; остальным — как сейчас.</td><td>Оплата FunnelFox и Primer — решение Кати и Димы</td><td>Деньги на покупателя за 14 дней<span class="sub">Защитная: доля оплативших на пейволле</span></td><td>Предоплаченные карты — у 11 из 63 решивших (17%), меньше одной в день: A/B займёт больше 3 месяцев. Реалистично — решение без теста и сравнение «до и после»</td></tr>
+<tr><td class="num"><b>T5</b></td><td><b>Честный результат</b><span class="sub">Одинаковый балл 137 при «выше 81%» — риск жалоб и возвратов по 30-дневной гарантии.</span></td><td>Не A/B: показывать заведомо неверный результат половине людей нельзя. Выпуск: балл по ответам квиза, проценты согласованы с баллом; сравнение четырёх недель до и после.</td><td>Приложение, экран результата и сертификат</td><td>Отмена в первый час (сейчас 11 из 94, 12%); запросы возврата<span class="sub">Защитная: доля скачавших сертификат (сейчас 31 из 87)</span></td><td>Четыре недели до и четыре после; оговорка — сезонность и смена креативов влияют сильнее</td></tr>
+</tbody></table></div>
+<div class="card">
+<h3>Порядок</h3>
+<ol class="list">
+<li><b>Сразу, без теста:</b> балл по ответам квиза (T5); не сбрасывать сессию после отмены; проверить, работает ли пейволл в приложении для тех, у кого не прошла оплата (20 увидели, 0 купили); ускорить автовход; включить записи сессий в воронке. Сейчас там <code>$recording_status = disabled</code>, поэтому не видно, почему из 886 открывших оплату платить начали 170.</li>
+<li><b>Вопросы к Кате и Диме:</b> повторные списания со скидкой ($20.99 и $15) — это настройка намеренная? Что делать с предоплаченными картами (T4)? Есть ли письмо-напоминание перед списанием?</li>
+<li><b>Неделя 1:</b> T1 (вторая попытка оплаты) — самый большой поток и быстрый итог; не пересекается с остальными, потому что идёт до покупки.</li>
+<li><b>Неделя 1–2:</b> T2 (тренировка после сертификата) — опирается на письма для возврата из задачи Дани; запускать, как только письма готовы.</li>
+<li><b>После выпуска:</b> T3 (отмена с вопросом) — «до и после»; причины отмен нужны, чтобы выбрать следующие тесты.</li>
+</ol>
+</div>
+</section>
+
+<section id="limits">
+<h2>Ограничения данных</h2>
+<ul class="list">
+<li>События приложения в PostHog начинаются 13.10 17:00 UTC; события воронки — 16.10. Путь 6 покупателей 12–13.10 не виден, источник покупателей до 16.10 взят из метаданных Primer.</li>
+<li>Выгрузка Primer заканчивается 30.10 17:15 МСК: деньги есть у 76 из 94 покупателей. Итог по 18 более поздним (продление, отказ, отмена) — по событиям PostHog до 03.11 12:00 МСК. У двоих оплативших продление видно только в PostHog, сумма неизвестна.</li>
+<li>Время в выгрузке Primer — UTC (проверено по 70 совпадениям с PostHog), а не UTC+3, как было указано в задаче.</li>
+<li>Отказ банка приложение записывает как отмену: <code>subscription_cancelled</code> и <code>subscription_expired</code> с <code>reason = payment_failed</code> в одну секунду. Самостоятельной отменой считается <code>subscription_cancelled</code> больше чем за 2 минуты до попытки списания. У двоих покупателей 12.10 подписка закрыта с ошибкой оплаты, но попытки списания в Primer нет — они учтены как отказ банка.</li>
+<li>Анонимные персоны после автовхода склеены с покупателем по <code>session_id</code> FunnelFox в адресе автовхода (32 персоны), а персоны входа по ссылке из письма — по почте, которая видна на экране профиля в записи (29 персон).</li>
+<li>Записи есть у 85 из 87 покупателей, заходивших в приложение. Злые тапы и нажатия без отклика найдены автоматически: «без отклика» — экран не изменился за секунду; скачивание PDF и «Поделиться» сюда не входят, потому что открывают системное окно.</li>
+<li>Покупателей 94, закончивших триал — 58, в отдельных функциях — 9–49 человек. Разница в долях меньше 20–25 п. п. может быть случайной.</li>
+<li>Вторых списаний ещё нет. Всё, что дальше первого месяца, в калькуляторе и путях — допущения.</li>
+<li>Почему люди отменяют, напрямую не известно: опроса при отмене нет; 8 из 17 отменили не через приложение, где — не видно. Почему банк отказывает — код «generic_decline» причину не раскрывает.</li>
+<li>Один покупатель (Армения, 28.10) под вопросом как свой аккаунт; он оставлен в выборке, на выводы не влияет.</li>
+<li>Расходов на рекламу и стоимости покупателя в данных нет.</li>
+</ul>
+</section>
+
+<section id="gloss">
+<h2>Словарь</h2>
+<dl class="gloss">
+<dt>LTV</dt><dd>Сколько денег приносит один покупатель за выбранный срок, здесь — за 6 месяцев, после комиссий и возвратов.</dd>
+<dt>CAC</dt><dd>Стоимость привлечения одного покупателя триала в рекламе.</dd>
+<dt>Триал</dt><dd>Пробная неделя за $1. На 7-й день (через 6,9 суток) списывается $29.99 за месяц.</dd>
+<dt>Отказ банка</dt><dd>Списание за месяц не прошло. После отказа Primer повторяет попытку на 9-й день ($20.99) и на 14-й день ($15).</dd>
+<dt>Предоплаченная карта</dt><dd>Карта, на которую заранее кладут деньги (prepaid). Тип карты определяется по первым цифрам номера (BIN).</dd>
+<dt>Пейволл</dt><dd>Экран с ценой и кнопкой оплаты.</dd>
+<dt>Автовход</dt><dd>Переход из воронки в приложение по ссылке с <code>session_id</code>, без ввода почты.</dd>
+<dt>Злые тапы</dt><dd>Три и больше нажатия в одно место за полторы секунды. Признак, что человек торопится или элемент не реагирует.</dd>
+<dt>Вернулся в другой день</dt><dd>Человек что-то делал в приложении в другой календарный день по МСК, кроме входа и отмены.</dd>
+<dt>A/B-тест</dt><dd>Покупателей случайно делят на группы, каждой показывают свой вариант и сравнивают результат.</dd>
+<dt>Мощность 80%, ошибка 5%</dt><dd>Если разница действительно есть, тест заметит её в 8 случаях из 10; если разницы нет, ложно «найдёт» её в 1 случае из 20.</dd>
+<dt>MDE</dt><dd>Наименьшая разница, которую тест может надёжно заметить при данном объёме, — например, 7% → 25% возвратов.</dd>
+<dt>п. п.</dt><dd>Процентные пункты: разница между двумя процентами, 25% − 7% = 18 п. п.</dd>
+<dt>МСК</dt><dd>Московское время, UTC+3. В PostHog время хранится в UTC; день по МСК — с 21:00 UTC предыдущего дня.</dd>
+<dt>Primer, FunnelFox, PostHog</dt><dd>Платёжный шлюз; конструктор воронок и подписок; аналитика событий и записей сессий.</dd>
+</dl>
+</section>
+
+<section id="sources">
+<h2>Источники</h2>
+<ul class="list small">
+<li>Primer: выгрузка payments-29.csv из задачи ClickUp, 324 транзакции FoxIQ (организация FunnelFox <code>live_145ee003c9326d</code>) с 12.10 02:00 по 30.10 17:15 МСК; триалы, списания, причины отказов, тип карты по BIN. Сырая выгрузка в репозиторий не сохранялась.</li>
+<li>PostHog, проект <code>foxiq</code>: 3 691 событие с 12.10 00:00 по 03.11 12:00 МСК (без <code>$set</code> и <code>$web_vitals</code>), из них 3 464 из браузера; <code>subscription_*</code> — серверные события.</li>
+<li>PostHog, проект <code>foxiq_ff</code>: шаги воронки 17.10–02.11 МСК по людям, тестовые исключены по готовому фильтру из <code>playbook/posthog.md</code>.</li>
+<li>Записи сессий PostHog: 215 записей веб-приложения с 13.10 (7,7 ч активного времени), из них 114 — у 85 покупателей (6,3 ч); разобраны снимки rrweb — экраны, тексты, нажатия, консоль, сеть.</li>
+<li>Независимая проверка: число покупателей, итоги продлений и возвраты в другой день пересчитаны отдельными запросами HogQL без Primer — 52 триала 13–27.10: продлили 14, сами отменили 12; вернулись в другой день 6 из 87. Балл 137 — отдельный запрос по всем событиям <code>iq_result_shown</code> с 24.09.</li>
+<li>Описание воронки и обещаний: <code>foxiq/funnel-foxiq.md</code>; образец формы — отчёт «Путь японских пользователей» (Azora).</li>
+<li><a href="https://www.ftc.gov/legal-library/browse/rules/negative-option-rule" target="_blank" rel="noopener">FTC — правило о подписках с автопродлением (Negative Option Rule)</a>.</li>
+</ul>
+</section>
+</div>
+
+<script>
+window.__PEOPLE=[{"id": "01M4PKRK42", "d": "12.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Нет данных о пути (покупка до 13.10)", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → 6,9 дн списание $29.99 прошло → 19,8 дн отменил подписку после оплаты (не через приложение)", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4PZ08Q9", "d": "12.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Нет данных о пути (покупка до 13.10)", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4QW8XQX", "d": "12.10", "src": "Meta", "dev": "— · Facebook", "pay": "Карта · кредитная", "a": "Нет данных о пути (покупка до 13.10)", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → подписка закрыта с ошибкой оплаты (PostHog); попытки списания в Primer нет", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4R123S2", "d": "12.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay", "a": "Нет данных о пути (покупка до 13.10)", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4R9W0QJ", "d": "12.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Нет данных о пути (покупка до 13.10)", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → подписка закрыта с ошибкой оплаты (PostHog); попытки списания в Primer нет", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4S23RWA", "d": "13.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Нет данных о пути (покупка до 13.10)", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "события приложения в PostHog начинаются 13.10 17:00 UTC — путь не виден → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 0, активно 0,0 мин, тапов 0"}, {"id": "01M4V2Y6F2", "d": "13.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,1 мин, тапов 1; последний экран: результат"}, {"id": "01M4W0BEKX", "d": "14.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "8″ вход в приложение (автовход) → 10″ результат IQ 137 → 2′ главная (Daily Brain Training) → 2′ игра Fox Memory → 3′ урок трека пройден → 3′ трек уроков → 4′ игра Color Rush → 4′ игра Nonogram → 6′ игра Raindrops → 7′ игра Number Hunt → 8′ игра Shape Rotate → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 2, активно 6,9 мин, тапов 286; последний экран: результат"}, {"id": "01M4W1S9XC", "d": "14.10", "src": "Meta", "dev": "— · Facebook", "pay": "Apple Pay · кредитная", "a": "Попробовал тренировки в первый день", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "11″ вход в приложение (автовход) → 13″ результат IQ 137 → 35″ ввёл имя для сертификата → 55″ снова вход (страница входа) → 1′ главная (Daily Brain Training) → 14,0 ч отменил подписку (не через приложение) → 14,0 ч игра Color Rush → 14,0 ч игра Nonogram", "n": "записей 4, активно 2,2 мин, тапов 40; последний экран: главная"}, {"id": "01M4W3MZA2", "d": "14.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Посмотрел результат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "6″ вход в приложение (автовход) → 7″ результат IQ 137 → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,2 мин, тапов 1; последний экран: результат"}, {"id": "01M4W26J5X", "d": "14.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Карта · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "20″ вход в приложение (автовход) → 22″ результат IQ 137 → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,5 мин, тапов 0; последний экран: результат"}, {"id": "01M4W4JMMQ", "d": "14.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "7″ вход в приложение (автовход) → 10″ результат IQ 137 → 23″ ввёл имя для сертификата → 29″ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,2 мин, тапов 5; последний экран: сертификат"}, {"id": "01M4W4MG55", "d": "14.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "6″ вход в приложение (автовход) → 8″ результат IQ 137 → 22″ ввёл имя для сертификата → 38″ скачал сертификат PDF → 6′ отменил подписку (не через приложение) → 6′ главная (Daily Brain Training)", "n": "записей 2, активно 0,4 мин, тапов 7; последний экран: главная"}, {"id": "01M4WBP2PD", "d": "14.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "29″ вход в приложение (автовход) → 31″ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,2 мин, тапов 5; последний экран: сертификат"}, {"id": "01M4W7N5XV", "d": "14.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Карта · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "4′ вход в приложение (автовход) → 4′ результат IQ 137 → 5′ ввёл имя для сертификата → 6′ скачал сертификат PDF → 8′ главная (Daily Brain Training) → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,9 мин, тапов 19, злых тапов 2; последний экран: главная"}, {"id": "01M4XD5RAV", "d": "14.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Оплатил месяц со скидкой $15.00 при повторной попытке", "g": "оплатил", "m": 16.0, "s": "25″ вход в приложение (автовход) → 27″ результат IQ 137 → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 прошло", "n": "записей 1, активно 0,3 мин, тапов 0; последний экран: результат"}, {"id": "01M4Y70ZAM", "d": "15.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц со скидкой $15.00 при повторной попытке", "g": "оплатил", "m": 16.0, "s": "18″ вход в приложение (автовход) → 20″ результат IQ 137 → 5′ ввёл имя для сертификата → 6′ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 прошло", "n": "записей 1, активно 0,5 мин, тапов 5; последний экран: сертификат"}, {"id": "01M4WW09ME", "d": "15.10", "src": "Meta", "dev": "— · Facebook", "pay": "Карта · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц со скидкой $15.00 при повторной попытке", "g": "оплатил", "m": 16.0, "s": "1′ вход в приложение (автовход) → 1′ результат IQ 137 → 3′ ввёл имя для сертификата → 1,2 ч главная (Daily Brain Training) → 1,3 ч скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 прошло", "n": "записей 3, активно 5,8 мин, тапов 15; последний экран: результат"}, {"id": "01M4ZS9PX3", "d": "15.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "7″ вход в приложение (автовход) → 9″ результат IQ 137 → 51″ ввёл имя для сертификата → 1′ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,4 мин, тапов 6; последний экран: сертификат"}, {"id": "01M500AMZ0", "d": "15.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "9″ вход в приложение (автовход) → 12″ результат IQ 137 → 52″ главная (Daily Brain Training) → 1,9 ч снова вход (вход по ссылке) → 1,9 ч страница подписки → 1,9 ч отменил подписку в приложении", "n": "записей 2, активно 0,5 мин, тапов 6; последний экран: главная"}, {"id": "01M50KGJWJ", "d": "15.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "8″ вход в приложение (автовход) → 12″ результат IQ 137 → 31″ ввёл имя для сертификата → 37″ скачал сертификат PDF → 2′ поделился сертификатом → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,6 мин, тапов 7; последний экран: сертификат"}, {"id": "01M50Z4XBP", "d": "16.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "12″ вход в приложение (автовход) → 16″ результат IQ 137 → 1′ главная (Daily Brain Training) → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 1, активно 0,5 мин, тапов 3; последний экран: профиль"}, {"id": "01M4E4TN1K", "d": "16.10", "src": "Meta", "dev": "iOS · браузер", "pay": "Карта · кредитная", "a": "Возвращается", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "18″ вход в приложение (автовход) → 21″ результат IQ 137 → 5′ ввёл имя для сертификата → 6′ поделился сертификатом → 4,1 ч главная (Daily Brain Training) → 4,1 ч трек уроков → 36,2 ч день 1: главная (Daily Brain Training) → 36,3 ч день 1: результат IQ 137 → 36,5 ч день 1: игра Fox Memory → 36,5 ч день 1: игра Color Rush → 36,5 ч день 1: игра Nonogram → 36,6 ч день 1: игра Word Forge → 36,6 ч день 1: игра Shape Rotate → 36,7 ч день 1: страница подписки → 36,7 ч день 1: трек уроков → 36,7 ч день 1: тест личности → 2,6 дн день 2: тест личности → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 13,9 дн списание $15.00 отказ банка", "n": "записей 5, активно 29,2 мин, тапов 379, злых тапов 1; последний экран: тест personality-core/report"}, {"id": "01M52HPPHK", "d": "16.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 2′ снова вход (страница входа) → 3′ главная (Daily Brain Training) → 3′ страница подписки → 3′ отменил подписку в приложении", "n": "записей 3, активно 0,7 мин, тапов 7; последний экран: подписка"}, {"id": "01M53K04RQ", "d": "17.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Возвращается", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "9″ вход в приложение (автовход) → 12″ результат IQ 137 → 35″ ввёл имя для сертификата → 37″ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → 11,1 дн день 11: главная (Daily Brain Training)", "n": "записей 2, активно 1,0 мин, тапов 15; последний экран: настройки"}, {"id": "01M54J9YPC", "d": "17.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "16″ вход в приложение (автовход) → 19″ результат IQ 137 → 57″ главная (Daily Brain Training) → 1′ страница подписки → 1′ отменил подписку в приложении → 2′ тест личности", "n": "записей 1, активно 1,4 мин, тапов 41; последний экран: тест personality-core/result"}, {"id": "01M54Q0Y27", "d": "17.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "21″ вход в приложение (автовход) → 23″ результат IQ 137 → 58″ ввёл имя для сертификата → 3′ главная (Daily Brain Training) → 3′ страница подписки → 3′ отменил подписку в приложении", "n": "записей 1, активно 1,9 мин, тапов 9; последний экран: главная"}, {"id": "01M54RBXAR", "d": "17.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "10″ вход в приложение (автовход) → 12″ результат IQ 137 → 1′ ввёл имя для сертификата → 4′ главная (Daily Brain Training) → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 1,7 мин, тапов 8; последний экран: главная"}, {"id": "01M54YPK39", "d": "17.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "6″ вход в приложение (автовход) → 9″ результат IQ 137 → 53″ главная (Daily Brain Training) → 1′ трек уроков → 2′ языки любви → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 1,2 мин, тапов 10; последний экран: тест love-languages"}, {"id": "01M550BYBM", "d": "17.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "10″ вход в приложение (автовход) → 13″ результат IQ 137 → 1′ главная (Daily Brain Training) → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 2, активно 0,9 мин, тапов 3; последний экран: главная"}, {"id": "01M55CNVA2", "d": "17.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "8″ вход в приложение (автовход) → 10″ результат IQ 137 → 59″ главная (Daily Brain Training) → 1′ игра Fox Memory → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 0,2 мин, тапов 0; последний экран: игра fox-memory"}, {"id": "01M55V833X", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта", "a": "Посмотрел результат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "19″ вход в приложение (автовход) → 21″ результат IQ 137 → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,7 мин, тапов 1; последний экран: результат"}, {"id": "01M55XK5RX", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "8″ вход в приложение (автовход) → 10″ результат IQ 137 → 10′ отменил подписку (не через приложение) → 10′ главная (Daily Brain Training)", "n": "записей 1, активно 0,4 мин, тапов 1; последний экран: главная"}, {"id": "01M560XKNK", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "8″ вход в приложение (автовход) → 9″ результат IQ 137 → 22″ ввёл имя для сертификата → 29″ поделился сертификатом → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,2 мин, тапов 5; последний экран: автовход"}, {"id": "01M561C1FW", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "18″ вход в приложение (автовход) → 19″ результат IQ 137 → 2′ ввёл имя для сертификата → 2′ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 0,6 мин, тапов 6; последний экран: результат"}, {"id": "01M56VM477", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "14″ вход в приложение (автовход) → 19″ результат IQ 137 → 59″ главная (Daily Brain Training) → 6′ снова вход (вход по ссылке) → 7′ трек уроков → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 2, активно 1,8 мин, тапов 8; последний экран: профиль"}, {"id": "01M57TY4TB", "d": "18.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "8″ вход в приложение (автовход) → 11″ результат IQ 137 → 38″ главная (Daily Brain Training) → 52″ игра Fox Memory → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 2,2 мин, тапов 103; последний экран: игра fox-memory"}, {"id": "01M58A1QPK", "d": "18.10", "src": "Google", "dev": "Android · браузер", "pay": "Карта · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "25″ вход в приложение (автовход) → 27″ результат IQ 137 → 58″ главная (Daily Brain Training) → 1′ игра Fox Memory → 3′ урок трека пройден → 3′ трек уроков → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 5,2 мин, тапов 177; последний экран: игра fox-memory"}, {"id": "01M58BVYBT", "d": "18.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц", "g": "оплатил", "m": 1.0, "s": "11″ вход в приложение (автовход) → 14″ результат IQ 137 → 38″ ввёл имя для сертификата → 59″ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → продление прошло (по PostHog, после выгрузки Primer)", "n": "записей 1, активно 0,2 мин, тапов 6; последний экран: сертификат"}, {"id": "01M58S27YP", "d": "19.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "13″ вход в приложение (автовход) → 15″ результат IQ 137 → 57″ главная (Daily Brain Training) → 3′ ввёл имя для сертификата → 3′ скачал сертификат PDF → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,4 мин, тапов 9; последний экран: сертификат"}, {"id": "01M59Y0Y62", "d": "19.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц", "g": "оплатил", "m": 1.0, "s": "7″ вход в приложение (автовход) → 10″ результат IQ 137 → 39″ ввёл имя для сертификата → 47″ поделился сертификатом → 21′ главная (Daily Brain Training) → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка → продление прошло (по PostHog, после выгрузки Primer)", "n": "записей 1, активно 2,3 мин, тапов 6; последний экран: главная"}, {"id": "01M5A5SCSH", "d": "19.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "14″ вход в приложение (автовход) → 17″ результат IQ 137 → 2′ главная (Daily Brain Training) → 25′ трек уроков → 25′ игра Fox Memory → 27′ урок трека пройден → 41′ игра Color Rush → 42′ игра Nonogram → 48′ игра Number Hunt → 49′ игра Word Forge → 1,3 ч игра Word Guess → 1,3 ч игра Fillwords → 1,6 ч игра Shape Rotate → 1,7 ч игра Contexto → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 61,0 мин, тапов 1705; последний экран: игра contexto"}, {"id": "01M5C61N77", "d": "20.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "10″ вход в приложение (автовход) → 13″ результат IQ 137 → 48″ ввёл имя для сертификата → 54″ скачал сертификат PDF → 3′ снова вход (вход по ссылке) → 3′ главная (Daily Brain Training) → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 2, активно 0,7 мин, тапов 9; последний экран: страница входа"}, {"id": "01M5CS7C95", "d": "20.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "12″ вход в приложение (автовход) → 14″ результат IQ 137 → 1′ ввёл имя для сертификата → 2′ скачал сертификат PDF → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 0,6 мин, тапов 5; последний экран: сертификат"}, {"id": "01M5DT6GBR", "d": "21.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "8″ вход в приложение (автовход) → 11″ результат IQ 137 → 31′ снова вход (вход по ссылке) → 31′ главная (Daily Brain Training) → 31′ страница подписки → 31′ отменил подписку в приложении", "n": "записей 2, активно 0,8 мин, тапов 4; последний экран: главная"}, {"id": "01M5E51ETQ", "d": "21.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "11″ вход в приложение (автовход) → 13″ результат IQ 137 → 1,1 ч снова вход (вход по ссылке) → 1,1 ч главная (Daily Brain Training) → 1,2 ч языки любви → 6,0 дн отменил подписку (не через приложение)", "n": "записей 3, активно 1,3 мин, тапов 13; последний экран: профиль"}, {"id": "01M4W87RA1", "d": "21.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта · дебетовая", "a": "Возвращается", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "18″ вход в приложение (автовход) → 21″ результат IQ 137 → 57″ ввёл имя для сертификата → 3′ поделился сертификатом → 6,2 дн день 6: снова вход (вход по ссылке) → 6,2 дн день 6: главная (Daily Brain Training) → 6,2 дн день 6: результат IQ 137 → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 2, активно 1,4 мин, тапов 13; последний экран: сертификат"}, {"id": "01M5EKHB4K", "d": "21.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ скачал сертификат PDF → 4′ главная (Daily Brain Training) → 4′ игра Color Rush → 6′ игра Nonogram → 12′ игра Raindrops → 12′ игра Number Hunt → 13′ тест личности → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 5,5 мин, тапов 135; последний экран: тест personality-core"}, {"id": "01M5F3GPJA", "d": "21.10", "src": "Meta", "dev": "iOS · браузер", "pay": "Apple Pay · дебетовая", "a": "Возвращается", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 52″ ввёл имя для сертификата → 55″ скачал сертификат PDF → 2′ главная (Daily Brain Training) → 3′ страница подписки → 3′ отменил подписку в приложении → 26,3 ч день 1: главная (Daily Brain Training) → 7,0 дн списание $49.99 отказ банка", "n": "записей 2, активно 0,7 мин, тапов 12, злых тапов 1; последний экран: главная"}, {"id": "01M5F682MF", "d": "21.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "15″ вход в приложение (автовход) → 19″ результат IQ 137 → 53″ ввёл имя для сертификата → 1′ скачал сертификат PDF → 2′ поделился сертификатом → 6,9 дн списание $29.99 отказ банка → 8,9 дн списание $20.99 отказ банка", "n": "записей 1, активно 0,4 мин, тапов 7; последний экран: сертификат"}, {"id": "01M51310QN", "d": "21.10", "src": "Meta", "dev": "iOS · браузер", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, подписка закрыта", "g": "отказ банка", "m": 1.0, "s": "17′ снова вход (вход по ссылке) → 17′ главная (Daily Brain Training) → 17′ результат IQ 137 → 17′ скачал сертификат PDF → 3,4 дн списание $15.00 отказ банка → 6,1 дн отменил подписку (не через приложение)", "n": "записей 1, активно 0,3 мин, тапов 4; последний экран: сертификат"}, {"id": "01M5G919YW", "d": "22.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "8″ вход в приложение (автовход) → 10″ результат IQ 137 → 19″ ввёл имя для сертификата → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 1,4 мин, тапов 4; последний экран: сертификат"}, {"id": "01M5GD41MB", "d": "22.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Посмотрел результат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "7″ вход в приложение (автовход) → 9″ результат IQ 137 → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,1 мин, тапов 0; последний экран: результат"}, {"id": "01M5GNXQVJ", "d": "22.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 6,9 дн списание $29.99 отказ банка", "n": "записей 1, активно 0,5 мин, тапов 1; последний экран: результат"}, {"id": "01M5H0ZTEA", "d": "22.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "Отказ банка, идут повторные попытки", "g": "отказ банка", "m": 1.0, "s": "7″ вход в приложение (автовход) → 9″ результат IQ 137 → 36″ ввёл имя для сертификата → 6,9 дн списание $29.99 отказ банка", "n": "записей 1, активно 1,2 мин, тапов 9; последний экран: сертификат"}, {"id": "01M5H601NK", "d": "22.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Посмотрел результат и ушёл", "o": "Оплатил месяц с первой попытки", "g": "оплатил", "m": 30.99, "s": "8″ вход в приложение (автовход) → 11″ результат IQ 137 → 6,9 дн списание $29.99 прошло", "n": "записей 1, активно 0,1 мин, тапов 0; последний экран: результат"}, {"id": "01M5JTH1T9", "d": "23.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "9″ вход в приложение (автовход) → 12″ результат IQ 137 → 6,2 дн отменил подписку (не через приложение)", "n": "записей 0, активно 0,0 мин, тапов 0; последний экран: результат"}, {"id": "01M5JZDQHR", "d": "23.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "5″ вход в приложение (автовход) → 8″ результат IQ 137 → 31″ ввёл имя для сертификата → 37″ скачал сертификат PDF → 6,5 дн отменил подписку (не через приложение)", "n": "записей 1, активно 0,3 мин, тапов 5; последний экран: результат"}, {"id": "01M5YZZGM7", "d": "27.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "11″ вход в приложение (автовход) → 15″ результат IQ 137 → 41″ ввёл имя для сертификата → 45″ скачал сертификат PDF", "n": "записей 1, активно 0,3 мин, тапов 4; последний экран: результат"}, {"id": "01M5ZHPT0K", "d": "27.10", "src": "Google", "dev": "Android · браузер", "pay": "Google Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "58″ вход в приложение (автовход) → 1′ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ скачал сертификат PDF", "n": "записей 1, активно 0,3 мин, тапов 4; последний экран: результат"}, {"id": "01M5ZNT149", "d": "28.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Карта · дебетовая", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "20″ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ скачал сертификат PDF", "n": "записей 1, активно 0,4 мин, тапов 5; последний экран: сертификат"}, {"id": "01M5ZYQN22", "d": "28.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "16″ результат IQ 137 → 45″ ввёл имя для сертификата → 52″ скачал сертификат PDF", "n": "записей 1, активно 0,3 мин, тапов 6; последний экран: сертификат"}, {"id": "01M60PDBTT", "d": "28.10", "src": "неизвестно", "dev": "Mac OS X · браузер", "pay": "Google Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "31″ вход в приложение (автовход) → 33″ результат IQ 137 → 3′ главная (Daily Brain Training) → 3′ страница подписки → 9′ отменил подписку в приложении → 14′ игра Fox Memory → 15′ урок трека пройден → 15′ трек уроков", "n": "записей 1, активно 3,5 мин, тапов 135, злых тапов 3; последний экран: подписка; Армения — возможно, свой аккаунт (под вопросом, см. playbook)"}, {"id": "01M61AFZZK", "d": "28.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Посмотрел результат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "9″ вход в приложение (автовход) → 12″ результат IQ 137 → 40″ главная (Daily Brain Training)", "n": "записей 1, активно 0,0 мин, тапов 1; последний экран: главная"}, {"id": "01M61P5982", "d": "28.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · предоплаченная", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": 1.0, "s": "16″ вход в приложение (автовход) → 18″ результат IQ 137 → 4′ главная (Daily Brain Training) → 4′ игра Color Rush", "n": "записей 1, активно 1,1 мин, тапов 21; последний экран: игра color-rush"}, {"id": "01M61RD4CV", "d": "28.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "15″ вход в приложение (автовход) → 17″ результат IQ 137 → 1′ ввёл имя для сертификата → 5′ скачал сертификат PDF", "n": "записей 1, активно 1,6 мин, тапов 7; последний экран: сертификат"}, {"id": "01M61TV6WC", "d": "28.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта · дебетовая", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "48″ вход в приложение (автовход) → 50″ результат IQ 137 → 1′ главная (Daily Brain Training) → 4′ ввёл имя для сертификата → 4′ скачал сертификат PDF", "n": "записей 1, активно 0,8 мин, тапов 8; последний экран: сертификат"}, {"id": "01M61VJKZ4", "d": "28.10", "src": "Meta", "dev": "iOS · браузер", "pay": "Apple Pay · кредитная", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "7″ вход в приложение (автовход) → 9″ результат IQ 137 → 17″ ввёл имя для сертификата", "n": "записей 1, активно 0,3 мин, тапов 4; последний экран: сертификат"}, {"id": "01M61WZQ5Z", "d": "28.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "11″ вход в приложение (автовход) → 13″ результат IQ 137 → 54″ ввёл имя для сертификата", "n": "записей 1, активно 0,9 мин, тапов 4; последний экран: результат"}, {"id": "01M61ZZNWQ", "d": "28.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "23″ вход в приложение (автовход) → 25″ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ поделился сертификатом", "n": "записей 1, активно 0,5 мин, тапов 9; последний экран: сертификат"}, {"id": "01M62QZQ74", "d": "29.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · кредитная", "a": "Посмотрел результат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "6″ вход в приложение (автовход) → 9″ результат IQ 137", "n": "записей 1, активно 0,3 мин, тапов 1; последний экран: результат"}, {"id": "01M6307Y30", "d": "29.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": 1.0, "s": "10″ вход в приложение (автовход) → 13″ результат IQ 137 → 40″ ввёл имя для сертификата → 1′ поделился сертификатом → 2′ скачал сертификат PDF → 3,3 ч снова вход (вход по ссылке) → 3,3 ч главная (Daily Brain Training) → 3,3 ч игра Fox Memory", "n": "записей 2, активно 3,0 мин, тапов 50; последний экран: результат"}, {"id": "01M64H43GM", "d": "29.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Возвращается", "o": "Отменил в триале", "g": "отменил", "m": 1.0, "s": "8″ вход в приложение (автовход) → 10″ результат IQ 137 → 53″ снова вход (вход по ссылке) → 55″ главная (Daily Brain Training) → 14′ отменил подписку (не через приложение) → 31,2 ч день 2: снова вход (вход по ссылке) → 31,2 ч день 2: главная (Daily Brain Training)", "n": "записей 3, активно 0,3 мин, тапов 1; последний экран: главная"}, {"id": "01M668EVM4", "d": "30.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "10″ вход в приложение (автовход) → 12″ результат IQ 137 → 41″ ввёл имя для сертификата → 53″ скачал сертификат PDF", "n": "записей 1, активно 0,2 мин, тапов 5; последний экран: сертификат"}, {"id": "01M66FRT6H", "d": "30.10", "src": "Meta", "dev": "iOS · Instagram", "pay": "Apple Pay · дебетовая", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": 1.0, "s": "11″ вход в приложение (автовход) → 13″ результат IQ 137 → 25″ ввёл имя для сертификата → 49″ главная (Daily Brain Training) → 56″ игра Fox Memory → 2′ урок трека пройден → 2′ трек уроков → 9′ тест личности → 12′ языки любви → 13′ детские паттерны → 15′ черты СДВГ", "n": "записей 2, активно 11,4 мин, тапов 623, злых тапов 1; последний экран: результат"}, {"id": "01M66HQW7E", "d": "30.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "Карта · дебетовая", "a": "Посмотрел результат и ушёл", "o": "В триале", "g": "в триале", "m": 1.0, "s": "4′ вход в приложение (автовход) → 4′ результат IQ 137 → 6′ главная (Daily Brain Training)", "n": "записей 1, активно 0,7 мин, тапов 1; последний экран: главная"}, {"id": "01M66KT0M0", "d": "30.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "4″ вход в приложение (автовход) → 8″ результат IQ 137 → 38″ ввёл имя для сертификата", "n": "записей 1, активно 1,0 мин, тапов 5; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M66KYQ32", "d": "30.10", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "32″ вход в приложение (автовход) → 2′ результат IQ 137 → 3′ ввёл имя для сертификата → 13′ скачал сертификат PDF", "n": "записей 1, активно 2,6 мин, тапов 5; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M67ZXSV5", "d": "31.10", "src": "Google", "dev": "iOS · браузер", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 2′ ввёл имя для сертификата → 2′ скачал сертификат PDF", "n": "записей 1, активно 0,7 мин, тапов 4; последний экран: результат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M69AEKGV", "d": "31.10", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Возвращается", "o": "Отменил в триале", "g": "отменил", "m": null, "s": "4″ вход в приложение (автовход) → 6″ результат IQ 137 → 21,3 ч день 1: снова вход (вход по ссылке) → 21,3 ч день 1: главная (Daily Brain Training) → 21,3 ч день 1: страница подписки → 21,3 ч день 1: отменил подписку в приложении → 21,4 ч день 1: игра Fox Memory", "n": "записей 1, активно 0,6 мин, тапов 7; последний экран: игра fox-memory; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6A5BDXZ", "d": "01.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "Отменил в триале", "g": "отменил", "m": null, "s": "3″ вход в приложение (автовход) → 6″ результат IQ 137 → 19″ ввёл имя для сертификата → 2′ главная (Daily Brain Training) → 2′ страница подписки → 2′ отменил подписку в приложении → 4′ снова вход (вход по ссылке)", "n": "записей 2, активно 1,4 мин, тапов 16; последний экран: настройки; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6A6642W", "d": "01.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "5″ вход в приложение (автовход) → 7″ результат IQ 137 → 2′ ввёл имя для сертификата", "n": "записей 1, активно 0,9 мин, тапов 4; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6A89AAQ", "d": "01.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": null, "s": "5″ вход в приложение (автовход) → 7″ результат IQ 137 → 3′ главная (Daily Brain Training) → 3′ игра Nonogram → 5′ игра Fox Memory → 6′ урок трека пройден → 7′ тест личности → 18′ игра Fillwords → 25′ игра Word Forge → 29′ игра Contexto", "n": "записей 1, активно 10,8 мин, тапов 238; последний экран: Explore; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6CRH5KB", "d": "02.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": null, "s": "16″ вход в приложение (автовход) → 19″ результат IQ 137 → 50″ главная (Daily Brain Training) → 2′ игра Fox Memory → 3′ игра Color Rush", "n": "записей 1, активно 1,5 мин, тапов 40; последний экран: главная; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6DCPGG6", "d": "02.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "9″ вход в приложение (автовход) → 11″ результат IQ 137 → 1′ ввёл имя для сертификата → 1′ скачал сертификат PDF", "n": "записей 1, активно 0,6 мин, тапов 5; последний экран: результат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6E453P1", "d": "02.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": null, "s": "3″ вход в приложение (автовход) → 7″ результат IQ 137 → 28″ главная (Daily Brain Training) → 1′ игра Fox Memory", "n": "записей 1, активно 1,9 мин, тапов 73; последний экран: игра fox-memory; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6EB5REF", "d": "02.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": null, "s": "5″ вход в приложение (автовход) → 6″ результат IQ 137 → 1′ главная (Daily Brain Training) → 1′ игра Fox Memory → 4′ игра Color Rush → 6′ игра Raindrops → 8′ снова вход (страница входа) → 10′ игра Word Forge", "n": "записей 2, активно 6,4 мин, тапов 256, злых тапов 1; последний экран: игра word-forge; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6F4JAA9", "d": "03.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "2″ вход в приложение (автовход) → 5″ результат IQ 137 → 18″ ввёл имя для сертификата", "n": "записей 1, активно 0,8 мин, тапов 4; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6F639S8", "d": "03.11", "src": "Meta", "dev": "iOS · браузер", "pay": "—", "a": "Посмотрел результат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "1″ вход в приложение (автовход) → 4″ результат IQ 137", "n": "записей 1, активно 0,2 мин, тапов 1; последний экран: результат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6FHZD54", "d": "03.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "5″ вход в приложение (автовход) → 8″ результат IQ 137 → 27″ ввёл имя для сертификата → 37″ скачал сертификат PDF", "n": "записей 1, активно 0,2 мин, тапов 5; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6FJAW9Q", "d": "03.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Посмотрел результат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "6″ вход в приложение (автовход) → 9″ результат IQ 137", "n": "записей 0, активно 0,0 мин, тапов 0; последний экран: результат; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6FK1BB7", "d": "03.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Попробовал тренировки в первый день", "o": "В триале", "g": "в триале", "m": null, "s": "3″ вход в приложение (автовход) → 6″ результат IQ 137 → 1′ ввёл имя для сертификата → 5′ главная (Daily Brain Training) → 6′ тест личности → 16′ игра Fox Memory → 17′ языки любви → 23′ игра Color Rush → 26′ черты СДВГ → 38′ игра Pattern Matrix → 44′ игра Word Forge", "n": "записей 1, активно 176,2 мин, тапов 10046, злых тапов 17; последний экран: игра word-forge; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "01M6FSHKXE", "d": "03.11", "src": "Meta", "dev": "iOS · Facebook", "pay": "—", "a": "Не открыл приложение", "o": "Отменил в триале", "g": "отменил", "m": null, "s": "29′ отменил подписку (не через приложение)", "n": "записей 0, активно 0,0 мин, тапов 0; оплата после 30.10 — денег в выгрузке Primer нет"}, {"id": "h0FBFDFB57", "d": "03.11", "src": "неизвестно", "dev": "— · браузер", "pay": "—", "a": "Забрал сертификат и ушёл", "o": "В триале", "g": "в триале", "m": null, "s": "4″ результат IQ 137 → 1′ ввёл имя для сертификата", "n": "записей 1, активно 0,4 мин, тапов 4; последний экран: сертификат; оплата после 30.10 — денег в выгрузке Primer нет"}];
+window.__PRESETS={"now": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c": 20.7, "d": 53.4, "M": 26.53, "r2": 30, "r": 75, "X": 0, "f": 3, "fee": 5, "cac": 0, "k": 0}, "A": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c": 15, "d": 53.4, "M": 26.53, "r2": 45, "r": 78, "X": 0, "f": 3, "fee": 5, "cac": 0, "k": 0}, "B": {"p0": 1, "up": 0, "iap": 0, "one": 17, "oneP": 9.99, "c": 20.7, "d": 43, "M": 26.53, "r2": 30, "r": 75, "X": 0, "f": 3, "fee": 5, "cac": 0, "k": 0}, "C": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c": 20.7, "d": 53.4, "M": 26.53, "r2": 30, "r": 75, "X": 0, "f": 3, "fee": 5, "cac": 0, "k": 0.16}, "D": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c": 15, "d": 53.4, "M": 26.53, "r2": 35, "r": 75, "X": 0, "f": 3, "fee": 5, "cac": 0, "k": 0}};
+(function(){
+  // ---------- people table ----------
+  var P = window.__PEOPLE || [];
+  var tb = document.getElementById('ppl-body');
+  var fa = document.getElementById('f-arch'), fo = document.getElementById('f-out'), fs = document.getElementById('f-src'), fq = document.getElementById('f-q');
+  var cnt = document.getElementById('ppl-count');
+  var OC = {'оплатил':'ok','отменил':'crit','отказ банка':'warn','в триале':'plain'};
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function yen(n){if(n==null||!isFinite(n))return '—'; var neg=n<0; n=Math.abs(n); var s=n.toFixed(2).split('.'); return (neg?'−':'')+'$'+s[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ')+','+s[1];}
+  function render(){
+    if(!tb) return;
+    var a=fa.value, o=fo.value, s=fs.value, q=(fq.value||'').trim().toUpperCase();
+    var rows=P.filter(function(p){return (!a||p.a===a)&&(!o||p.g===o)&&(!s||p.src===s)&&(!q||p.id.indexOf(q)===0);});
+    var h=[];
+    rows.forEach(function(p){
+      h.push('<tr><td class="num">'+esc(p.id)+'<span class="sub">'+esc(p.d)+'</span></td>'+
+        '<td>'+esc(p.src)+'<span class="sub">'+esc(p.dev)+' · '+esc(p.pay)+'</span></td>'+
+        '<td><span class="chip plain">'+esc(p.a)+'</span></td>'+
+        '<td><span class="chip '+(OC[p.g]||'plain')+'">'+esc(p.o)+'</span></td>'+
+        '<td class="r num">'+(p.m==null?'—':yen(p.m))+'</td></tr>'+
+        '<tr class="st"><td colspan="5"><span class="story">'+esc(p.s)+(p.n?'<br><i>'+esc(p.n)+'</i>':'')+'</span></td></tr>');
+    });
+    tb.innerHTML=h.join('');
+    cnt.textContent=rows.length+' из '+P.length;
+  }
+  [fa,fo,fs].forEach(function(el){ if(el) el.addEventListener('change',render); });
+  if(fq) fq.addEventListener('input',render);
+  render();
+
+  // ---------- LTV calculator ----------
+  var F=['p0','up','iap','one','oneP','c','d','M','r2','r','X','f','fee','cac','k'];
+  var PRE=window.__PRESETS||{};
+  function val(id){var el=document.getElementById('i-'+id); var v=parseFloat(String(el.value).replace(',','.')); return isFinite(v)?v:0;}
+  function set(p){F.forEach(function(k){ if(p[k]!=null) document.getElementById('i-'+k).value=p[k]; }); calc();}
+  function calc(){
+    var v={}; F.forEach(function(k){v[k]=val(k);});
+    var oneN=100*v.one/100, trialN=100-oneN;
+    var rev0=trialN*v.p0+100*v.up+trialN*v.iap+oneN*v.oneP;
+    var S=[], s1=Math.max(0,trialN*(1-v.c/100-v.d/100)); S.push(s1); S.push(s1*v.r2/100);
+    for(var i=2;i<6;i++) S.push(S[i-1]*v.r/100);
+    var cum=rev0*(1-v.fee/100), rows=[], effCAC=v.cac/(1+v.k), payback=null;
+    var per0=cum/100; if(per0>=effCAC) payback=0;
+    for(var m=0;m<6;m++){
+      var sub=S[m]*v.M, ext=S[m]*v.X;
+      cum+= (sub+ext)*(1-v.fee/100) - sub*v.f/100;
+      var per=cum/100;
+      if(payback===null && per>=effCAC) payback=m+1;
+      rows.push('<tr><td>Месяц '+(m+1)+'</td><td class="r num">'+S[m].toFixed(1)+'</td><td class="r num">'+yen(per)+'</td></tr>');
+    }
+    var ltv=cum/100;
+    document.getElementById('o-rows').innerHTML='<tr><td>До первого списания</td><td class="r num">—</td><td class="r num">'+yen(per0)+'</td></tr>'+rows.join('');
+    document.getElementById('o-ltv').textContent=yen(ltv);
+    document.getElementById('o-cac').textContent=yen(effCAC);
+    var pr=ltv-effCAC; var el=document.getElementById('o-profit'); el.textContent=v.cac>0?((pr>=0?'+':'−')+yen(Math.abs(pr))):'впишите CAC'; el.className='big '+(pr>=0?'delta-up':'delta-down');
+    document.getElementById('o-pay').textContent= v.cac<=0 ? 'Стоимость покупателя не задана: окупаемость не считается' : payback===null ? 'не окупается за 6 месяцев' : (payback===0?'окупается до первого списания':'окупается в месяце '+payback);
+      }
+  F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el) el.addEventListener('input',calc); });
+  var bs=document.querySelectorAll('[data-preset]');
+  Array.prototype.forEach.call(bs,function(b){ b.addEventListener('click',function(){ Array.prototype.forEach.call(bs,function(x){x.classList.remove('on');}); b.classList.add('on'); set(PRE[b.getAttribute('data-preset')]); }); });
+  if(PRE.now){ set(PRE.now); var first=document.querySelector('[data-preset="now"]'); if(first) first.classList.add('on'); }
+})();
+
+</script>
+</body>
+</html>

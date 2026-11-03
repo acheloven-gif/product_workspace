@@ -248,10 +248,10 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="tl">
 <div class="tli crit" data-tip="PostHog, событие iq_result_shown, свойство iq_score; плюс текст на экране в записях сессий." tabindex="0"><span class="te">🧠</span><div><b>Результат одинаковый у всех — IQ 137.</b> 171 человек с 24.09, 64 из 64 покупателей. «Genius» и «Top 19%» противоречат друг другу.</div></div>
 <div class="tli crit" data-tip="Дни по МСК; активное время — по записям сессий; игры — страницы /games или событие game_started." tabindex="0"><span class="te">🚪</span><div><b>Продукт на один заход.</b> 60 из 64 — только день покупки; медиана активности 42 секунд; игры открыли 17%.</div></div>
-<div class="tli warn" data-tip="Самостоятельная отмена = subscription_cancelled больше чем за 2 минуты до попытки списания. Распределение — в разделе «Почему отменяют»." tabindex="0"><span class="te">⚡</span><div><b>Отменяют в первый час.</b> 8 из 15 — в первые 31 минуту, медиана 31 минут; отмена — 2 нажатия, без вопроса «почему».</div></div>
+<div class="tli warn" data-tip="Самостоятельная отмена = subscription_cancelled больше чем за 2 минуты до попытки списания. Распределение — в разделе «Почему отменяют»." tabindex="0"><span class="te">⚡</span><div><b>Отменяют в первый час.</b> 8 из 15 — в первые 31 минуту, медиана 31 минута. Причину спрашивают и дают скидку, но ответы в PostHog не приходят.</div></div>
 <div class="tli" data-tip="Точный тест Фишера на 58 решивших с данными приложения: p = 1,0, разницы нет." tabindex="0"><span class="te">📜</span><div><b>Сертификат на отмену не влияет.</b> Скачали PDF и отменили — 5 из 23 (22%); не скачали и отменили — 9 из 35 (26%). Разницы нет.</div></div>
 <div class="tli" data-tip="FunnelFox-события в PostHog, люди, 17.10–02.11 МСК. Первый вопрос — screen_index = 1, пейволл — экран paywall, оплата — funnel_purchase_success." tabindex="0"><span class="te">🔻</span><div><b>Воронка FoxIQ против Azora.</b> До пейволла: 28% против 46% (−18 п. п.). Оплата с пейволла: 7,0% против 7,8% (−0,8 п. п.). От первого вопроса до оплаты: 2,0% против 3,6% (−1,6 п. п., в 1,8 раза меньше).</div></div>
-<div class="tli ok" data-tip="Тест на возврат 7% → 25%: 64 человека на вариант при α = 5% и мощности 80%; ~4 покупателя в день." tabindex="0"><span class="te">🎯</span><div><b>Что делать.</b> Честный результат по ответам · повод вернуться на следующий день (сейчас 60 из 64 — только день покупки) · вопрос о причине при отмене. Поток ~4 покупателя в день → тест на возврат ≈ 5 недель.</div></div>
+<div class="tli ok" data-tip="Тест на возврат 7% → 25%: 64 человека на вариант при α = 5% и мощности 80%; ~4 покупателя в день." tabindex="0"><span class="te">🎯</span><div><b>Что делать.</b> Честный результат по ответам · повод вернуться на следующий день (сейчас 60 из 64 — только день покупки) · передать в PostHog ответы из воронки отмены. Поток ~4 покупателя в день → тест на возврат ≈ 5 недель.</div></div>
 </div>
 </section>
 
@@ -270,7 +270,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="st hot" data-tip="«Your IQ Score 137 · Genius · Top 19%» — у всех. Видели 61 из 62 с записями." tabindex="0"><b>🧠 Результат</b>IQ 137 у всех</div><span class="arrow">→</span>
 <div class="st" data-tip="Ввели имя 36, скачали PDF 24 из 64." tabindex="0"><b>📜 Сертификат</b>имя → PDF</div><span class="arrow">→</span>
 <div class="st" data-tip="Открывали 35 из 64; карточку тренировки нажали 8." tabindex="0"><b>🏠 Главная</b>«Daily Brain Training 0/5»</div><span class="arrow">→</span>
-<div class="st hot" data-tip="Профиль → «Manage or cancel subscription» → «Yes, cancel». В приложении отменили 8, «Keep subscription» — 0." tabindex="0"><b>❌ Отмена</b>2 нажатия</div>
+<div class="st hot" data-tip="Профиль → подписка → «Cancel subscription?» → воронка FunnelFox: «Are you sure?» → «Why did you decide not to continue?» (5 причин) → скидка 50%: $39.99 за год → отмена и письмо-подтверждение. В PostHog видны только 2 нажатия в приложении (8 человек); ответы на вопрос «почему» и реакция на скидку не приходят." tabindex="0"><b>❌ Отмена</b>«Точно?» → причина → скидка 50%</div>
 </div>
 <div class="cols2">
 <div class="card"><h3>🔻 Воронка FoxIQ, люди</h3>
@@ -341,7 +341,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="fc ok"><div class="fh">🎮 Игры<span class="chip ok">Проверить</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:17.2%"></span></span><span class="hv num">11</span></div><p class="small">⏱️ Кто начал — играет около 6 минут, 8 из 11 доиграли. На другой день играть не вернулся никто.</p></div>
 <div class="fc"><div class="fh">🧪 Тесты личности<span class="chip plain">Мало данных</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:14.1%"></span></span><span class="hv num">9</span></div><p class="small">Открывают, но надолго не задерживаются.</p></div>
 <div class="fc"><div class="fh">🗺️ Трек уроков<span class="chip plain">Не пользуются</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:9.4%"></span></span><span class="hv num">6</span></div><p class="small">Урок прошли 3 человека.</p></div>
-<div class="fc crit"><div class="fh">❌ Отмена<span class="chip crit">Переделать</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:10.9%"></span></span><span class="hv num">7</span></div><p class="small">Из 7 открывших страницу подписки 8 отменили, «Keep subscription» не нажал никто. Причину не спрашивают.</p></div>
+<div class="fc crit"><div class="fh">❌ Отмена<span class="chip crit">Переделать</span></div><div class="hb"><span class="hl">Открыли</span><span class="ht"><span class="hf " style="width:10.9%"></span></span><span class="hv num">7</span></div><p class="small">Из 7 открывших страницу подписки 8 нажали «Yes, cancel», «Keep subscription» — никто. Дальше воронка отмены FunnelFox с вопросом «почему» и скидкой 50%, но её ответы в PostHog не приходят.</p></div>
 </div>
 <div class="card"><h3>📣 Источники</h3>
 <div class="tbl"><table><thead><tr><th>utm_source</th><th class="r">Решили</th><th class="r">✅ Оплатили</th><th class="r">❌ Отменили</th><th class="r">🏦 Отказ банка</th></tr></thead><tbody>
@@ -369,8 +369,8 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <li>«65 в день» в PostHog — серверные персоны из воронки; пользователей приложения 0–17 в день.</li>
 </ul><p class="small muted">Весь период 12.10–03.11.</p></div>
 <div class="card"><h3>❌ Отмена и онбординг</h3><ul class="list">
-<li>«Cancel subscription?» → «Yes, cancel» — 8 человек; «Keep subscription» — 0.</li>
-<li>Событий воронки отмены FoxIQ в PostHog нет; у Azora есть (<code>cancellation_survey_completed</code>).</li>
+<li>Отмена: «Cancel subscription?» → воронка FunnelFox: «Are you sure?» → «Why did you decide not to continue?» (5 причин) → скидка 50%: $39.99 за год → отмена и письмо-подтверждение. В приложении «Yes, cancel» нажали 8, «Keep subscription» — 0.</li>
+<li>События воронки отмены FoxIQ (причина, скидка) в PostHog не приходят — поэтому причины отмен не видны. У Azora они есть (<code>cancellation_survey_completed</code>).</li>
 <li>✅ Онбординг покупателям с воронки не показывается — 0 из 64, баг не подтвердился.</li>
 </ul></div>
 </div>
@@ -435,7 +435,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <p class="small muted">«Вход заново» — первым после результата открыли страницу входа. Связь, не причина; выборка мала — ни одна разница статистически не доказана.</p></div>
 <div class="hgrid">
 <div class="card"><h3>1. 🎯 Купили результат, а не подписку <span class="chip crit" data-tip="Несколько независимых признаков в данных, большая доля людей">сильные</span></h3><p class="small">60 из 64 — один день; 8 из 15 отменили за 31 мин; плана в приложении нет. <b>→ T1</b></p></div>
-<div class="card"><h3>2. 🔑 Приходят, чтобы отменить <span class="chip warn" data-tip="Есть признаки в данных, но выборка мала или возможны другие объяснения">средние</span></h3><p class="small">3 из 14 отменивших начали со входа заново; 3 отменили за сутки до списания; причин не знаем. <b>→ T3</b></p></div>
+<div class="card"><h3>2. 🔑 Приходят, чтобы отменить <span class="chip warn" data-tip="Есть признаки в данных, но выборка мала или возможны другие объяснения">средние</span></h3><p class="small">3 из 14 отменивших начали со входа заново; 3 отменили за сутки до списания; причины спрашивают, но ответы не доходят до данных. <b>→ T3</b></p></div>
 <div class="card"><h3>3. 🧠 Одинаковый результат <span class="chip warn" data-tip="Есть признаки в данных, но выборка мала или возможны другие объяснения">средние</span></h3><p class="small">137 у всех + 30-дневный возврат денег в воронке = риск жалоб. <b>→ T4</b></p></div>
 </div>
 <p class="small muted">Тёмные паттерны в отмене не предлагаю: в США это риск по правилу FTC «click-to-cancel».</p>
@@ -520,11 +520,11 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="tr" data-tip="58 на вариант; если запускать третьей группой вместе с T1 — около 7 недель." tabindex="0"><span class="tk">⏳ Срок</span><span class="tv">≈ 5–7 недель</span></div>
 <div class="tr" data-tip="Приложение и письма." tabindex="0"><span class="tk">📍 Где</span><span class="tv">Приложение и письма.</span></div>
 </div><div class="tcard">
-<div class="th"><span class="tcode">T3</span><b>🚪 Отмена с вопросом «почему»</b><span class="chip info" data-tip="A/B — людей случайно делят на две группы. «До/после» — сравниваем периоды до и после выпуска, когда людей слишком мало для A/B." tabindex="0">до/после</span></div>
-<p class="thyp" data-tip="Отменяют в 2 нажатия, медиана — через 31 минуту после оплаты; «Keep subscription» не нажал никто; причин отмены нет в данных." tabindex="0">Если спросить причину и предложить вариант под неё, часть людей останется — и мы узнаем причины.</p>
-<div class="tab"><span class="ta" data-tip="Один экран: причина (можно пропустить) и вариант — пауза, ещё неделя за $1 или подборка игр. Кнопка «Отменить» видна сразу. События отмены и причина — в PostHog." tabindex="0">A: как сейчас</span><span class="tarr">→</span><span class="tb" data-tip="Один экран: причина (можно пропустить) и вариант — пауза, ещё неделя за $1 или подборка игр. Кнопка «Отменить» видна сразу. События отмены и причина — в PostHog." tabindex="0">B: вопрос о причине + вариант под неё</span></div>
-<div class="tr" data-tip="Доля оставшихся среди открывших отмену (сейчас 0 из 8) и распределение причин. Защитная: жалобы и споры по платежам." tabindex="0"><span class="tk">📏 Метрика</span><span class="tv">остались после отмены: <b>0% → ?</b></span></div>
-<div class="tr" data-tip="Не A/B: в отмену заходят ~2 человека в неделю. Сравниваем 4 недели до выпуска и 4 после; эффект виден, только если он больше обычных колебаний." tabindex="0"><span class="tk">⏳ Срок</span><span class="tv">4 + 4 недели</span></div>
+<div class="th"><span class="tcode">T3</span><b>🚪 Причины отмен — в данные</b><span class="chip info" data-tip="A/B — людей случайно делят на две группы. «До/после» — сравниваем периоды до и после выпуска, когда людей слишком мало для A/B." tabindex="0">до/после</span></div>
+<p class="thyp" data-tip="Сейчас после «Yes, cancel»: «Cancel subscription?» → воронка FunnelFox: «Are you sure?» → «Why did you decide not to continue?» (5 причин) → скидка 50%: $39.99 за год → отмена и письмо-подтверждение. Скидка одна для всех. Сколько людей дошли до вопроса, что ответили и сколько взяли скидку — неизвестно: события не приходят в PostHog. Проверено вручную 03.11." tabindex="0">Вопрос «почему» и скидка уже есть, но мы не видим ответов. Сначала данные, потом — предложение под причину.</p>
+<div class="tab"><span class="ta" data-tip="Шаг 1 (сразу, без теста): отправлять в PostHog события воронки отмены — открыл, причина, показана скидка, взял скидку, отменил. Шаг 2: когда видны причины — вариант под причину вместо одной скидки на год: «мало пользуюсь» → план на неделю, «дорого» → пауза или месячная скидка, «тех. проблемы» → поддержка." tabindex="0">A: скидка 50% на год всем</span><span class="tarr">→</span><span class="tb" data-tip="Шаг 1 (сразу, без теста): отправлять в PostHog события воронки отмены — открыл, причина, показана скидка, взял скидку, отменил. Шаг 2: когда видны причины — вариант под причину вместо одной скидки на год: «мало пользуюсь» → план на неделю, «дорого» → пауза или месячная скидка, «тех. проблемы» → поддержка." tabindex="0">B: предложение под причину</span></div>
+<div class="tr" data-tip="Доля оставшихся среди вошедших в воронку отмены и доля взявших скидку. Сейчас неизвестно — события не приходят. Защитная: жалобы и споры по платежам." tabindex="0"><span class="tk">📏 Метрика</span><span class="tv">остались после воронки отмены: <b>? → ↑</b></span></div>
+<div class="tr" data-tip="Сначала 4 недели собрать причины после подключения событий. Потом «до/после»: в отмену заходят ~2 человека в неделю, на A/B не хватит." tabindex="0"><span class="tk">⏳ Срок</span><span class="tv">4 недели данных + 4 + 4</span></div>
 <div class="tr" data-tip="Приложение, страница подписки; воронка отмены FunnelFox." tabindex="0"><span class="tk">📍 Где</span><span class="tv">Приложение, страница подписки; воронка отмены FunnelFox.</span></div>
 </div><div class="tcard">
 <div class="th"><span class="tcode">T4</span><b>🧠 Честный результат IQ</b><span class="chip info" data-tip="A/B — людей случайно делят на две группы. «До/после» — сравниваем периоды до и после выпуска, когда людей слишком мало для A/B." tabindex="0">до/после</span></div>
@@ -536,7 +536,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 </div></div>
 <div class="card"><h3>🗓️ Порядок</h3>
 <ol class="steps2">
-<li data-tip="Честный балл, вход без оплаты — сразу на экран повторной оплаты, события воронки отмены в PostHog, записи сессий в воронке, долгоживущая ссылка входа из письма." tabindex="0"><b>Сразу, без теста</b> — починить баги и балл</li>
+<li data-tip="Честный балл, вход без оплаты — сразу на экран повторной оплаты, события воронки отмены (причина, скидка) в PostHog, записи сессий в воронке, долгоживущая ссылка входа из письма." tabindex="0"><b>Сразу, без теста</b> — починить баги и балл</li>
 <li data-tip="Опирается на письма для возврата, которые уже в разработке." tabindex="0"><b>Неделя 1</b> — T1</li>
 <li data-tip="Сравнение 4 недель до и 4 после; причины отмен подскажут следующие тесты." tabindex="0"><b>После выпуска отмены</b> — T3</li>
 <li data-tip="T2 меряет то же, что T1, поэтому запускать на уже исправленном продукте." tabindex="0"><b>После итогов T1</b> — T2</li>
@@ -556,7 +556,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <li>Вторых списаний ещё нет. Всё, что дальше первого месяца, в калькуляторе и путях — допущения.</li>
 <li>Почему люди отменяют, напрямую не известно: опроса при отмене нет; 7 из 15 отменили не через приложение, где — не видно. Почему банк отказывает — код «generic_decline» причину не раскрывает.</li>
 <li>Исключён один свой аккаунт: покупка 28.10 из Армении с компьютера по ссылке без меток, отменена через 9 минут (по решению Наташи 03.11).</li>
-<li>Событий воронки отмены FoxIQ в PostHog нет: видны только <code>subscription_cancel_click</code> и <code>subscription_cancel_confirm</code> в приложении (8 человек, двое из них — по записям во время сбоя PostHog). Где отменили остальные 7, не видно.</li>
+<li>Воронка отмены FoxIQ есть («Are you sure?» → причина → скидка 50% на год → письмо; проверено вручную 03.11), но её события в PostHog не приходят. Видны только <code>subscription_cancel_click</code> и <code>subscription_cancel_confirm</code> в приложении (8 человек). Где отменили остальные 7, не видно.</li>
 <li>Бенчмарки воронок — по событиям PostHog FunnelFox, люди, 17.10–02.11; с другими определениями шагов (экран оплаты вместо пейволла, сессии вместо людей) проценты будут другими.</li>
 <li>Покупки с 27.10 08:12 по 02.11 16:07 UTC (28 человек) исключены: в приложении не было вкладок «Трек» и «Explore» (видно по ссылкам меню в 33 записях из 33). Воронка FunnelFox и бенчмарки — за весь период.</li>
 <li>Расходов на рекламу и стоимости покупателя в данных нет.</li>

@@ -59,6 +59,7 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
   | `charisly` | Charisly (личностное развитие), приложение — только начали слать события |
   | `lunavel` | Lunavel (форк Azora), приложение |
   | `azora_ff`, `foxiq_ff`, `robella_ff`, `brainza_ff` | **воронки FunnelFox** этих продуктов |
+  | `azora_landing`, `foxiq_landing`, `robella_landing`, `nalumi_landing`, `charisly_landing`, `ridwan_landing` | **лендинги** (сайты продуктов), с 03.11.2026 — см. раздел «Лендинги» ниже (добавлено 06.11.2026) |
 
   Мусорные значения `iq`, `funnel` — старые тесты, не брать. Около 12 тыс. событий в месяц приходят **без `project`** — их нельзя отнести ни к одному приложению, в анализ не брать.
   Появилось новое приложение — сначала посмотреть актуальный список значений `project`.
@@ -72,6 +73,26 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
 - **UTM:** `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` — отдельные свойства. Остальные параметры ссылки (`adgroup_id`, `network`, `gclid` и т.п.) лежат только внутри `$current_url`.
 - PostHog видит тех, у кого **загрузилась воронка**, а не клики по рекламе. Кликов в рекламном кабинете всегда больше.
 - Воронка и приложение — **разные персоны** в PostHog. Связывать человека между воронкой и приложением — по email (`person.properties.email`).
+
+### Лендинги (`*_landing`, проверено 06.11.2026)
+- Все шесть появились одновременно 03.11.2026 ~14:00 UTC. Источник — браузерный SDK (`$lib = 'web'`), свойства `environment` нет.
+- Домены (`$host`):
+
+  | project | домен |
+  |---|---|
+  | `azora_landing` | `azora-astro.com` и `www.azora-astro.com` (иногда `azora-astro.com.` с точкой — тот же сайт) |
+  | `foxiq_landing` | `foxiq.app` |
+  | `robella_landing` | `robella.app` |
+  | `nalumi_landing` | `nalumi.app` |
+  | `charisly_landing` | `charisly.app` |
+  | `ridwan_landing` | `ridwan.app` |
+
+- События: `$pageview`, `$web_vitals`, `landing_billing_block_view` (показан блок про оплату и списания), `landing_billing_block_click`. Других событий нет.
+- Свойства `landing_billing_block_*`: `landing` (домен), `device` (`mobile` / `desktop`), `lang` (язык страницы: у Azora `es`, `ja`, `en`, `it`, `pt`, `ru`, `de`; у остальных пока только `en`). У клика — `action`: `cancel`, `refund`, `support`, `what_is_charge`; у Azora ещё `ios_cancel`, `ios_refund`.
+- У Azora есть страница отмены `/cancel.html`. Переход на неё с блока биллинга помечен `utm_source=landing`, `utm_medium=billing_block`, `utm_campaign=cancel` — это внутренний переход, а не внешний источник трафика. Рекламных UTM на лендингах на 06.11 нет: заходы прямые и из поиска (Google, Yahoo Japan, Bing).
+- Лендинг — отдельные персоны, в основном анонимные. Связка с воронкой и приложением не проверялась.
+- **Тестовые проходы — исключать:** при запуске 03.11 с 14:00 до 14:10 UTC на каждом лендинге один человек (IP Швеция) прокликал все кнопки блока биллинга (8–12 кликов). Часть таких персон с почтой `eevakenn+…` (ловится фильтром по `+` / `eevakenn`), часть анонимные — их отсекать по времени первого события 03.11 14:00–14:10 UTC. На `azora_landing` ещё тестировщик 03.11 14:46–14:56 UTC (`eevakenn+…`, IP США).
+- `ridwan_landing` на 06.11 — только тестовый проход, реальных посетителей нет. Объём остальных (03.11–06.11 UTC, люди, без тестов): `azora_landing` 46 (из них 26 кликнули в блок биллинга), `robella_landing` 5, `foxiq_landing` 3, `nalumi_landing` 3, `charisly_landing` 2; на лендингах, кроме Azora, реальных кликов в блок биллинга нет.
 
 ### Приложения
 - Общие события у веб-приложений: `login`, `magic_link_requested`, `onboarding_started` / `onboarding_step` / `onboarding_completed`, `first_run_*`, `paywall_shown` / `paywall_closed` / `paywall_plan_selected`, `subscription_started` / `subscription_cancelled` / `subscription_renewed`, `subscription_cancel_click` / `subscription_cancel_confirm`, `in_app_purchase_click` / `in_app_purchase_success`, `settings_open`. Плюс у каждого свои (FoxIQ — `game_*`, `test_*`, `iq_result_shown`, `certificate_*`; Ridwan — `lesson_*`, `quiz_*`, `audio_*`; Nalumi — `scan_*`, `routine_*`, `guide_*`; Robella — `report_opened`, `capsule_*`, `tryon_*`).
@@ -108,6 +129,7 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
   - Выгрузка Primer (payments-29.csv) — время в UTC, а не UTC+3: совпадает с `subscription_started` до минут.
   - Сбой сервера PostHog: с 11.10 ~01:00 до 13.10 ~07:00 UTC событий почти нет по всем проектам, но записи сессий сохранились — путь пользователей за эти дни восстанавливать по записям (`session_replay_events`, снимки). У FoxIQ отмены в приложении за эти дни видны только в записях.
   - Нижнее меню приложения с 27.10 08:12 до 02.11 16:07 UTC было без Track/Explore — учитывать при сравнении периодов.
+- **Лендинги `*_landing` (найдено 06.11):** тестовые проходы при запуске 03.11 14:00–14:10 UTC на всех шести лендингах и тестировщик на `azora_landing` 03.11 14:46–14:56 UTC — исключать; подробности и фильтр — в разделе «Лендинги».
 - Для остальных приложений полных списков пока нет. Если цифры странные — сначала проверить, нет ли внутренних аккаунтов, и дописать их сюда.
 
 ---

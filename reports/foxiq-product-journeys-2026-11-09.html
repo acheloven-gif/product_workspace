@@ -606,7 +606,6 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="facts">
 <div class="fact"><span class="v" id="o-ltv">—</span><span class="l">LTV за 6 месяцев на покупателя триала</span></div>
 <div class="fact"><span class="v" id="o-cac">—</span><span class="l">Стоимость покупателя с учётом приглашений</span></div>
-<div class="fact"><span class="big" id="o-profit">—</span><span class="l">Остаётся после рекламы</span></div>
 </div>
 <p class="small" id="o-pay"></p>
 <div class="tbl"><table style="min-width:0"><thead><tr><th>Период</th><th class="r">Подписчиков из 100</th><th class="r">Накоплено на покупателя</th></tr></thead><tbody id="o-rows"></tbody></table></div>
@@ -801,8 +800,7 @@ window.__PRESETS={"now": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c
     document.getElementById('o-rows').innerHTML='<tr><td>До первого списания</td><td class="r num">—</td><td class="r num">'+yen(per0)+'</td></tr>'+rows.join('');
     document.getElementById('o-ltv').textContent=yen(ltv);
     document.getElementById('o-cac').textContent=yen(effCAC);
-    var pr=ltv-effCAC; var el=document.getElementById('o-profit'); el.textContent=v.cac>0?((pr>=0?'+':'−')+yen(Math.abs(pr))):'окупается при CAC до '+yen(ltv); el.className='big '+(pr>=0?'delta-up':'delta-down');
-    document.getElementById('o-pay').textContent= v.cac<=0 ? 'Стоимость покупателя не задана: показан предельный CAC — сколько можно платить за покупателя триала, чтобы окупиться за 6 месяцев' : payback===null ? 'не окупается за 6 месяцев' : (payback===0?'окупается до первого списания':'окупается в месяце '+payback);
+    document.getElementById('o-pay').textContent= v.cac<=0 ? '' : payback===null ? 'не окупается за 6 месяцев' : (payback===0?'окупается до первого списания':'окупается в месяце '+payback);
       }
   F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el) el.addEventListener('input',calc); });
   var bs=document.querySelectorAll('[data-preset]');

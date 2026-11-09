@@ -166,3 +166,42 @@
 - Обещания роста IQ, «станете умнее», проценты улучшений.
 - Давление и чувство вины: «you haven't…», «don't give up», «last chance».
 - Скидки и цены: письма с поводом — не про оплату; про списание пишут транзакционные письма.
+
+---
+
+## N. Попал в приложение без оплаты (дополнение 09.11)
+
+Логика — `foxiq/emails.md`, раздел 9. Все кнопки ведут на экран повторной оплаты (автовход без подписки → повтор оплаты $1); без этого экрана письма N не запускаем.
+Во всех трёх письмах — условия, как на пейволле: $1 for 7 days, then $29.99/month, cancel anytime. Не писать «доступ активен», «тренировка ждёт».
+
+### N1 — через 1 час после входа
+
+- **Subject:** Your payment didn't go through
+- **Preheader:** Your IQ result is saved — finish in a minute.
+- **Body:**
+  > Hi {name},
+  >
+  > Your IQ result is saved, but your payment didn't go through, so your access isn't open yet. You can finish in about a minute: 7 days for $1, then $29.99/month. Cancel anytime.
+- **Button:** Complete for $1 → экран повторной оплаты
+
+### N2 — через 1 день
+
+- **Subject:** Your IQ certificate is waiting
+- **Preheader:** It opens with your 7-day trial for $1.
+- **Body:**
+  > Hi {name},
+  >
+  > Your personal IQ certificate is ready to be issued in your name. It opens together with your 7-day trial for $1 (then $29.99/month, cancel anytime).
+- **Button:** Get my certificate → экран повторной оплаты, после оплаты — сертификат
+
+### N3 — через 3 дня
+
+- **Subject:** Try another card or Apple Pay
+- **Preheader:** Banks sometimes decline online payments.
+- **Body:**
+  > Hi {name},
+  >
+  > Banks sometimes decline online payments, even when the card is fine. Trying another card or Apple Pay usually helps. If it still doesn't work, just reply to this email and we'll help.
+- **Button:** Try again → экран повторной оплаты
+
+После N3 без оплаты писем больше нет.

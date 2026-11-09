@@ -171,7 +171,7 @@
 
 ## N. Попал в приложение без оплаты (дополнение 09.11)
 
-Логика — `foxiq/emails.md`, раздел 9. Кнопки ведут на пейволл в приложении (`/premium` или сертификат с пейволлом).
+Логика — `foxiq/emails.md`, раздел 9. Все кнопки ведут на пейволл в приложении `/premium`.
 Цен в письмах нет — их показывает пейволл. Не писать «доступ активен», «тренировка ждёт», не обещать $1.
 
 ### N1 — через 1 час после входа
@@ -192,7 +192,7 @@
   > Hi {name},
   >
   > Your personal IQ certificate is ready to be issued in your name. It opens with full FoxIQ access.
-- **Button:** Get my certificate → экран сертификата (на нём пейволл)
+- **Button:** Get my certificate → `/premium`
 
 ### N3 — через 3 дня
 

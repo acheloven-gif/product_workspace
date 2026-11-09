@@ -569,7 +569,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 
 <section id="calc">
 <h2>Калькулятор LTV</h2>
-<p class="small muted">💰 LTV за 6 месяцев на покупателя. «Сейчас»: отмены 24,1% и отказ банка 46,6% — факт по 58 покупателям 12–27.10 на 06.11; цена месяца $23,82 — средний чек оплативших (Primer и <code>primer_payment</code>). Продления, возвраты, комиссии — допущения: второй месяц 30% и дальше 75% взяты ниже ориентира рынка (42%, RevenueCat), потому что после первого списания в приложение заходил 1 из 17 оплативших. Расходов на рекламу в данных нет: пока CAC не вписан, калькулятор показывает предельный CAC — при нынешнем пути покупатель триала окупается за 6 месяцев, если стоит меньше $13,25. Фактический CAC — расходы Meta на FoxIQ за период, делённые на число покупателей.</p>
+<p class="small muted">💰 LTV за 6 месяцев на покупателя. «Сейчас»: отмены 24,1% и отказ банка 46,6% — факт по 58 покупателям 12–27.10 на 06.11; цена месяца $23,82 — средний чек оплативших (Primer и <code>primer_payment</code>). Продления, возвраты, комиссии — допущения: второй месяц 30% и дальше 75% взяты ниже ориентира рынка (42%, RevenueCat), потому что после первого списания в приложение заходил 1 из 17 оплативших. Расходов на рекламу в данных нет: в результате калькулятора сразу написано, до какой стоимости покупатель окупается за 6 месяцев.</p>
 <div class="btns" role="group" aria-label="Пути">
 <button class="b" data-preset="now">Сейчас</button><button class="b" data-preset="A">A. Первая тренировка с результата</button><button class="b" data-preset="B">B. Игрок</button><button class="b" data-preset="C">C. Серия результатов</button>
 </div>
@@ -592,7 +592,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <div class="out">
 <div class="facts">
 <div class="fact"><span class="v" id="o-ltv">—</span><span class="l">LTV за 6 месяцев на покупателя триала</span></div>
-<div class="fact"><span class="v" id="o-cac">—</span><span class="l">Стоимость покупателя с учётом приглашений</span></div>
+<div class="fact"><span class="big" id="o-cac">—</span><span class="l">Стоимость покупателя, до которой путь окупается</span></div>
 </div>
 <p class="small" id="o-pay"></p>
 <div class="tbl"><table style="min-width:0"><thead><tr><th>Период</th><th class="r">Подписчиков из 100</th><th class="r">Накоплено на покупателя</th></tr></thead><tbody id="o-rows"></tbody></table></div>
@@ -678,7 +678,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <li>Воронка отмены FoxIQ («Are you sure?» → причина → скидка 50% на год → письмо; проверено вручную 03.11) до 09.11 не отправляла события в PostHog. За 13.10–06.11 видны только <code>subscription_cancel_click</code> и <code>subscription_cancel_confirm</code> в приложении (10 человек). С 09.11 07:45 UTC события приходят (исправление Дани): экраны воронки и итог с причиной.</li>
 <li>Бенчмарки воронок — по событиям PostHog FunnelFox, люди, 17.10–02.11; с другими определениями шагов (экран оплаты вместо пейволла, сессии вместо людей) проценты будут другими.</li>
 <li>Покупки с 27.10 08:12 по 02.11 16:07 UTC (28 человек) в выборке: в деньгах и отменах — вместе со всеми, в поведении — отдельно. В приложении в эти дни не было вкладок «Трек» и «Explore» (видно по ссылкам меню в 33 записях из 33). Пути этой недели — по событиям PostHog, записи сессий не разбирались. У 7 из 28 триал ещё идёт, у 13 — повторные попытки списания.</li><li>Первый заход и метрики плана считаются по событиям PostHog: от первого до последнего события, а не по активному времени из записей — поэтому 107 с, а не 42 с.</li>
-<li>Расходов на рекламу и стоимости покупателя в данных нет: калькулятор показывает предельный CAC, при котором путь окупается за 6 месяцев.</li>
+<li>Расходов на рекламу в данных нет. Калькулятор сразу показывает стоимость покупателя как итог: путь окупается за 6 месяцев, если покупатель стоит не дороже LTV.</li>
 <li>Сравнение с Azora — только покупатели США за 13.10 17:00 – 27.10 21:00 UTC (FoxIQ 51, Azora 203). Продукты разные, цена и длина триала могут отличаться — сравнение ориентировочное.</li>
 <li>Время на экране — по событиям PostHog: промежуток до следующего события в той же сессии, не больше 5 минут; последний экран сессии не учитывается. Это не активное время из записей.</li>
 </ul>
@@ -777,8 +777,9 @@ window.__PRESETS={"now": {"p0": 1, "up": 0, "iap": 0, "one": 0, "oneP": 9.99, "c
     var ltv=cum/100;
     document.getElementById('o-rows').innerHTML='<tr><td>До первого списания</td><td class="r num">—</td><td class="r num">'+yen(per0)+'</td></tr>'+rows.join('');
     document.getElementById('o-ltv').textContent=yen(ltv);
-    document.getElementById('o-cac').textContent=yen(effCAC);
-    document.getElementById('o-pay').textContent= v.cac<=0 ? '' : payback===null ? 'не окупается за 6 месяцев' : (payback===0?'окупается до первого списания':'окупается в месяце '+payback);
+    var cacEl=document.getElementById('o-cac'), cacLab=cacEl.parentNode.querySelector('.l');
+    if(v.cac<=0){ cacEl.textContent='до '+yen(ltv); cacEl.className='big'; cacLab.textContent='Стоимость покупателя, до которой путь окупается'; document.getElementById('o-pay').textContent=''; }
+    else { cacEl.textContent=yen(effCAC); cacEl.className='v'; cacLab.textContent='Стоимость покупателя с учётом приглашений'; var pr=ltv-effCAC; document.getElementById('o-pay').textContent=(pr>=0?'После рекламы остаётся '+yen(pr):'После рекламы не хватает '+yen(Math.abs(pr)))+(payback===null ? '' : payback===0 ? ', окупается до первого списания' : ', окупается в месяце '+payback); }
       }
   F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el) el.addEventListener('input',calc); });
   var bs=document.querySelectorAll('[data-preset]');

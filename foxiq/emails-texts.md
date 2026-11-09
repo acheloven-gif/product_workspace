@@ -171,28 +171,28 @@
 
 ## N. Попал в приложение без оплаты (дополнение 09.11)
 
-Логика — `foxiq/emails.md`, раздел 9. Все кнопки ведут на экран повторной оплаты (автовход без подписки → повтор оплаты $1); без этого экрана письма N не запускаем.
-Во всех трёх письмах — условия, как на пейволле: $1 for 7 days, then $29.99/month, cancel anytime. Не писать «доступ активен», «тренировка ждёт».
+Логика — `foxiq/emails.md`, раздел 9. Кнопки ведут на пейволл в приложении (`/premium` или сертификат с пейволлом).
+Цен в письмах нет — их показывает пейволл. Не писать «доступ активен», «тренировка ждёт», не обещать $1.
 
 ### N1 — через 1 час после входа
 
 - **Subject:** Your payment didn't go through
-- **Preheader:** Your IQ result is saved — finish in a minute.
+- **Preheader:** Your IQ result is saved — unlock full access in a minute.
 - **Body:**
   > Hi {name},
   >
-  > Your IQ result is saved, but your payment didn't go through, so your access isn't open yet. You can finish in about a minute: 7 days for $1, then $29.99/month. Cancel anytime.
-- **Button:** Complete for $1 → экран повторной оплаты
+  > Your IQ result is saved, but your payment didn't go through, so full access isn't open yet. Unlock it to get your certificate, brain games and daily workouts.
+- **Button:** Unlock full access → `/premium`
 
 ### N2 — через 1 день
 
 - **Subject:** Your IQ certificate is waiting
-- **Preheader:** It opens with your 7-day trial for $1.
+- **Preheader:** It's ready to be issued in your name.
 - **Body:**
   > Hi {name},
   >
-  > Your personal IQ certificate is ready to be issued in your name. It opens together with your 7-day trial for $1 (then $29.99/month, cancel anytime).
-- **Button:** Get my certificate → экран повторной оплаты, после оплаты — сертификат
+  > Your personal IQ certificate is ready to be issued in your name. It opens with full FoxIQ access.
+- **Button:** Get my certificate → экран сертификата (на нём пейволл)
 
 ### N3 — через 3 дня
 
@@ -202,6 +202,6 @@
   > Hi {name},
   >
   > Banks sometimes decline online payments, even when the card is fine. Trying another card or Apple Pay usually helps. If it still doesn't work, just reply to this email and we'll help.
-- **Button:** Try again → экран повторной оплаты
+- **Button:** Try again → `/premium`
 
 После N3 без оплаты писем больше нет.

@@ -107,3 +107,17 @@ aid — «помощь». advert — «реклама», advertise — «рек�
 | 8 | Advertly | advert + -ly | 🟢 нет | 🔴 Advertly, Inc. — инструменты для рекламных агентов | 🟡 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «эд-ВЕРТ-ли» | Та же ниша. Пишут ещё ad-vertly |
 
 **Предложение раунда 6:** из этой пачки живой только Aidvert: aid и advert в одном слове, .app и .ai свободны. Advertio, Adverti и Advertli заняты продуктами рекламы. Advertenio из прошлого круга длинное, в рабочий список не возвращать. Знаки USPTO и EUIPO страницами не открывались.
+
+## Сводка 10.11: три имени из названных
+
+Наташа собрала короткий список: Clamyna, Advergena, Advertio, Adveryn, Reclune, Vertenio, Vergena, Promgena, Genproma, Promlio, Genada, Adgena, Vendlio, Marvola, Adlora.
+
+**Рабочее — Advergena. Запасные — Vendlio и Clamyna.**
+
+| Название | Откуда | Домены .com / .app / .ai | Почему в тройке |
+|---|---|---|---|
+| **Advergena** | лат. advertere «обратить к себе» + generare «порождать» | 🟢 / 🟢 / 🟢 | Реклама и генерация. Стор чистый, бренда в вебе нет. «эд-вер-дже-на» |
+| **Vendlio** | лат. vendere «продавать» | 🔴 / 🟢 / 🟢 | Звук Наташа уже оставила. Стор чистый. Могут написать Vendleo |
+| **Clamyna** | лат. clamare «кричать», clamor «крик» | 🟢 / 🟢 / 🟢 | Корень французского réclame. Стор чистый. По-английски clam — моллюск |
+
+Сняты: Advertio, Adveryn, Adgena — живые рекламные продукты. Promlio — одна буква до Promio. Reclune — усечённое, Наташа убрала. Marvola — звук не зашёл. Vergena — .com занят, рядом Vergina. Vertenio — домены свободны, англичанин не слышит «рекламу». Genada — только генерация, .com занят. Adlora — свободен только .app. Promgena и Genproma — про продвижение; у Genproma рядом Genpact. В ClickUp не отправлялось.

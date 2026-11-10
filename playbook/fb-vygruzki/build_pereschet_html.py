@@ -249,7 +249,8 @@ def brand_info(app, hist):
     funnels = {}
     for d in web:
         k = path_key(d["ссылка на ленд"])
-        f = funnels.setdefault(k, dict(first=d["дата запуска рекламы"], seen=[], max=0))
+        f = funnels.setdefault(k, dict(first=d["дата запуска рекламы"], seen=[], max=0,
+                                        url=str(d["ссылка на ленд"] or "").strip()))
         f["seen"].append(d["Дата выгрузки"])
         f["max"] = max(f["max"], num(d["спенд за 28 дней"]) or 0)
         if d["дата запуска рекламы"] and (not f["first"] or d["дата запуска рекламы"] < f["first"]):
@@ -276,9 +277,11 @@ def brand_block(b):
     dyn = " → ".join(f"{dt}: {mln(sp)}" + (f" (ROAS {x(ro)})" if ro else "") for dt, sp, ro, _ in b["by_exp"])
     acc = "—" if b["accel"] is None else f"{x(b['accel'])} " + (
         "— разгоняется" if b["accel"] > 1.15 else "— тормозит" if b["accel"] < 0.85 else "— ровно")
-    fl = "".join(f"<li><span class='url'>{e(k[:70])}</span> · запуск {e(f['first'].strftime('%d.%m.%Y') if hasattr(f['first'], 'strftime') else f['first'])}"
-                 f" · в выгрузках: {e(', '.join(dict.fromkeys(f['seen'])))} · макс. спенд 28д {mln(f['max'])}</li>"
-                 for k, f in sorted(b["funnels"].items(), key=lambda kv: -kv[1]["max"])[:6])
+    fl = "".join(
+        f'<li><a class="url" href="{e(open_url(f.get("url") or k))}" target="_blank" rel="noopener">{e(re.sub(r"^https?://", "", open_url(f.get("url") or k))[:70])}</a>'
+        f" · запуск {e(f['first'].strftime('%d.%m.%Y') if hasattr(f['first'], 'strftime') else f['first'])}"
+        f" · в выгрузках: {e(', '.join(dict.fromkeys(f['seen'])))} · макс. спенд 28д {mln(f['max'])}</li>"
+        for k, f in sorted(b["funnels"].items(), key=lambda kv: -kv[1]["max"])[:6])
     more = len(b["funnels"]) - 6
     spy = " · ".join(f'<a href="{e(href(u))}" target="_blank" rel="noopener">{lbl} ↗</a>'
                      for lbl, u in (("tyver", b["tyver"]), ("adheart", b["adheart"]),
@@ -415,7 +418,9 @@ table.sc{font-size:.84rem;min-width:0}
 .shot span{font-size:.78rem;color:var(--muted)}
 .shot:hover img{border-color:var(--accent)}
 .meta2{font-size:.8rem;color:var(--muted)}
-.url{font-family:var(--mono);font-size:.8rem;overflow-wrap:anywhere}
+a.url{font-family:var(--mono);font-size:.8rem;overflow-wrap:anywhere;color:var(--accent);text-decoration:underline;text-underline-offset:2px}
+.vlink{font-size:.8rem;color:var(--accent)}
+.shotwrap{flex:0 0 180px;display:flex;flex-direction:column;gap:4px}
 .lim b{font-weight:600;font-size:.92rem}
 .ok{color:var(--go);font-weight:600}.todo{color:var(--gold);font-weight:600}
 .foot{font-size:.82rem;color:var(--muted);max-width:90ch}
@@ -484,8 +489,8 @@ def app_section(app, fs, med):
              + "".join(f'<span class="pill">CPA {money(r["cpa"])} · ROAS {x(r["roas"])}</span>' for r in fs))
     idea = IDEA_BY_APP.get(app)
     ibox = f'<p class="ibox">💡 <b>Идея:</b> {e(idea["text"])}</p>' if idea else ""
-    funnels = "<br>".join(f'<a href="{e(r["d"]["ссылка на ленд"])}" target="_blank" rel="noopener">'
-                          f'{e(re.sub(r"^https?://", "", r["d"]["ссылка на ленд"])[:60])} ↗</a>' for r in fs)
+    funnels = "<br>".join(f'<a href="{e(open_url(r["d"]["ссылка на ленд"]))}" target="_blank" rel="noopener">'
+                          f'{e(re.sub(r"^https?://", "", open_url(r["d"]["ссылка на ленд"]))[:60])} ↗</a>' for r in fs)
     pay = "; ".join(e(r["payback"]) for r in fs)
     facts = [("Гео", e(a["geo"]) + (f" · tier-1 {pct(num(a['tier1']), 0)}" if num(a["tier1"]) is not None else "")),
              ("Спенд 28 дн.: июль → авг → окт", tr),
@@ -498,9 +503,20 @@ def app_section(app, fs, med):
     calc = ('<p class="meta2">Сценарии не считаем: доход по пикселю не отражает оплаты.</p>'
             if all(r["bad"] for r in fs) else scen_table([r for r in fs if not r["bad"]]))
     im = find_media(app, med)
-    shots = "".join(f'<button class="shot" type="button" data-cap="{lbl}: {e(app)}"><img src="{im[k]}" '
-                    f'alt="{lbl}: {e(app)}" loading="lazy"><span>{lbl}</span></button>'
-                    for k, lbl in (("crea", "Креатив"), ("shot", "Лендинг")) if k in im)
+    crea_urls = list(dict.fromkeys(u for r in fs if (u := r["d"].get("креатив из топ-объявления")) and drive_id(u)))
+    videos = [u for u in crea_urls if drive_kind(u) == "video"]
+    shots = ""
+    for k, lbl in (("crea", "Креатив"), ("shot", "Лендинг")):
+        if k not in im:
+            continue
+        btn = (f'<button class="shot" type="button" data-cap="{lbl}: {e(aname(app))}"><img src="{im[k]}" '
+               f'alt="{lbl}: {e(aname(app))}" loading="lazy"><span>{lbl}</span></button>')
+        extra = ""
+        if k == "crea" and videos:
+            extra = "".join(video_link(u, "смотреть видео" if len(videos) == 1 else f"смотреть видео {n}")
+                            for n, u in enumerate(videos, 1))
+            btn = f'<div class="shotwrap">{btn}{extra}</div>'
+        shots += btn
     rows_id = ", ".join(i for r in fs for i in r.get("row_ids", [str(r["d"]["ID строки"])]))
     return f"""<section class="app" id="{slug(app)}">
 <div class="ah"><h3>{e(aname(app))}</h3>{niche_chip(app)}{chip(r0['group'])}{'<span class="chip c-idea">💡 идея</span>' if idea else ''}
@@ -696,15 +712,59 @@ def fold_same(rows, with_media=False):
     return out
 
 
-def shot_button(src, label, app):
+def drive_kind(url):
+    """video или image по заголовку файла на Диске. Ответ кэшируется, тело не качается."""
+    fid = drive_id(url)
+    if not fid:
+        return None
+    CACHE.mkdir(exist_ok=True)
+    mark = CACHE / f"{fid}.kind"
+    if mark.exists():
+        return mark.read_text(encoding="utf-8").strip()
+    req = urllib.request.Request(
+        f"https://drive.google.com/uc?export=download&id={fid}",
+        method="HEAD", headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            ctype = (resp.headers.get("content-type") or "").lower()
+    except Exception as ex:
+        print("тип файла не узнали", fid, ex)
+        return None
+    kind = "video" if ctype.startswith("video/") else "image" if ctype.startswith("image/") else "file"
+    mark.write_text(kind, encoding="utf-8")
+    return kind
+
+
+def video_link(url, label="смотреть видео"):
+    fid = drive_id(url)
+    if not fid or drive_kind(url) != "video":
+        return ""
+    view = f"https://drive.google.com/file/d/{fid}/view"
+    return f'<a class="vlink" href="{e(view)}" target="_blank" rel="noopener">{e(label)} ↗</a>'
+
+
+def shot_button(src, label, app, file_url=None):
     cap = aname(app)
-    return (f'<button class="shot" type="button" data-cap="{e(label)}: {e(cap)}">'
-            f'<img src="{src}" alt="{e(label)}: {e(cap)}" loading="lazy"><span>{e(label)}</span></button>')
+    link = video_link(file_url) if file_url else ""
+    return (f'<div class="shotwrap"><button class="shot" type="button" data-cap="{e(label)}: {e(cap)}">'
+            f'<img src="{src}" alt="{e(label)}: {e(cap)}" loading="lazy"><span>{e(label)}</span></button>{link}</div>')
 
 
 def href(u):
     u = str(u or "")
     return u if u.startswith("http") else "https://" + u
+
+
+def open_url(raw):
+    """Ссылка, которая открывается. В выгрузке хвост часто обрезан на «...»."""
+    raw = str(raw or "").strip()
+    if not raw:
+        return ""
+    if "..." not in raw:
+        return href(raw)
+    base = re.sub(r"^https?://", "", raw).split("?")[0]
+    base = re.sub(r"/landing_uu?id=.*", "", base).split("...")[0].rstrip("/")
+    return "https://" + base if base else ""
 
 
 def event_guess(r):
@@ -730,13 +790,13 @@ def cand_section(app, fs, about, hist):
     links, frames = [], []
     for r in fs:
         for link in r.get("lands") or [r["d"]["ссылка на ленд"]]:
-            links.append(f'<a href="{e(href(link))}" target="_blank" rel="noopener">'
-                         f'{e(re.sub(r"^https?://", "", link)[:60])} ↗</a>')
+            links.append(f'<a href="{e(open_url(link))}" target="_blank" rel="noopener">'
+                         f'{e(re.sub(r"^https?://", "", open_url(link))[:60])} ↗</a>')
         creas = r.get("creas") or ([r["crea"]] if r.get("crea") else [])
         for i, url in enumerate(creas):
             src = drive_image(url)
             if src:
-                frames.append(shot_button(src, "Креатив" + (f" {i + 1}" if len(creas) > 1 else ""), app))
+                frames.append(shot_button(src, "Креатив" + (f" {i + 1}" if len(creas) > 1 else ""), app, url))
         for url in r.get("shots") or ([r["shot"]] if r.get("shot") else []):
             src = drive_image(url)
             if src:
@@ -874,7 +934,7 @@ def main():
 <li>Фактического числа конверсий в выгрузке нет: это формула (прибыль ÷ прибыль с конверсии), доход — спенд × ROAS. Конверсии = спенд ÷ CPA; CPA и ROAS округлены, точность ±1–2% (для ROAS ≤ 0,06 — до ±20%).</li>
 <li>Доход с конверсии за 28 дней включает продления прошлых когорт и не учитывает возвраты — это приближение дохода первого месяца.</li>
 <li>CPC — средний по строке, по странам не разбит. Гео — доли спенда по странам из выгрузки.</li>
-<li>Идеи — из первой выборки 28.10; идея по Intch дополнена 09.11. Скрины креатива и воронки у новых кандидатов — файлы из выгрузки (Диск). Если креатив — видео, в отчёте кадр из него. Где файла не было, скрина нет.</li>
+<li>Идеи — из первой выборки 28.10; идея по Intch дополнена 09.11. Скрины креатива и воронки у новых кандидатов — файлы из выгрузки (Диск). Если креатив — видео, в отчёте кадр и ссылка «смотреть видео». Где файла не было, скрина нет. Адреса воронок бренда кликабельны.</li>
 </ul></div></section>
 <footer class="foot"><p>Источники: reports/fb-kandidaty-itog-28-10.xlsx (листы «Шорт-лист», «Под вопросом», «Сводная (все строки)»), fb-shortlist-28-10.html. Книга с формулами: fb-pereschet-2026-11-09.xlsx. Ориентир по Character.AI — оценки Sacra и Axis Intelligence.</p></footer>
 </main>

@@ -419,8 +419,10 @@ table.sc{font-size:.84rem;min-width:0}
 .shot:hover img{border-color:var(--accent)}
 .meta2{font-size:.8rem;color:var(--muted)}
 a.url{font-family:var(--mono);font-size:.8rem;overflow-wrap:anywhere;color:var(--accent);text-decoration:underline;text-underline-offset:2px}
-.vlink{font-size:.8rem;color:var(--accent)}
+.vlink{font-size:.8rem;color:var(--accent);overflow-wrap:anywhere}
 .shotwrap{flex:0 0 180px;display:flex;flex-direction:column;gap:4px}
+.shotwrap:has(.fnote){flex-basis:210px}
+.fnote{font-size:.78rem;line-height:1.35;margin:2px 0 0;max-width:210px}
 .lim b{font-weight:600;font-size:.92rem}
 .ok{color:var(--go);font-weight:600}.todo{color:var(--gold);font-weight:600}
 .foot{font-size:.82rem;color:var(--muted);max-width:90ch}
@@ -489,32 +491,35 @@ def app_section(app, fs, med):
              + "".join(f'<span class="pill">CPA {money(r["cpa"])} · ROAS {x(r["roas"])}</span>' for r in fs))
     idea = IDEA_BY_APP.get(app)
     ibox = f'<p class="ibox">💡 <b>Идея:</b> {e(idea["text"])}</p>' if idea else ""
-    funnels = "<br>".join(f'<a href="{e(open_url(r["d"]["ссылка на ленд"]))}" target="_blank" rel="noopener">'
-                          f'{e(re.sub(r"^https?://", "", open_url(r["d"]["ссылка на ленд"]))[:60])} ↗</a>' for r in fs)
     pay = "; ".join(e(r["payback"]) for r in fs)
+    im = find_media(app, med)
+    land_urls = [open_url(r["d"]["ссылка на ленд"]) for r in fs]
+    under = funnel_under(app, land_urls) if "shot" in im else ""
     facts = [("Гео", e(a["geo"]) + (f" · tier-1 {pct(num(a['tier1']), 0)}" if num(a["tier1"]) is not None else "")),
              ("Спенд 28 дн.: июль → авг → окт", tr),
              ("CPC · CR переход → событие", "; ".join(f'{money(r["cpc"], 2)} · {pct(r["cr"], 2)}' for r in fs)),
              ("Доход с конверсии", "; ".join(money(r["rpc"], 1) for r in fs)),
              ("Событие CPA", e(n["event"])),
-             ("Окупаемость (CR конкурента × 0,85)", f"<b>{pay}</b>"),
-             ("Воронка" + ("и" if len(fs) > 1 else ""), funnels)]
+             ("Окупаемость (CR конкурента × 0,85)", f"<b>{pay}</b>")]
+    if not under:
+        facts.append(("Воронка" + ("и" if len(fs) > 1 else ""), funnel_under(app, land_urls, False)
+                      or "—"))
     dl = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts)
     calc = ('<p class="meta2">Сценарии не считаем: доход по пикселю не отражает оплаты.</p>'
             if all(r["bad"] for r in fs) else scen_table([r for r in fs if not r["bad"]]))
-    im = find_media(app, med)
     crea_urls = list(dict.fromkeys(u for r in fs if (u := r["d"].get("креатив из топ-объявления")) and drive_id(u)))
     videos = [u for u in crea_urls if drive_kind(u) == "video"]
     shots = ""
-    for k, lbl in (("crea", "Креатив"), ("shot", "Лендинг")):
+    for k, lbl in (("crea", "Креатив"), ("shot", "Воронка")):
         if k not in im:
             continue
         btn = (f'<button class="shot" type="button" data-cap="{lbl}: {e(aname(app))}"><img src="{im[k]}" '
                f'alt="{lbl}: {e(aname(app))}" loading="lazy"><span>{lbl}</span></button>')
-        extra = ""
+        extra = under if k == "shot" else ""
         if k == "crea" and videos:
             extra = "".join(video_link(u, "смотреть видео" if len(videos) == 1 else f"смотреть видео {n}")
                             for n, u in enumerate(videos, 1))
+        if extra:
             btn = f'<div class="shotwrap">{btn}{extra}</div>'
         shots += btn
     rows_id = ", ".join(i for r in fs for i in r.get("row_ids", [str(r["d"]["ID строки"])]))
@@ -544,6 +549,24 @@ BLURB = {
     "Education4Kids": "Детское образование.",
     "TheRealIntro": "Обучение знакомствам и флирту для мужчин.",
     "Kodree": "Курсы ИИ, анализа данных и дизайна, сертификат по Claude.",
+}
+
+# Что видно на скрине воронки, который стоит в карточке. Дальше квиз не проходили.
+FUNNEL_NOTE = {
+    "Educly": "«28-day AI challenge». Старт — выбор пола.",
+    "KitUp": "«Есть что сказать в любой компании», квиз на 3 минуты. Старт — возраст.",
+    "Famio": "«Знаешь, где партнёр сейчас?» На экране карта с близкими и ответ да / нет.",
+    "BetterMe": "«Relationship Growth Plan»: стиль привязанности, квиз на 3 минуты. Старт — пол.",
+    "Muses Academy": "«Стань женщиной, от которой он без ума». Квиз под подписку, старт — возраст.",
+    "Zenfy": "«AI-driven income growth challenge». Старт — пол.",
+    "ProMuse": "«Соберём путь в ИИ под вашу ситуацию»: компания, на себя, свой бизнес или смена направления.",
+    "fnlfx (беттинг)": "«Сколько прогнозов вы уже проиграли?» Дальше — футбольный ассистент и разбор матча.",
+    "Finestro": "«Фриланс и доход с ИИ». Старт — пол. Два адреса, один и тот же экран.",
+    "AI Corso": "«28-day AI certificate». Сразу вопрос, пробовали ли ИИ. На экране Claude, Gemini, Grok.",
+    "MusesAcred": "Тот же приём, что у Muses: «стань ценной, чтобы он сходил с ума». Экран на венгерском, старт — возраст.",
+    "Education4Kids": "Intellecto Kids: «сколько лет ребёнку?» — 1–2, 3–4, 5–6 или 7+.",
+    "TheRealIntro": "«Как свести её с ума» — и сразу возраст. Тот же приём, что у Muses, но для мужчин.",
+    "Kodree": "«28-day Claude certificate», квиз на минуту. Первый вопрос: пробовали ли Claude.",
 }
 
 
@@ -743,11 +766,24 @@ def video_link(url, label="смотреть видео"):
     return f'<a class="vlink" href="{e(view)}" target="_blank" rel="noopener">{e(label)} ↗</a>'
 
 
-def shot_button(src, label, app, file_url=None):
+def funnel_under(app, urls, with_note=True):
+    bits = []
+    for url in dict.fromkeys(urls):
+        if not url:
+            continue
+        label = re.sub(r"^https?://", "", url)
+        bits.append(f'<a class="vlink" href="{e(url)}" target="_blank" rel="noopener">{e(label[:52])} ↗</a>')
+    note = FUNNEL_NOTE.get(app) if with_note else ""
+    if note:
+        bits.append(f'<p class="fnote">{e(note)}</p>')
+    return "".join(bits)
+
+
+def shot_button(src, label, app, file_url=None, under=""):
     cap = aname(app)
     link = video_link(file_url) if file_url else ""
     return (f'<div class="shotwrap"><button class="shot" type="button" data-cap="{e(label)}: {e(cap)}">'
-            f'<img src="{src}" alt="{e(label)}: {e(cap)}" loading="lazy"><span>{e(label)}</span></button>{link}</div>')
+            f'<img src="{src}" alt="{e(label)}: {e(cap)}" loading="lazy"><span>{e(label)}</span></button>{link}{under}</div>')
 
 
 def href(u):
@@ -787,28 +823,33 @@ def cand_section(app, fs, about, hist):
         txt = f"{r0['cat']}. Текст объявления: «{ad[:140]}»" if ad and "{{" not in ad else str(r0["cat"])
     idea = IDEA_BY_APP.get(app)
     ibox = f'<p class="ibox">💡 <b>Идея:</b> {e(idea["text"])}</p>' if idea else ""
-    links, frames = [], []
+    frames, orphan = [], []
+    noted = False
     for r in fs:
-        for link in r.get("lands") or [r["d"]["ссылка на ленд"]]:
-            links.append(f'<a href="{e(open_url(link))}" target="_blank" rel="noopener">'
-                         f'{e(re.sub(r"^https?://", "", open_url(link))[:60])} ↗</a>')
+        urls = [open_url(link) for link in (r.get("lands") or [r["d"]["ссылка на ленд"]])]
         creas = r.get("creas") or ([r["crea"]] if r.get("crea") else [])
         for i, url in enumerate(creas):
             src = drive_image(url)
             if src:
                 frames.append(shot_button(src, "Креатив" + (f" {i + 1}" if len(creas) > 1 else ""), app, url))
+        land = None
         for url in r.get("shots") or ([r["shot"]] if r.get("shot") else []):
-            src = drive_image(url)
-            if src:
-                frames.append(shot_button(src, "Воронка", app))
-    many = sum(len(r.get("lands") or [1]) for r in fs) > len(fs)
+            land = drive_image(url)
+            if land:
+                break
+        if land:
+            frames.append(shot_button(land, "Воронка", app, under=funnel_under(app, urls, not noted)))
+            noted = True
+        else:
+            orphan.extend(urls)
     shots_html = "".join(frames) or '<p class="meta2">Скринов креатива и воронки в выгрузке нет.</p>'
     facts = [("Компания · категория", f"{e(r0['owner'])} · {e(r0['cat'])}"),
              ("Гео (доли спенда)", "; ".join(dict.fromkeys(r["geo"] for r in fs))),
              ("CPC · CR переход → событие", "; ".join(f'{money(r["cpc"], 2)} · {pct(r["cr"], 2)}' for r in fs)),
              ("Событие CPA", "; ".join(e(event_guess(r)) for r in fs)),
-             ("Окупаемость (CR конкурента × 0,85)", "<b>" + "; ".join(e(r["payback"]) for r in fs) + "</b>"),
-             ("Адреса одной воронки" if many else "Воронка", "<br>".join(links))]
+             ("Окупаемость (CR конкурента × 0,85)", "<b>" + "; ".join(e(r["payback"]) for r in fs) + "</b>")]
+    if orphan:
+        facts.append(("Воронка", funnel_under(app, orphan, not noted)))
     dl = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts)
     return f"""<section class="app" id="c-{slug(app)}">
 <div class="ah"><h3>{e(aname(app))}</h3>{niche_chip(app)}{chips}{pills}</div>

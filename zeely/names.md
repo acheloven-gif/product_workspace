@@ -72,4 +72,21 @@
 | 7 | Avertio | лат. advertere | 🟢 нет | 🟡 платформа Avertio у Avertum, Швеция, финансы | 🟡 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «а-ВЕР-ти-о» | Имя уже у продукта, ниша другая |
 | 8 | Advertio | англ. advert | 🟢 нет | 🔴 Advertio — performance-реклама, Португалия, партнёрство с Revolut | 🔴 выдача: Zeely, Meta Ads | 🔴 / 🔴 / 🟢 | ⚪ | 🟢 «эд-ВЕР-ти-о» | Прямо наше занятие, имя занято |
 
-**Предложение раунда 4:** Vertenio. Запасные — Clamyna и Reclune. Из прошлых кругов живы Vendlio (лат. vendere), Genadia (generare) и Promgena (promovere + generare): эти корни не русские. Знаки USPTO и EUIPO страницами не открывались.
+**Предложение раунда 4:** Vertenio. Запасные — Clamyna и Reclune. Из прошлых кругов живы Vendlio (лат. vendere), Genadia (generare) и Promgena (promovere + generare): эти корни не русские. Знаки USPTO и EUIPO страницами не открывались. 10.11 Наташа: не Vertenio, а Advertenio; у Reclune непонятно, что усечено; Praecio слишком сложное; вместо Vergena — Advergen.
+
+## Раунд 5 (2026-11-10): Advertenio и Advergen
+
+В колонке «откуда» — слово и перевод. Reclune и Praecio из списка убраны.
+
+| # | Название | Откуда | App Store | Похожие | Выдача | Домены | Товарный знак | На слух | Комментарий |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | **Advertenio** | лат. advertere — «обратить к себе» | 🟢 нет | 🟡 Adverten — CPA-сеть, adverten.com | 🟢 точного бренда нет | 🟢 / 🟢 / 🟢 | ⚪ | 🟡 «ад-вер-ТЕ-ньо», могут написать Advertenyo | Все домены свободны. По написанию Advertenyo стор уже выдаёт Zeely и Meta Ads |
+| 2 | **Advergen** | лат. advertere «обратить» + generare «порождать» | 🟢 нет | 🟡 AdverGenie — агентство, Индия; Advergenix — IT | 🟢 точного Advergen нет | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 «эд-ВЕР-джен» | .com занят, .app и .ai свободны |
+| 3 | **Advergena** | те же advertere и generare | 🟢 нет | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | ⚪ | 🟢 «эд-вер-ДЖЕ-на» | Те же корни, что у Advergen. Все домены свободны |
+| 4 | **Clamyna** | лат. clamare — «кричать»; clamor — «крик, громкий зов» | 🟢 нет | 🟢 | 🟢 | 🟢 / 🟢 / 🟢 | ⚪ | 🟡 «кла-МАЙ-на» | От этого корня французское réclame. По-английски clam — моллюск |
+| 5 | Avertia | фр. avertir — «уведомлять, обращать внимание» | 🟢 нет | 🔴 Avertia — ИИ-консалтинг, Испания | 🔴 avertia.es | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Воронки и paid media |
+| 6 | Advertio | англ. advertise — «рекламировать» | 🟢 нет | 🔴 Advertio — performance-реклама, Португалия | 🔴 Zeely, Meta Ads | 🔴 / 🔴 / 🟢 | ⚪ | 🟢 | Наше занятие, имя занято |
+| 7 | Adveryn | англ. advert — «рекламное объявление» | 🟢 нет | 🔴 Adveryn — growth-агентство | 🔴 adveryn.com | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Та же ниша |
+| 8 | Avertio | лат. advertere — «обратить к себе» | 🟢 нет | 🟡 платформа Avertio у Avertum, финансы | 🟡 | 🔴 / 🟢 / 🟢 | ⚪ | 🟢 | Имя уже у продукта, ниша другая |
+
+**Предложение раунда 5:** Advertenio. Запасные — Advergen и Clamyna. Advergena — то же, что Advergen, если нужен свободный .com. Vendlio (vendere — «продавать»), Genadia (generare — «порождать») и Promgena (promovere — «продвигать» + generare) остаются. Знаки USPTO и EUIPO страницами не открывались.

@@ -304,6 +304,9 @@ section{display:flex;flex-direction:column;gap:14px}
 .cai b{font-family:var(--body);font-weight:600;display:block}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
 table{border-collapse:collapse;width:100%;background:var(--surface);font-size:.88rem}
+table.fit{table-layout:fixed;font-size:.84rem}
+table.fit th,table.fit td{overflow-wrap:anywhere}
+table.fit .desc{color:var(--muted);font-size:.8rem;line-height:1.35}
 th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{background:var(--accent-soft);font-weight:600;font-size:.78rem}
 td.r,th.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -430,6 +433,50 @@ def app_section(app, fs, med):
 </section>"""
 
 
+BLURB = {
+    "Educly": "Обучение ИИ с нуля: 28 дней по 15 минут с телефона.",
+    "KitUp": "Микрообучение и саморазвитие каждый день. Аудитория — Турция и Украина.",
+    "Famio": "Семейный GPS-трекер: где сейчас близкие, на карте.",
+    "BetterMe": "Отношения: квиз про стиль привязанности.",
+    "Muses Academy": "Отношения: «стань той, кого он потерял и хочет вернуть».",
+    "Zenfy": "Заработок: удалённая работа вместо графика 9–5.",
+    "ProMuse": "Обучение ИИ: 28-дневная программа с сертификатом.",
+    "fnlfx (беттинг)": "ИИ-прогнозы на спорт для ставок.",
+    "AI Corso": "Обучение ИИ с сертификатом.",
+    "MusesAcred": "Отношения: «стань женщиной, которую он не может оставить».",
+    "Education4Kids": "Детское образование.",
+    "TheRealIntro": "Обучение знакомствам и флирту для мужчин.",
+    "Kodree": "Курсы ИИ, анализа данных и дизайна, сертификат по Claude.",
+}
+
+
+def blurb(c):
+    land = str(c["d"]["ссылка на ленд"])
+    if c["app"] == "Finestro":
+        if "quiz24" in land:
+            return "Личные финансы: «приложение изменило, как я веду деньги»."
+        return "Заработок на ИИ: «построй будущее с ИИ»."
+    return BLURB.get(c["app"], str(c["cat"]))
+
+
+def pay_short(p):
+    if str(p).startswith("1-й"):
+        return "1-й месяц"
+    if str(p).startswith("2"):
+        return "2–3 мес."
+    if "маловероятно" in str(p):
+        return "позже 3 мес."
+    return "не знаем"
+
+
+def sentence(s, n=150):
+    s = re.sub(r"\s+", " ", str(s or "")).strip()
+    cut = re.split(r"(?<=[.!])\s", s, maxsplit=1)[0]
+    if len(cut) > n:
+        cut = cut[:n].rsplit(" ", 1)[0] + "…"
+    return cut or "—"
+
+
 def href(u):
     u = str(u or "")
     return u if u.startswith("http") else "https://" + u
@@ -497,11 +544,10 @@ def main():
     c_pay = [a for a in c_main if max(r["cov_k85"] for r in c_by_app[a]) >= 1]
 
     trs = "".join(f"""<tr class="{'bad' if r['bad'] else ''}"><td><a href="#{slug(r['app'])}" class="nm">{e(r['app'])}</a>
-{'<span class="chip c-idea">💡</span>' if r['app'] in IDEA_BY_APP else ''}</td><td>{chip(r['group'])}</td>
-<td>{e(r['a']['geo'])}</td><td class="r">{mln(r['spend'])}</td><td class="r">{money(r['cpa'])}</td>
-<td class="r">{money(r['cpc'], 2)}</td><td class="r">{pct(r['cr'], 2)}</td><td class="r">{x(r['roas'])}</td>
-<td class="r">{money(r['rpc'], 1)}</td><td class="r">{money(r['cost'][0.02])}</td><td class="r">{money(r['cost_k85'])}</td>
-<td class="r"><b>{x(r['cov_k85'])}</b></td><td>{e(r['payback'])}</td></tr>""" for r in rs)
+{'<span class="chip c-idea">💡</span>' if r['app'] in IDEA_BY_APP else ''}</td>
+<td class="desc">{e(sentence(r['a']['about']))}</td><td>{chip(r['group'])}</td>
+<td>{e(r['a']['geo'])}</td><td class="r">{money(r['cpa'])}</td><td class="r">{x(r['roas'])}</td>
+<td class="r"><b>{x(r['cov_k85'])}</b></td><td>{e(pay_short(r['payback']))}</td></tr>""" for r in rs)
 
     sections = ""
     for g in ORDER:
@@ -512,12 +558,11 @@ def main():
     nav = "".join(f'<a href="#{slug(app)}">{e(app.split(" (")[0])}</a>' for app in by_app)
 
     c_trs = "".join(f"""<tr><td><a href="#c-{slug(c['app'])}" class="nm">{e(c['app'])}</a>
-{'<span class="chip c-go">28.10</span>' if c['sel'] else ''}{'<span class="chip c-low">health</span>' if c['health'] else ''}</td>
-<td>{e(c['cat'])}</td><td>{e(c['geo'])}</td><td class="r"><b>{money(c['cpa'])}</b></td><td class="r"><b>{x(c['roas'])}</b></td>
-<td class="r">{money(c['cpc'], 2)}</td><td class="r">{pct(c['cr'], 2)}</td><td class="r">{money(c['rpc'], 1)}</td>
-<td class="r">{money(c['cost'][0.02])}</td><td class="r">{money(c['cost_k85'])}</td><td class="r"><b>{x(c['cov_k85'])}</b></td>
-<td style="white-space:nowrap">{e(c['payback'].split(',')[0])}</td><td>{e(binfo[c['app']]['trend'].split(' (')[0].split(':')[0])}</td>
-<td class="r">{len(binfo[c['app']]['funnels'])}</td><td class="r">{mln(c['spend'])}</td></tr>""" for c in cands)
+{'<span class="chip c-go">28.10</span>' if c['sel'] else ''}</td>
+<td class="desc">{e(blurb(c))}</td><td>{e(c['geo'])}</td>
+<td class="r"><b>{money(c['cpa'])}</b></td><td class="r"><b>{x(c['roas'])}</b></td>
+<td class="r"><b>{x(c['cov_k85'])}</b></td><td>{e(pay_short(c['payback']))}</td>
+<td>{e(binfo[c['app']]['trend'].split(' (')[0].split(':')[0])}</td></tr>""" for c in cands)
     c_sections = "".join(cand_section(a, c_by_app[a], about, hist) for a in c_main)
     c_nav = "".join(f'<a href="#c-{slug(a)}">{e(a.split(" (")[0])}</a>' for a in c_by_app)
     ex_rows = "".join(f"<tr><td><b>{e(d['Приложение (группа)'])}</b></td><td class='r'>{e(d['ID строки'])}</td>"
@@ -560,17 +605,17 @@ def main():
 <tr><td>Запускать сразу несколько воронок с разными пейволами и нарративами</td><td class="todo">к тесту</td><td>В карточках — список воронок бренда (до 6) как варианты для теста. Пейволы и нарративы — после прохода воронок.</td></tr>
 </tbody></table></div></section>
 <section id="cands"><h2>Кандидаты по CPA и ROAS — вся выгрузка 10.10</h2>
-<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Наша цена события = CPC ÷ CR; покрытие = доход с конверсии ÷ наша цена события, 1,0 — окупается в первый месяц.</p>
-<div class="tw"><table><thead><tr><th>Приложение</th><th>Категория</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS 28д</th><th class="r">CPC</th>
-<th class="r">CR конк.</th><th class="r">Доход с конв.</th><th class="r">Цена при CR 2%</th><th class="r">Цена при CR конк. × 0,85</th><th class="r">Покрытие × 0,85</th>
-<th>Окупаемость</th><th>Тренд</th><th class="r">Воронок бренда</th><th class="r">Спенд 28д</th></tr></thead><tbody>{c_trs}</tbody></table></div>
+<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
+<div class="tw"><table class="fit"><colgroup><col style="width:13%"><col style="width:27%"><col style="width:14%"><col style="width:8%"><col style="width:8%"><col style="width:9%"><col style="width:12%"><col style="width:9%"></colgroup>
+<thead><tr><th>Приложение</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody>{c_trs}</tbody></table></div>
 <nav class="nav">{c_nav}</nav>{c_sections}</section>
 <section><h2>Выборка 28.10: идеи по приложениям</h2><div class="ideas">{''.join(idea_card(i, by_app) for i in IDEAS)}</div></section>
 <section><h2>Выборка 28.10: все воронки</h2>
-<p class="meta2">Наша цена события = CPC ÷ CR. Покрытие = доход с конверсии ÷ наша цена события; 1,0 — окупается в первый месяц. Серым — строки, где доход по пикселю не виден. 💡 — есть идея.</p>
-<div class="tw"><table><thead><tr><th>Приложение</th><th>Решение</th><th>Гео</th><th class="r">Спенд 28д</th><th class="r">CPA</th><th class="r">CPC</th>
-<th class="r">CR конк.</th><th class="r">ROAS 28д</th><th class="r">Доход с конв.</th><th class="r">Цена при CR 2%</th><th class="r">Цена при CR конк. × 0,85</th>
-<th class="r">Покрытие × 0,85</th><th>Окупаемость</th></tr></thead><tbody>{trs}</tbody></table></div></section>
+<p class="meta2">Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. 💡 — есть идея. Спенд, CPC и сценарии цены — в карточке.</p>
+<div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:28%"><col style="width:14%"><col style="width:16%"><col style="width:8%"><col style="width:7%"><col style="width:8%"><col style="width:7%"></colgroup>
+<thead><tr><th>Приложение</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody>{trs}</tbody></table></div></section>
 <section><h2>Выборка 28.10: по каждому приложению</h2><nav class="nav">{nav}</nav>{sections}</section>
 <section><h2>Выборка 28.10: исключено из расчёта</h2>
 <div class="tw"><table><thead><tr><th>Приложение</th><th class="r">Строка</th><th class="r">Спенд 28д</th><th class="r">CPA</th><th class="r">ROAS</th><th>Причина</th></tr></thead><tbody>{ex_rows}</tbody></table></div></section>

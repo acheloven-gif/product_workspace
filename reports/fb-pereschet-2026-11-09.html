@@ -35,6 +35,9 @@ section{display:flex;flex-direction:column;gap:14px}
 .cai b{font-family:var(--body);font-weight:600;display:block}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
 table{border-collapse:collapse;width:100%;background:var(--surface);font-size:.88rem}
+table.fit{table-layout:fixed;font-size:.84rem}
+table.fit th,table.fit td{overflow-wrap:anywhere}
+table.fit .desc{color:var(--muted);font-size:.8rem;line-height:1.35}
 th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{background:var(--accent-soft);font-weight:600;font-size:.78rem}
 td.r,th.r{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
@@ -113,106 +116,90 @@ dialog form{margin:0}
 <tr><td>Запускать сразу несколько воронок с разными пейволами и нарративами</td><td class="todo">к тесту</td><td>В карточках — список воронок бренда (до 6) как варианты для теста. Пейволы и нарративы — после прохода воронок.</td></tr>
 </tbody></table></div></section>
 <section id="cands"><h2>Кандидаты по CPA и ROAS — вся выгрузка 10.10</h2>
-<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Наша цена события = CPC ÷ CR; покрытие = доход с конверсии ÷ наша цена события, 1,0 — окупается в первый месяц.</p>
-<div class="tw"><table><thead><tr><th>Приложение</th><th>Категория</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS 28д</th><th class="r">CPC</th>
-<th class="r">CR конк.</th><th class="r">Доход с конв.</th><th class="r">Цена при CR 2%</th><th class="r">Цена при CR конк. × 0,85</th><th class="r">Покрытие × 0,85</th>
-<th>Окупаемость</th><th>Тренд</th><th class="r">Воронок бренда</th><th class="r">Спенд 28д</th></tr></thead><tbody><tr><td><a href="#c-educly" class="nm">Educly</a>
+<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
+<div class="tw"><table class="fit"><colgroup><col style="width:13%"><col style="width:27%"><col style="width:14%"><col style="width:8%"><col style="width:8%"><col style="width:9%"><col style="width:12%"><col style="width:9%"></colgroup>
+<thead><tr><th>Приложение</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody><tr><td><a href="#c-educly" class="nm">Educly</a>
 </td>
-<td>Обучение ИИ / Образование</td><td>US 57%, MX 27%, GB 7%</td><td class="r"><b>$16</b></td><td class="r"><b>0,87</b></td>
-<td class="r">$0,29</td><td class="r">1,78%</td><td class="r">$13,9</td>
-<td class="r">$14</td><td class="r">$19</td><td class="r"><b>0,73</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>растёт</td>
-<td class="r">1</td><td class="r">$1,60M</td></tr><tr><td><a href="#c-kitup" class="nm">KitUp</a>
+<td class="desc">Обучение ИИ с нуля: 28 дней по 15 минут с телефона.</td><td>US 57%, MX 27%, GB 7%</td>
+<td class="r"><b>$16</b></td><td class="r"><b>0,87</b></td>
+<td class="r"><b>0,73</b></td><td>2–3 мес.</td>
+<td>растёт</td></tr><tr><td><a href="#c-kitup" class="nm">KitUp</a>
 </td>
-<td>Саморазвитие</td><td>TR 82%, UA 17%</td><td class="r"><b>$44</b></td><td class="r"><b>0,90</b></td>
-<td class="r">$0,46</td><td class="r">1,05%</td><td class="r">$39,6</td>
-<td class="r">$23</td><td class="r">$52</td><td class="r"><b>0,77</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>растёт</td>
-<td class="r">2</td><td class="r">$0,31M</td></tr><tr><td><a href="#c-famio" class="nm">Famio</a>
+<td class="desc">Микрообучение и саморазвитие каждый день. Аудитория — Турция и Украина.</td><td>TR 82%, UA 17%</td>
+<td class="r"><b>$44</b></td><td class="r"><b>0,90</b></td>
+<td class="r"><b>0,77</b></td><td>2–3 мес.</td>
+<td>растёт</td></tr><tr><td><a href="#c-famio" class="nm">Famio</a>
 </td>
-<td>GPS-трекер и семейный локатор</td><td>нет в выгрузке</td><td class="r"><b>$55</b></td><td class="r"><b>1,04</b></td>
-<td class="r">$0,23</td><td class="r">0,40%</td><td class="r">$57,2</td>
-<td class="r">$12</td><td class="r">$68</td><td class="r"><b>0,84</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">2</td><td class="r">$0,13M</td></tr><tr><td><a href="#c-betterme" class="nm">BetterMe</a>
+<td class="desc">Семейный GPS-трекер: где сейчас близкие, на карте.</td><td>нет в выгрузке</td>
+<td class="r"><b>$55</b></td><td class="r"><b>1,04</b></td>
+<td class="r"><b>0,84</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-betterme" class="nm">BetterMe</a>
 </td>
-<td>Отношения</td><td>US 64%, GB 18%, SE 7%</td><td class="r"><b>$56</b></td><td class="r"><b>0,86</b></td>
-<td class="r">$0,73</td><td class="r">1,30%</td><td class="r">$48,2</td>
-<td class="r">$36</td><td class="r">$66</td><td class="r"><b>0,73</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>растёт</td>
-<td class="r">5</td><td class="r">$0,50M</td></tr><tr><td><a href="#c-muses-academy" class="nm">Muses Academy</a>
+<td class="desc">Отношения: квиз про стиль привязанности.</td><td>US 64%, GB 18%, SE 7%</td>
+<td class="r"><b>$56</b></td><td class="r"><b>0,86</b></td>
+<td class="r"><b>0,73</b></td><td>2–3 мес.</td>
+<td>растёт</td></tr><tr><td><a href="#c-muses-academy" class="nm">Muses Academy</a>
 </td>
-<td>Отношения</td><td>нет в выгрузке</td><td class="r"><b>$59</b></td><td class="r"><b>0,92</b></td>
-<td class="r">$0,61</td><td class="r">1,04%</td><td class="r">$54,3</td>
-<td class="r">$30</td><td class="r">$69</td><td class="r"><b>0,79</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">22</td><td class="r">$0,16M</td></tr><tr><td><a href="#c-zenfy" class="nm">Zenfy</a>
+<td class="desc">Отношения: «стань той, кого он потерял и хочет вернуть».</td><td>нет в выгрузке</td>
+<td class="r"><b>$59</b></td><td class="r"><b>0,92</b></td>
+<td class="r"><b>0,79</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-zenfy" class="nm">Zenfy</a>
 </td>
-<td>Заработок на ИИ / Образование</td><td>US 85%, DE 14%</td><td class="r"><b>$59</b></td><td class="r"><b>0,89</b></td>
-<td class="r">$0,48</td><td class="r">0,81%</td><td class="r">$52,5</td>
-<td class="r">$24</td><td class="r">$69</td><td class="r"><b>0,76</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">1</td><td class="r">$0,23M</td></tr><tr><td><a href="#c-zenfy" class="nm">Zenfy</a>
+<td class="desc">Заработок: удалённая работа вместо графика 9–5.</td><td>US 85%, DE 14%</td>
+<td class="r"><b>$59</b></td><td class="r"><b>0,89</b></td>
+<td class="r"><b>0,76</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-zenfy" class="nm">Zenfy</a>
 </td>
-<td>Заработок на ИИ / Образование</td><td>US 100%</td><td class="r"><b>$59</b></td><td class="r"><b>0,95</b></td>
-<td class="r">$0,51</td><td class="r">0,86%</td><td class="r">$56,0</td>
-<td class="r">$26</td><td class="r">$70</td><td class="r"><b>0,81</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">1</td><td class="r">$0,23M</td></tr><tr><td><a href="#c-promuse" class="nm">ProMuse</a>
+<td class="desc">Заработок: удалённая работа вместо графика 9–5.</td><td>US 100%</td>
+<td class="r"><b>$59</b></td><td class="r"><b>0,95</b></td>
+<td class="r"><b>0,81</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-promuse" class="nm">ProMuse</a>
 </td>
-<td>Заработок на ИИ / Образование</td><td>US 84%, MX 9%, AU 6%</td><td class="r"><b>$60</b></td><td class="r"><b>0,84</b></td>
-<td class="r">$0,52</td><td class="r">0,87%</td><td class="r">$50,4</td>
-<td class="r">$26</td><td class="r">$70</td><td class="r"><b>0,72</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>растёт</td>
-<td class="r">1</td><td class="r">$0,66M</td></tr><tr><td><a href="#c-fnlfx" class="nm">fnlfx (беттинг)</a>
+<td class="desc">Обучение ИИ: 28-дневная программа с сертификатом.</td><td>US 84%, MX 9%, AU 6%</td>
+<td class="r"><b>$60</b></td><td class="r"><b>0,84</b></td>
+<td class="r"><b>0,72</b></td><td>2–3 мес.</td>
+<td>растёт</td></tr><tr><td><a href="#c-fnlfx" class="nm">fnlfx (беттинг)</a>
 </td>
-<td>ИИ-сервисы / Беттинг прогнозы </td><td>US 100%</td><td class="r"><b>$60</b></td><td class="r"><b>1,21</b></td>
-<td class="r">$1,60</td><td class="r">2,67%</td><td class="r">$72,6</td>
-<td class="r">$80</td><td class="r">$71</td><td class="r"><b>1,03</b></td>
-<td style="white-space:nowrap">1-й месяц</td><td>новый</td>
-<td class="r">1</td><td class="r">$0,15M</td></tr><tr><td><a href="#c-finestro" class="nm">Finestro</a>
+<td class="desc">ИИ-прогнозы на спорт для ставок.</td><td>US 100%</td>
+<td class="r"><b>$60</b></td><td class="r"><b>1,21</b></td>
+<td class="r"><b>1,03</b></td><td>1-й месяц</td>
+<td>новый</td></tr><tr><td><a href="#c-finestro" class="nm">Finestro</a>
 </td>
-<td>Заработок на ИИ / Образование</td><td>US 88%, GB 6%, CA 5%</td><td class="r"><b>$61</b></td><td class="r"><b>1,10</b></td>
-<td class="r">$1,72</td><td class="r">2,83%</td><td class="r">$67,1</td>
-<td class="r">$86</td><td class="r">$72</td><td class="r"><b>0,94</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">7</td><td class="r">$0,99M</td></tr><tr><td><a href="#c-ai-corso" class="nm">AI Corso</a>
+<td class="desc">Заработок на ИИ: «построй будущее с ИИ».</td><td>US 88%, GB 6%, CA 5%</td>
+<td class="r"><b>$61</b></td><td class="r"><b>1,10</b></td>
+<td class="r"><b>0,94</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-ai-corso" class="nm">AI Corso</a>
 </td>
-<td>Обучение ИИ / Образование</td><td>US 100%</td><td class="r"><b>$64</b></td><td class="r"><b>1,79</b></td>
-<td class="r">$0,87</td><td class="r">1,36%</td><td class="r">$114,6</td>
-<td class="r">$44</td><td class="r">$75</td><td class="r"><b>1,52</b></td>
-<td style="white-space:nowrap">1-й месяц</td><td>растёт</td>
-<td class="r">1</td><td class="r">$0,15M</td></tr><tr><td><a href="#c-finestro" class="nm">Finestro</a>
+<td class="desc">Обучение ИИ с сертификатом.</td><td>US 100%</td>
+<td class="r"><b>$64</b></td><td class="r"><b>1,79</b></td>
+<td class="r"><b>1,52</b></td><td>1-й месяц</td>
+<td>растёт</td></tr><tr><td><a href="#c-finestro" class="nm">Finestro</a>
 </td>
-<td>Заработок на ИИ / Образование</td><td>US 100%</td><td class="r"><b>$66</b></td><td class="r"><b>1,07</b></td>
-<td class="r">$2,44</td><td class="r">3,70%</td><td class="r">$70,6</td>
-<td class="r">$122</td><td class="r">$78</td><td class="r"><b>0,91</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">7</td><td class="r">$0,14M</td></tr><tr><td><a href="#c-musesacred" class="nm">MusesAcred</a>
+<td class="desc">Личные финансы: «приложение изменило, как я веду деньги».</td><td>US 100%</td>
+<td class="r"><b>$66</b></td><td class="r"><b>1,07</b></td>
+<td class="r"><b>0,91</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-musesacred" class="nm">MusesAcred</a>
 </td>
-<td>Отношения</td><td>нет в выгрузке</td><td class="r"><b>$66</b></td><td class="r"><b>0,84</b></td>
-<td class="r">$0,57</td><td class="r">0,87%</td><td class="r">$55,4</td>
-<td class="r">$28</td><td class="r">$77</td><td class="r"><b>0,72</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>новый</td>
-<td class="r">1</td><td class="r">$0,10M</td></tr><tr><td><a href="#c-education4kids" class="nm">Education4Kids</a>
+<td class="desc">Отношения: «стань женщиной, которую он не может оставить».</td><td>нет в выгрузке</td>
+<td class="r"><b>$66</b></td><td class="r"><b>0,84</b></td>
+<td class="r"><b>0,72</b></td><td>2–3 мес.</td>
+<td>новый</td></tr><tr><td><a href="#c-education4kids" class="nm">Education4Kids</a>
 </td>
-<td>Детское образование</td><td>RO 58%, PL 41%</td><td class="r"><b>$67</b></td><td class="r"><b>0,79</b></td>
-<td class="r">$0,36</td><td class="r">0,54%</td><td class="r">$52,9</td>
-<td class="r">$18</td><td class="r">$78</td><td class="r"><b>0,68</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>падает</td>
-<td class="r">2</td><td class="r">$0,21M</td></tr><tr><td><a href="#c-therealintro" class="nm">TheRealIntro</a>
+<td class="desc">Детское образование.</td><td>RO 58%, PL 41%</td>
+<td class="r"><b>$67</b></td><td class="r"><b>0,79</b></td>
+<td class="r"><b>0,68</b></td><td>2–3 мес.</td>
+<td>падает</td></tr><tr><td><a href="#c-therealintro" class="nm">TheRealIntro</a>
 <span class="chip c-go">28.10</span></td>
-<td>Отношения</td><td>нет в выгрузке</td><td class="r"><b>$79</b></td><td class="r"><b>1,05</b></td>
-<td class="r">$0,67</td><td class="r">0,85%</td><td class="r">$83,0</td>
-<td class="r">$34</td><td class="r">$93</td><td class="r"><b>0,90</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>новый</td>
-<td class="r">2</td><td class="r">$0,11M</td></tr><tr><td><a href="#c-kodree" class="nm">Kodree</a>
+<td class="desc">Обучение знакомствам и флирту для мужчин.</td><td>нет в выгрузке</td>
+<td class="r"><b>$79</b></td><td class="r"><b>1,05</b></td>
+<td class="r"><b>0,90</b></td><td>2–3 мес.</td>
+<td>новый</td></tr><tr><td><a href="#c-kodree" class="nm">Kodree</a>
 </td>
-<td>Обучение ИИ / Образование</td><td>US 51%, MX 23%, GB 11%</td><td class="r"><b>$79</b></td><td class="r"><b>1,14</b></td>
-<td class="r">$0,80</td><td class="r">1,01%</td><td class="r">$90,1</td>
-<td class="r">$40</td><td class="r">$93</td><td class="r"><b>0,97</b></td>
-<td style="white-space:nowrap">2–3 мес.</td><td>растёт</td>
-<td class="r">3</td><td class="r">$0,58M</td></tr></tbody></table></div>
+<td class="desc">Курсы ИИ, анализа данных и дизайна, сертификат по Claude.</td><td>US 51%, MX 23%, GB 11%</td>
+<td class="r"><b>$79</b></td><td class="r"><b>1,14</b></td>
+<td class="r"><b>0,97</b></td><td>2–3 мес.</td>
+<td>растёт</td></tr></tbody></table></div>
 <nav class="nav"><a href="#c-educly">Educly</a><a href="#c-kitup">KitUp</a><a href="#c-famio">Famio</a><a href="#c-betterme">BetterMe</a><a href="#c-muses-academy">Muses Academy</a><a href="#c-zenfy">Zenfy</a><a href="#c-promuse">ProMuse</a><a href="#c-fnlfx">fnlfx</a><a href="#c-finestro">Finestro</a><a href="#c-ai-corso">AI Corso</a><a href="#c-musesacred">MusesAcred</a><a href="#c-education4kids">Education4Kids</a><a href="#c-therealintro">TheRealIntro</a><a href="#c-kodree">Kodree</a></nav><section class="app" id="c-educly">
 <div class="ah"><h3>Educly</h3><span class="pill">💸 $1,60M за 28 дн.</span><span class="pill">CPA $16 · ROAS 0,87</span></div>
 <p class="about">Обучение ИИ с нуля: «28-дневный ИИ-челлендж, 15 минут в день с телефона».</p>
@@ -384,100 +371,82 @@ dialog form{margin:0}
 </section></section>
 <section><h2>Выборка 28.10: идеи по приложениям</h2><div class="ideas"><div class="idea"><b>💡 Intch → карьерный помощник</b><p>Брать не агрегатор вакансий, а подготовку к работе: генератор и улучшатель резюме + симулятор собеседований с ИИ + тренинг прохождения собеседований. Сейчас Intch — поиск удалённой и part-time работы.</p><p class="src">Приложения: <a href="#intch">Intch</a> · источник: выборка 28.10, дополнено 09.11</p></div><div class="idea"><b>💡 Skilario + агрегатор ИИ-инструментов</b><p>Объединить с нашим приложением-агрегатором ИИ-инструментов: в одной подписке доступ к сервисам и обучение по ним.</p><p class="src">Приложения: <a href="#skilario">Skilario</a> · источник: выборка 28.10</p></div><div class="idea"><b>💡 Флирт + ИИ-компаньон: TheRealIntro + Honey</b><p>Объединить обучение флирту (TheRealIntro) с ИИ-компаньоном (Honey): отработка уроков флирта в диалоге + генерация фанфиков.</p><div class="cai"><div><b>Пользователи в месяц</b>28 млн — пик 2024 · ~20 млн — 2025</div><div><b>Выручка за год</b>$32M — 2024 · $30–50M — оценка 2025</div></div><p class="src">Ориентир — Character.AI, подписка c.ai+ $9,99/мес. Оценки Sacra и Axis Intelligence, официальной отчётности нет.</p><p class="src">Приложения: <a href="#therealintro">TheRealIntro</a> · <a href="#honey">Honey</a> · источник: выборка 28.10</p></div><div class="idea"><b>💡 Генераторы песен и клипов → подписка для ИИ-артистов</b><p>Подписка для тех, кто делает свои ИИ-музыкальные группы и ИИ-артистов. По четырём приложениям медианный CPA $46,4 против $79 по всей выгрузке 10.10.</p><p class="src">Приложения: <a href="#mozart-ai">Mozart AI</a> · <a href="#dear-melodies">Dear Melodies</a> · <a href="#zurna">Zurna</a> · HyperMusic AI (исключено) · источник: выборка 28.10</p></div><div class="idea"><b>💡 Chillio + блокер экранного времени</b><p>Объединить ИИ-планировщик домашних дел с блокером экранного времени. В пересчёт не попал: доход по пикселю 0, продукт на паузе с 06.11.</p><p class="src">Приложения: Chillio (исключено) · источник: выборка 28.10</p></div></div></section>
 <section><h2>Выборка 28.10: все воронки</h2>
-<p class="meta2">Наша цена события = CPC ÷ CR. Покрытие = доход с конверсии ÷ наша цена события; 1,0 — окупается в первый месяц. Серым — строки, где доход по пикселю не виден. 💡 — есть идея.</p>
-<div class="tw"><table><thead><tr><th>Приложение</th><th>Решение</th><th>Гео</th><th class="r">Спенд 28д</th><th class="r">CPA</th><th class="r">CPC</th>
-<th class="r">CR конк.</th><th class="r">ROAS 28д</th><th class="r">Доход с конв.</th><th class="r">Цена при CR 2%</th><th class="r">Цена при CR конк. × 0,85</th>
-<th class="r">Покрытие × 0,85</th><th>Окупаемость</th></tr></thead><tbody><tr class=""><td><a href="#zeely" class="nm">Zeely</a>
-</td><td><span class="chip c-go">Продолжать</span></td>
-<td>US 71%, GB 12%, CA 6%, UA 5%, AU 2%</td><td class="r">$3,22M</td><td class="r">$96</td>
-<td class="r">$2,53</td><td class="r">2,64%</td><td class="r">1,14</td>
-<td class="r">$109,4</td><td class="r">$126</td><td class="r">$113</td>
-<td class="r"><b>0,97</b></td><td>2–3 мес., если держатся продления</td></tr><tr class=""><td><a href="#prayers-academy" class="nm">Prayers Academy</a>
-</td><td><span class="chip c-go">Продолжать</span></td>
-<td>US 100%</td><td class="r">$0,13M</td><td class="r">$69</td>
-<td class="r">$1,12</td><td class="r">1,62%</td><td class="r">0,74</td>
-<td class="r">$51,1</td><td class="r">$56</td><td class="r">$81</td>
-<td class="r"><b>0,63</b></td><td>2–3 мес., если держатся продления</td></tr><tr class=""><td><a href="#memoryos" class="nm">memoryOS</a>
-</td><td><span class="chip c-go">Продолжать</span></td>
-<td>US 72%, GB 7%, IT 7%, TR 7%, PL 6%</td><td class="r">$0,35M</td><td class="r">$65</td>
-<td class="r">$1,98</td><td class="r">3,05%</td><td class="r">0,40</td>
-<td class="r">$26,0</td><td class="r">$99</td><td class="r">$76</td>
-<td class="r"><b>0,34</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#intch" class="nm">Intch</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-go">Продолжать</span></td>
-<td>US 74%, TR 8%, CA 6%, GB 6%, AU 6%</td><td class="r">$0,51M</td><td class="r">$56</td>
-<td class="r">$0,43</td><td class="r">0,77%</td><td class="r">0,29</td>
-<td class="r">$16,2</td><td class="r">$22</td><td class="r">$65</td>
-<td class="r"><b>0,25</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#skilario" class="nm">Skilario</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-go">Продолжать</span></td>
-<td>US 72%, AU 13%, CA 7%, GB 6%, ZA 2%</td><td class="r">$0,91M</td><td class="r">$67</td>
-<td class="r">$1,20</td><td class="r">1,78%</td><td class="r">0,28</td>
-<td class="r">$18,8</td><td class="r">$60</td><td class="r">$79</td>
-<td class="r"><b>0,24</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#therealintro" class="nm">TheRealIntro</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-chk">Проверить</span></td>
-<td>нет в выгрузке; квиз и объявление на немецком (quizlang=de)</td><td class="r">$0,11M</td><td class="r">$79</td>
-<td class="r">$0,67</td><td class="r">0,85%</td><td class="r">1,05</td>
-<td class="r">$83,0</td><td class="r">$34</td><td class="r">$93</td>
-<td class="r"><b>0,90</b></td><td>2–3 мес., если держатся продления</td></tr><tr class=""><td><a href="#therealintro" class="nm">TheRealIntro</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-chk">Проверить</span></td>
-<td>нет в выгрузке; квиз и объявление на немецком (quizlang=de)</td><td class="r">$0,51M</td><td class="r">$94</td>
-<td class="r">$0,55</td><td class="r">0,59%</td><td class="r">0,93</td>
-<td class="r">$87,4</td><td class="r">$28</td><td class="r">$110</td>
-<td class="r"><b>0,79</b></td><td>2–3 мес., если держатся продления</td></tr><tr class=""><td><a href="#honey" class="nm">Honey (ИИ-девушка)</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-chk">Проверить</span></td>
-<td>TW 62%, MX 38%</td><td class="r">$0,26M</td><td class="r">$61</td>
-<td class="r">$0,10</td><td class="r">0,17%</td><td class="r">0,55</td>
-<td class="r">$33,6</td><td class="r">$5</td><td class="r">$71</td>
-<td class="r"><b>0,48</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#mozart-ai" class="nm">Mozart AI</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-chk">Проверить</span></td>
-<td>US 74%, AU 11%, CA 8%, GB 7%</td><td class="r">$0,31M</td><td class="r">$38</td>
-<td class="r">$2,08</td><td class="r">5,47%</td><td class="r">0,41</td>
-<td class="r">$15,6</td><td class="r">$104</td><td class="r">$45</td>
-<td class="r"><b>0,35</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#dear-melodies" class="nm">Dear Melodies</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-chk">Проверить</span></td>
-<td>US 57%, MX 33%, CA 10%</td><td class="r">$0,35M</td><td class="r">$55</td>
-<td class="r">$0,37</td><td class="r">0,68%</td><td class="r">0,34</td>
-<td class="r">$18,7</td><td class="r">$18</td><td class="r">$64</td>
-<td class="r"><b>0,29</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#aligned" class="nm">Aligned</a>
-</td><td><span class="chip c-chk">Проверить</span></td>
-<td>US 87%, GB 6%, CA 4%, AU 3%, IE 1%</td><td class="r">$1,66M</td><td class="r">$179</td>
-<td class="r">$1,82</td><td class="r">1,02%</td><td class="r">0,26</td>
-<td class="r">$46,5</td><td class="r">$91</td><td class="r">$210</td>
-<td class="r"><b>0,22</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#guardio" class="nm">Guardio</a>
-</td><td><span class="chip c-low">Низкий приоритет</span></td>
-<td>US 92%, CA 4%, AU 4%</td><td class="r">$5,73M</td><td class="r">$209</td>
-<td class="r">$3,25</td><td class="r">1,55%</td><td class="r">0,52</td>
-<td class="r">$108,7</td><td class="r">$162</td><td class="r">$246</td>
-<td class="r"><b>0,44</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#kidology" class="nm">Kidology</a>
-</td><td><span class="chip c-low">Низкий приоритет</span></td>
-<td>US 76%, MX 24%</td><td class="r">$0,37M</td><td class="r">$96</td>
-<td class="r">$0,76</td><td class="r">0,79%</td><td class="r">0,19</td>
-<td class="r">$18,2</td><td class="r">$38</td><td class="r">$114</td>
-<td class="r"><b>0,16</b></td><td>за 3 мес. маловероятно</td></tr><tr class=""><td><a href="#cloaked" class="nm">Cloaked</a>
-</td><td><span class="chip c-no">Отклонить</span></td>
-<td>US 100%</td><td class="r">$9,00M</td><td class="r">$474</td>
-<td class="r">$3,26</td><td class="r">0,69%</td><td class="r">0,16</td>
-<td class="r">$75,8</td><td class="r">$163</td><td class="r">$558</td>
-<td class="r"><b>0,14</b></td><td>за 3 мес. маловероятно</td></tr><tr class="bad"><td><a href="#mob" class="nm">Mob (рецепты)</a>
-</td><td><span class="chip c-no">Отклонить</span></td>
-<td>GB 51%, US 37%, AU 8%, IE 4%</td><td class="r">$0,65M</td><td class="r">$36</td>
-<td class="r">$1,15</td><td class="r">3,20%</td><td class="r">0,05</td>
-<td class="r">$1,8</td><td class="r">$57</td><td class="r">$42</td>
-<td class="r"><b>0,04</b></td><td>Не знаем — доход не виден</td></tr><tr class="bad"><td><a href="#zurna" class="nm">Zurna (ИИ-фото)</a>
-<span class="chip c-idea">💡</span></td><td><span class="chip c-no">Отклонить</span></td>
-<td>US 69%, IT 10%, GB 10%, MX 6%, CA 4%</td><td class="r">$0,57M</td><td class="r">$191</td>
-<td class="r">$1,16</td><td class="r">0,61%</td><td class="r">0,06</td>
-<td class="r">$11,5</td><td class="r">$58</td><td class="r">$225</td>
-<td class="r"><b>0,05</b></td><td>Не знаем — доход не виден</td></tr><tr class="bad"><td><a href="#reverse-lookup" class="nm">Reverse Lookup</a>
-</td><td><span class="chip c-no">Отклонить</span></td>
-<td>GB 27%, BR 23%, US 17%, AU 16%, IT 16%</td><td class="r">$0,54M</td><td class="r">$101</td>
-<td class="r">$0,57</td><td class="r">0,56%</td><td class="r">0,01</td>
-<td class="r">$1,0</td><td class="r">$28</td><td class="r">$120</td>
-<td class="r"><b>0,01</b></td><td>Не знаем — доход не виден</td></tr><tr class="bad"><td><a href="#trace" class="nm">Trace</a>
-</td><td><span class="chip c-no">Отклонить</span></td>
-<td>FR 81%, DE 19%</td><td class="r">$0,13M</td><td class="r">$51</td>
-<td class="r">$0,83</td><td class="r">1,63%</td><td class="r">0,06</td>
-<td class="r">$3,1</td><td class="r">$42</td><td class="r">$60</td>
-<td class="r"><b>0,05</b></td><td>Не знаем — доход не виден</td></tr></tbody></table></div></section>
+<p class="meta2">Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. 💡 — есть идея. Спенд, CPC и сценарии цены — в карточке.</p>
+<div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:28%"><col style="width:14%"><col style="width:16%"><col style="width:8%"><col style="width:7%"><col style="width:8%"><col style="width:7%"></colgroup>
+<thead><tr><th>Приложение</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody><tr class=""><td><a href="#zeely" class="nm">Zeely</a>
+</td>
+<td class="desc">ИИ-платформа маркетинга для малого бизнеса: делает рекламные креативы, видео и запускает рекламу за пару минут.</td><td><span class="chip c-go">Продолжать</span></td>
+<td>US 71%, GB 12%, CA 6%, UA 5%, AU 2%</td><td class="r">$96</td><td class="r">1,14</td>
+<td class="r"><b>0,97</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#prayers-academy" class="nm">Prayers Academy</a>
+</td>
+<td class="desc">Христианские духовные практики и молитвы.</td><td><span class="chip c-go">Продолжать</span></td>
+<td>US 100%</td><td class="r">$69</td><td class="r">0,74</td>
+<td class="r"><b>0,63</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#memoryos" class="nm">memoryOS</a>
+</td>
+<td class="desc">Тренировка памяти в игровом формате: запоминать имена, детали, иностранные слова.</td><td><span class="chip c-go">Продолжать</span></td>
+<td>US 72%, GB 7%, IT 7%, TR 7%, PL 6%</td><td class="r">$65</td><td class="r">0,40</td>
+<td class="r"><b>0,34</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#intch" class="nm">Intch</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">Поиск удалённых проектов и part-time работы, ИИ-нетворкинг: «из-за кризиса компании переходят на part-time — подключим вас к этим возможностям».</td><td><span class="chip c-go">Продолжать</span></td>
+<td>US 74%, TR 8%, CA 6%, GB 6%, AU 6%</td><td class="r">$56</td><td class="r">0,29</td>
+<td class="r"><b>0,25</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#skilario" class="nm">Skilario</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">Обучение ИИ для заработка: «как простой PDF превратить в доход», создание цифровых продуктов с ИИ.</td><td><span class="chip c-go">Продолжать</span></td>
+<td>US 72%, AU 13%, CA 7%, GB 6%, ZA 2%</td><td class="r">$67</td><td class="r">0,28</td>
+<td class="r"><b>0,24</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#therealintro" class="nm">TheRealIntro</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">Обучение знакомствам и флирту для мужчин: «что сказать, чтобы её заинтересовать».</td><td><span class="chip c-chk">Проверить</span></td>
+<td>нет в выгрузке; квиз и объявление на немецком (quizlang=de)</td><td class="r">$79</td><td class="r">1,05</td>
+<td class="r"><b>0,90</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#therealintro" class="nm">TheRealIntro</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">Обучение знакомствам и флирту для мужчин: «что сказать, чтобы её заинтересовать».</td><td><span class="chip c-chk">Проверить</span></td>
+<td>нет в выгрузке; квиз и объявление на немецком (quizlang=de)</td><td class="r">$94</td><td class="r">0,93</td>
+<td class="r"><b>0,79</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#honey" class="nm">Honey (ИИ-девушка)</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">ИИ-компаньон: создай свою «девушку мечты» и общайся в чате.</td><td><span class="chip c-chk">Проверить</span></td>
+<td>TW 62%, MX 38%</td><td class="r">$61</td><td class="r">0,55</td>
+<td class="r"><b>0,48</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#mozart-ai" class="nm">Mozart AI</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">ИИ-генератор песен: «спой любую песню своим голосом» — создаёт голосовую модель и кавер, видео с вашим фото.</td><td><span class="chip c-chk">Проверить</span></td>
+<td>US 74%, AU 11%, CA 8%, GB 7%</td><td class="r">$38</td><td class="r">0,41</td>
+<td class="r"><b>0,35</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#dear-melodies" class="nm">Dear Melodies</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">Персональная песня в подарок: пишут песню о партнёре/родителях/ребёнке по вашей истории (ИИ + доставка за 3 дня).</td><td><span class="chip c-chk">Проверить</span></td>
+<td>US 57%, MX 33%, CA 10%</td><td class="r">$55</td><td class="r">0,34</td>
+<td class="r"><b>0,29</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#aligned" class="nm">Aligned</a>
+</td>
+<td class="desc">ИИ-коуч и планировщик жизни: еда, уборка, дети, счета — всё спланировано.</td><td><span class="chip c-chk">Проверить</span></td>
+<td>US 87%, GB 6%, CA 4%, AU 3%, IE 1%</td><td class="r">$179</td><td class="r">0,26</td>
+<td class="r"><b>0,22</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#guardio" class="nm">Guardio</a>
+</td>
+<td class="desc">Антивирус и защита от мошенничества для телефона и браузера: проверяет сайты, ссылки, сообщения и аккаунты.</td><td><span class="chip c-low">Низкий приоритет</span></td>
+<td>US 92%, CA 4%, AU 4%</td><td class="r">$209</td><td class="r">0,52</td>
+<td class="r"><b>0,44</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#kidology" class="nm">Kidology</a>
+</td>
+<td class="desc">Коуч для родителей: «родительство бывает громким» — тест на стиль воспитания и план.</td><td><span class="chip c-low">Низкий приоритет</span></td>
+<td>US 76%, MX 24%</td><td class="r">$96</td><td class="r">0,19</td>
+<td class="r"><b>0,16</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#cloaked" class="nm">Cloaked</a>
+</td>
+<td class="desc">Сервис защиты персональных данных: удаляет ваши данные с сайтов-брокеров, даёт виртуальные номера и почты, блокирует спам-звонки.</td><td><span class="chip c-no">Отклонить</span></td>
+<td>US 100%</td><td class="r">$474</td><td class="r">0,16</td>
+<td class="r"><b>0,14</b></td><td>позже 3 мес.</td></tr><tr class="bad"><td><a href="#mob" class="nm">Mob (рецепты)</a>
+</td>
+<td class="desc">Рецепты и планировщик питания: «готовь раз в воскресенье — ешь хорошо всю неделю», batch cooking.</td><td><span class="chip c-no">Отклонить</span></td>
+<td>GB 51%, US 37%, AU 8%, IE 4%</td><td class="r">$36</td><td class="r">0,05</td>
+<td class="r"><b>0,04</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#zurna" class="nm">Zurna (ИИ-фото)</a>
+<span class="chip c-idea">💡</span></td>
+<td class="desc">ИИ-генератор музыкальных клипов: «каверы и клипы из вашего фото и голоса» (Pixery).</td><td><span class="chip c-no">Отклонить</span></td>
+<td>US 69%, IT 10%, GB 10%, MX 6%, CA 4%</td><td class="r">$191</td><td class="r">0,06</td>
+<td class="r"><b>0,05</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#reverse-lookup" class="nm">Reverse Lookup</a>
+</td>
+<td class="desc">Пробив по номеру телефона: кто звонил, имя, соцсети, адрес.</td><td><span class="chip c-no">Отклонить</span></td>
+<td>GB 27%, BR 23%, US 17%, AU 16%, IT 16%</td><td class="r">$101</td><td class="r">0,01</td>
+<td class="r"><b>0,01</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#trace" class="nm">Trace</a>
+</td>
+<td class="desc">Пробив по номеру телефона: имя, соцсети, адрес.</td><td><span class="chip c-no">Отклонить</span></td>
+<td>FR 81%, DE 19%</td><td class="r">$51</td><td class="r">0,06</td>
+<td class="r"><b>0,05</b></td><td>не знаем</td></tr></tbody></table></div></section>
 <section><h2>Выборка 28.10: по каждому приложению</h2><nav class="nav"><a href="#zeely">Zeely</a><a href="#prayers-academy">Prayers Academy</a><a href="#memoryos">memoryOS</a><a href="#intch">Intch</a><a href="#skilario">Skilario</a><a href="#therealintro">TheRealIntro</a><a href="#honey">Honey</a><a href="#mozart-ai">Mozart AI</a><a href="#dear-melodies">Dear Melodies</a><a href="#aligned">Aligned</a><a href="#guardio">Guardio</a><a href="#kidology">Kidology</a><a href="#cloaked">Cloaked</a><a href="#mob">Mob</a><a href="#zurna">Zurna</a><a href="#reverse-lookup">Reverse Lookup</a><a href="#trace">Trace</a></nav><div class="ghead"><h2>Продолжать</h2><span class="chip c-go">Продолжать</span><span class="meta2">5 прил.</span></div><section class="app" id="zeely">
 <div class="ah"><h3>Zeely</h3><span class="chip c-go">Продолжать</span>
 <span class="chip c-lbl">Видно в данных</span><span class="pill">💸 $3,22M за 28 дн.</span><span class="pill">CPA $96 · ROAS 1,14</span></div>

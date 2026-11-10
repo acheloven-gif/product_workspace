@@ -3,9 +3,11 @@
 Данные и решения — те же, что в fb-pereschet-2026-11-09.xlsx; идеи, креативы и скрины лендингов —
 из fb-shortlist-28-10.html (первая выборка 28.10). Подсказок по наведению нет: всё видно сразу.
 """
+import base64
 import html
 import re
 import sys
+import urllib.request
 from collections import defaultdict
 from pathlib import Path
 
@@ -335,9 +337,9 @@ tr.bad td.r{color:var(--muted)}
 .facts dd{margin:2px 0 0;font-size:.92rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .facts dd a{color:var(--accent)}
 table.sc{font-size:.84rem;min-width:0}
-.shots{display:flex;gap:10px}
-.shot{flex:0 0 150px;display:flex;flex-direction:column;gap:4px;background:none;border:0;padding:0;text-align:left;cursor:zoom-in;color:inherit;font:inherit}
-.shot img{width:150px;aspect-ratio:9/16;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.shots{display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start}
+.shot{flex:0 0 180px;display:flex;flex-direction:column;gap:4px;background:none;border:0;padding:0;text-align:left;cursor:zoom-in;color:inherit;font:inherit}
+.shot img{width:180px;height:auto;max-height:340px;object-fit:contain;object-position:top;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
 .shot span{font-size:.78rem;color:var(--muted)}
 .shot:hover img{border-color:var(--accent)}
 .meta2{font-size:.8rem;color:var(--muted)}
@@ -477,6 +479,48 @@ def sentence(s, n=150):
     return cut or "—"
 
 
+CACHE = Path(__file__).resolve().parent / "media-cache"
+MIME = {"jpg": "image/jpeg", "png": "image/png", "webp": "image/webp"}
+
+
+def drive_id(url):
+    m = re.search(r"/d/([^/]+)", str(url or ""))
+    return m.group(1) if m else None
+
+
+def drive_image(url):
+    """Кадр файла с Диска: картинка как есть, у видео — превью. В отчёте — сам скрин, не ссылка."""
+    fid = drive_id(url)
+    if not fid:
+        return None
+    CACHE.mkdir(exist_ok=True)
+    for ext, mime in MIME.items():
+        path = CACHE / f"{fid}.{ext}"
+        if path.exists() and path.stat().st_size > 500:
+            return f"data:{mime};base64,{base64.b64encode(path.read_bytes()).decode()}"
+    req = urllib.request.Request(
+        f"https://drive.google.com/thumbnail?id={fid}&sz=w900",
+        headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=40) as resp:
+            data = resp.read()
+            ctype = (resp.headers.get("content-type") or "").split(";")[0].strip()
+    except Exception as ex:
+        print("скрин не скачался", fid, ex)
+        return None
+    if not ctype.startswith("image/") or len(data) < 500:
+        print("не картинка", fid, ctype, len(data))
+        return None
+    ext = "png" if "png" in ctype else "webp" if "webp" in ctype else "jpg"
+    (CACHE / f"{fid}.{ext}").write_bytes(data)
+    return f"data:{ctype};base64,{base64.b64encode(data).decode()}"
+
+
+def shot_button(src, label, app):
+    return (f'<button class="shot" type="button" data-cap="{e(label)}: {e(app)}">'
+            f'<img src="{src}" alt="{e(label)}: {e(app)}" loading="lazy"><span>{e(label)}</span></button>')
+
+
 def href(u):
     u = str(u or "")
     return u if u.startswith("http") else "https://" + u
@@ -504,20 +548,27 @@ def cand_section(app, fs, about, hist):
     ibox = f'<p class="ibox">💡 <b>Идея:</b> {e(idea["text"])}</p>' if idea else ""
     funnels = "<br>".join(f'<a href="{e(href(r["d"]["ссылка на ленд"]))}" target="_blank" rel="noopener">'
                           f'{e(re.sub(r"^https?://", "", r["d"]["ссылка на ленд"])[:60])} ↗</a>' for r in fs)
-    media_l = " · ".join(f'<a href="{e(href(r[k]))}" target="_blank" rel="noopener">{lbl}{" " + str(i + 1) if len(fs) > 1 else ""} ↗</a>'
-                         for i, r in enumerate(fs) for k, lbl in (("crea", "креатив"), ("shot", "лендинг")) if r[k])
+    shots = []
+    for i, r in enumerate(fs):
+        mark = f" {i + 1}" if len(fs) > 1 else ""
+        for key, label in (("crea", "Креатив"), ("shot", "Воронка")):
+            src = drive_image(r[key])
+            if src:
+                shots.append(shot_button(src, label + mark, app))
+    shots_html = "".join(shots) or '<p class="meta2">Скринов креатива и воронки в выгрузке нет.</p>'
     facts = [("Компания · категория", f"{e(r0['owner'])} · {e(r0['cat'])}"),
              ("Гео (доли спенда)", "; ".join(e(r["geo"]) for r in fs)),
              ("CPC · CR переход → событие", "; ".join(f'{money(r["cpc"], 2)} · {pct(r["cr"], 2)}' for r in fs)),
              ("Событие CPA", "; ".join(e(event_guess(r)) for r in fs)),
              ("Окупаемость (CR конкурента × 0,85)", "<b>" + "; ".join(e(r["payback"]) for r in fs) + "</b>"),
-             ("Воронка" + ("и" if len(fs) > 1 else ""), funnels),
-             ("Креатив и лендинг (Drive)", media_l or "—")]
+             ("Воронка" + ("и" if len(fs) > 1 else ""), funnels)]
     dl = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts)
     return f"""<section class="app" id="c-{slug(app)}">
 <div class="ah"><h3>{e(app)}</h3>{chips}{pills}</div>
 <p class="about">{e(txt)}</p>{ibox}
-<dl class="facts">{dl}</dl>{scen_table(fs)}
+<div class="grid2"><div style="display:flex;flex-direction:column;gap:10px;min-width:0"><dl class="facts">{dl}</dl></div>
+<div class="shots">{shots_html}</div></div>
+{scen_table(fs)}
 <p class="eyebrow">Ресерч бренда по выгрузкам 18.05–10.10</p>{brand_block(b)}
 <p class="meta2">Строки выгрузки 10.10: {e(", ".join(str(r["d"]["ID строки"]) for r in fs))} · метка: Видно в данных (CPA, ROAS), событие — предположение</p>
 </section>"""
@@ -628,7 +679,7 @@ def main():
 <li>Фактического числа конверсий в выгрузке нет: это формула (прибыль ÷ прибыль с конверсии), доход — спенд × ROAS. Конверсии = спенд ÷ CPA; CPA и ROAS округлены, точность ±1–2% (для ROAS ≤ 0,06 — до ±20%).</li>
 <li>Доход с конверсии за 28 дней включает продления прошлых когорт и не учитывает возвраты — это приближение дохода первого месяца.</li>
 <li>CPC — средний по строке, по странам не разбит. Гео — доли спенда по странам из выгрузки.</li>
-<li>Идеи, креативы и скрины лендингов — из первой выборки 28.10; идея по Intch дополнена 09.11.</li>
+<li>Идеи — из первой выборки 28.10; идея по Intch дополнена 09.11. Скрины креатива и воронки у новых кандидатов — файлы из выгрузки (Диск). Если креатив — видео, в отчёте кадр из него. Где файла не было, скрина нет.</li>
 </ul></div></section>
 <footer class="foot"><p>Источники: reports/fb-kandidaty-itog-28-10.xlsx (листы «Шорт-лист», «Под вопросом», «Сводная (все строки)»), fb-shortlist-28-10.html. Книга с формулами: fb-pereschet-2026-11-09.xlsx. Ориентир по Character.AI — оценки Sacra и Axis Intelligence.</p></footer>
 </main>

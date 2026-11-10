@@ -57,6 +57,9 @@ tr.bad td.r{color:var(--muted)}
 .n-faith{background:#f8f1e4;color:#7a5420}
 .idea-line{color:var(--gold);font-size:.8rem;margin-top:4px}
 table .chip{white-space:normal;line-height:1.25}
+button.niche-sort{font:inherit;font-weight:600;background:none;border:0;padding:0;color:inherit;cursor:pointer;text-align:left}
+button.niche-sort.on{color:var(--accent)}
+button.niche-sort.on::after{content:" · собрано"}
 .pill{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--surface);white-space:nowrap}
 .nav{display:flex;flex-wrap:wrap;gap:8px}
 .nav a{font-size:.85rem;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:var(--surface)}
@@ -125,88 +128,88 @@ dialog form{margin:0}
 <tr><td>Запускать сразу несколько воронок с разными пейволами и нарративами</td><td class="todo">к тесту</td><td>В карточках — список воронок бренда (до 6) как варианты для теста. Пейволы и нарративы — после прохода воронок.</td></tr>
 </tbody></table></div></section>
 <section id="cands"><h2>Кандидаты по CPA и ROAS — вся выгрузка 10.10</h2>
-<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
+<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сейчас порядок по CPA. Нажмите «Ниша» — одинаковые плашки соберутся вместе, ещё раз — порядок вернётся. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
 <div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:16%"><col style="width:22%"><col style="width:11%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:9%"><col style="width:8%"></colgroup>
-<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
-<th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody><tr><td><a href="#c-educly" class="nm">Educly</a>
+<thead><tr><th>Приложение</th><th><button type="button" class="niche-sort">Ниша</button></th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody><tr data-niche="Обучение ИИ" data-i="0"><td><a href="#c-educly" class="nm">Educly</a>
 </td>
 <td><span class="chip n-learn">Обучение ИИ</span></td>
 <td class="desc">Обучение ИИ с нуля: 28 дней по 15 минут с телефона.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 57%, MX 27%, GB 7%</td>
 <td class="r"><b>$16</b></td><td class="r"><b>0,87</b></td>
 <td class="r"><b>0,73</b></td><td>2–3 мес.</td>
-<td>растёт</td></tr><tr><td><a href="#c-kitup" class="nm">KitUp</a>
+<td>растёт</td></tr><tr data-niche="Саморазвитие" data-i="1"><td><a href="#c-kitup" class="nm">KitUp</a>
 </td>
 <td><span class="chip n-self">Саморазвитие</span></td>
 <td class="desc">Микрообучение и саморазвитие каждый день. Аудитория — Турция и Украина.</td><td>TR 82%, UA 17%</td>
 <td class="r"><b>$44</b></td><td class="r"><b>0,90</b></td>
 <td class="r"><b>0,77</b></td><td>2–3 мес.</td>
-<td>растёт</td></tr><tr><td><a href="#c-famio" class="nm">Famio</a>
+<td>растёт</td></tr><tr data-niche="Семья" data-i="2"><td><a href="#c-famio" class="nm">Famio</a>
 </td>
 <td><span class="chip n-fam">Семья</span></td>
 <td class="desc">Семейный GPS-трекер: где сейчас близкие, на карте.</td><td>нет в выгрузке</td>
 <td class="r"><b>$55</b></td><td class="r"><b>1,04</b></td>
 <td class="r"><b>0,84</b></td><td>2–3 мес.</td>
-<td>падает</td></tr><tr><td><a href="#c-betterme" class="nm">BetterMe</a>
+<td>падает</td></tr><tr data-niche="Отношения" data-i="3"><td><a href="#c-betterme" class="nm">BetterMe</a>
 </td>
 <td><span class="chip n-rel">Отношения</span></td>
 <td class="desc">Отношения: квиз про стиль привязанности.</td><td>US 64%, GB 18%, SE 7%</td>
 <td class="r"><b>$56</b></td><td class="r"><b>0,86</b></td>
 <td class="r"><b>0,73</b></td><td>2–3 мес.</td>
-<td>растёт</td></tr><tr><td><a href="#c-muses-academy" class="nm">Muses Academy</a>
+<td>растёт</td></tr><tr data-niche="Саморазвитие для девушек" data-i="4"><td><a href="#c-muses-academy" class="nm">Muses Academy</a>
 </td>
 <td><span class="chip n-girls">Саморазвитие для девушек</span></td>
 <td class="desc">Отношения: «стань той, кого он потерял и хочет вернуть».<div class="idea-line">💡 Идея: фанфики, как в Character.AI</div></td><td>нет в выгрузке</td>
 <td class="r"><b>$59</b></td><td class="r"><b>0,92</b></td>
 <td class="r"><b>0,79</b></td><td>2–3 мес.</td>
-<td>падает</td></tr><tr><td><a href="#c-zenfy" class="nm">Zenfy</a>
+<td>падает</td></tr><tr data-niche="Заработок на ИИ" data-i="5"><td><a href="#c-zenfy" class="nm">Zenfy</a>
 </td>
 <td><span class="chip n-earn">Заработок на ИИ</span></td>
 <td class="desc">Заработок на ИИ: удалённая работа вместо графика 9–5.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 90%, DE 9%</td>
 <td class="r"><b>$59</b></td><td class="r"><b>0,92</b></td>
 <td class="r"><b>0,78</b></td><td>2–3 мес.</td>
-<td>падает</td></tr><tr><td><a href="#c-promuse" class="nm">ProMuse</a>
+<td>падает</td></tr><tr data-niche="Обучение ИИ" data-i="6"><td><a href="#c-promuse" class="nm">ProMuse</a>
 </td>
 <td><span class="chip n-learn">Обучение ИИ</span></td>
 <td class="desc">Обучение ИИ: 28-дневная программа с сертификатом.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 84%, MX 9%, AU 6%</td>
 <td class="r"><b>$60</b></td><td class="r"><b>0,84</b></td>
 <td class="r"><b>0,72</b></td><td>2–3 мес.</td>
-<td>растёт</td></tr><tr><td><a href="#c-fnlfx" class="nm">AI Stats</a>
+<td>растёт</td></tr><tr data-niche="Ставки" data-i="7"><td><a href="#c-fnlfx" class="nm">AI Stats</a>
 </td>
 <td><span class="chip n-bet">Ставки</span></td>
 <td class="desc">AI Stats: прогнозы на спорт. FunnelFox — платформа воронки, не бренд.</td><td>US 100%</td>
 <td class="r"><b>$60</b></td><td class="r"><b>1,21</b></td>
 <td class="r"><b>1,03</b></td><td>1-й месяц</td>
-<td>новый</td></tr><tr><td><a href="#c-finestro" class="nm">Finestro</a>
+<td>новый</td></tr><tr data-niche="Заработок на ИИ" data-i="8"><td><a href="#c-finestro" class="nm">Finestro</a>
 </td>
 <td><span class="chip n-earn">Заработок на ИИ</span></td>
 <td class="desc">Заработок на ИИ: фриланс, на первом экране выбор пола. Два адреса — один экран.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 89%, GB 5%, CA 4%</td>
 <td class="r"><b>$62</b></td><td class="r"><b>1,10</b></td>
 <td class="r"><b>0,93</b></td><td>2–3 мес.</td>
-<td>падает</td></tr><tr><td><a href="#c-ai-corso" class="nm">AI Corso</a>
+<td>падает</td></tr><tr data-niche="Обучение ИИ" data-i="9"><td><a href="#c-ai-corso" class="nm">AI Corso</a>
 </td>
 <td><span class="chip n-learn">Обучение ИИ</span></td>
 <td class="desc">Обучение ИИ с сертификатом.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 100%</td>
 <td class="r"><b>$64</b></td><td class="r"><b>1,79</b></td>
 <td class="r"><b>1,52</b></td><td>1-й месяц</td>
-<td>растёт</td></tr><tr><td><a href="#c-musesacred" class="nm">MusesAcred</a>
+<td>растёт</td></tr><tr data-niche="Саморазвитие для девушек" data-i="10"><td><a href="#c-musesacred" class="nm">MusesAcred</a>
 </td>
 <td><span class="chip n-girls">Саморазвитие для девушек</span></td>
 <td class="desc">Отношения: «стань женщиной, которую он не может оставить».<div class="idea-line">💡 Идея: фанфики, как в Character.AI</div></td><td>нет в выгрузке</td>
 <td class="r"><b>$66</b></td><td class="r"><b>0,84</b></td>
 <td class="r"><b>0,72</b></td><td>2–3 мес.</td>
-<td>новый</td></tr><tr><td><a href="#c-education4kids" class="nm">Education4Kids</a>
+<td>новый</td></tr><tr data-niche="Детям" data-i="11"><td><a href="#c-education4kids" class="nm">Education4Kids</a>
 </td>
 <td><span class="chip n-kids">Детям</span></td>
 <td class="desc">Детское образование.</td><td>RO 58%, PL 41%</td>
 <td class="r"><b>$67</b></td><td class="r"><b>0,79</b></td>
 <td class="r"><b>0,68</b></td><td>2–3 мес.</td>
-<td>падает</td></tr><tr><td><a href="#c-therealintro" class="nm">TheRealIntro</a>
+<td>падает</td></tr><tr data-niche="Флирт" data-i="12"><td><a href="#c-therealintro" class="nm">TheRealIntro</a>
 <span class="chip c-go">28.10</span></td>
 <td><span class="chip n-flirt">Флирт</span></td>
 <td class="desc">Обучение знакомствам и флирту для мужчин.<div class="idea-line">💡 Идея: фанфики, как в Character.AI</div></td><td>нет в выгрузке</td>
 <td class="r"><b>$79</b></td><td class="r"><b>1,05</b></td>
 <td class="r"><b>0,90</b></td><td>2–3 мес.</td>
-<td>новый</td></tr><tr><td><a href="#c-kodree" class="nm">Kodree</a>
+<td>новый</td></tr><tr data-niche="Обучение ИИ" data-i="13"><td><a href="#c-kodree" class="nm">Kodree</a>
 </td>
 <td><span class="chip n-learn">Обучение ИИ</span></td>
 <td class="desc">Курсы ИИ, анализа данных и дизайна, сертификат по Claude.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td>US 51%, MX 23%, GB 11%</td>
@@ -412,74 +415,74 @@ dialog form{margin:0}
 </section></section>
 <section><h2>Идеи — на всех приложениях этой темы</h2><div class="ideas"><div class="idea"><b>💡 Сразу проба Claude, токены наши</b><p>Не отдельный курс «заработай на ИИ». Человек сразу пробует модель: как пользоваться Claude, наш API для Claude, мы продаём токены, чтобы он им пользовался. Обучение и доступ — в одной подписке.</p><p class="src">Приложения: <a href="#c-educly">Educly</a> · <a href="#c-promuse">ProMuse</a> · <a href="#c-ai-corso">AI Corso</a> · <a href="#c-kodree">Kodree</a> · <a href="#skilario">Skilario</a> · <a href="#c-finestro">Finestro</a> · <a href="#c-zenfy">Zenfy</a> · источник: идея Наташи, на приложения этой темы</p></div><div class="idea"><b>💡 Фанфики, как в Character.AI</b><p>Как в старой сборке для Honey: не только чат с ИИ-девушкой, а фанфики и диалоги в духе Character.AI. У TheRealIntro это стыкуется с обучением флирту: отработка в диалоге плюс фанфик. У Muses Academy и MusesAcred та же тема «стань той, кого он пожалеет, что потерял» — тот же приём.</p><div class="cai"><div><b>Пользователи в месяц</b>28 млн — пик 2024 · ~20 млн — 2025</div><div><b>Выручка за год</b>$32M — 2024 · $30–50M — оценка 2025</div></div><p class="src">Ориентир — Character.AI, подписка c.ai+ $9,99/мес. Оценки Sacra и Axis Intelligence, официальной отчётности нет.</p><p class="src">Приложения: <a href="#honey">Honey (ИИ-девушка)</a> · <a href="#c-therealintro">TheRealIntro</a> · <a href="#c-muses-academy">Muses Academy</a> · <a href="#c-musesacred">MusesAcred</a> · источник: выборка 28.10, перенесено на похожую тему</p></div><div class="idea"><b>💡 Не вакансии, а подготовка к работе</b><p>Брать не агрегатор вакансий, а подготовку к работе: генератор и улучшатель резюме, симулятор собеседований с ИИ и тренинг прохождения собеседований.</p><p class="src">Приложения: <a href="#intch">Intch</a> · источник: выборка 28.10, дополнено 09.11</p></div><div class="idea"><b>💡 Подписка для своих ИИ-артистов</b><p>Подписка для тех, кто делает свои ИИ-музыкальные группы и ИИ-артистов.</p><p class="src">Приложения: <a href="#mozart-ai">Mozart AI</a> · <a href="#dear-melodies">Dear Melodies</a> · <a href="#zurna">Zurna (ИИ-фото)</a> · HyperMusic AI (w2a.one) (нет в этом срезе) · источник: выборка 28.10</p></div><div class="idea"><b>💡 Дела по дому и блокер экранного времени</b><p>Объединить ИИ-планировщик домашних дел с блокером экранного времени. В пересчёт не попал: доход по пикселю 0, продукт на паузе с 06.11.</p><p class="src">Приложения: Chillio (нет в этом срезе) · источник: выборка 28.10</p></div></div></section>
 <section><h2>Выборка 28.10: все воронки</h2>
-<p class="meta2">Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. 💡 — есть идея. Спенд, CPC и сценарии цены — в карточке.</p>
+<p class="meta2">Порядок — по решению. Нажмите «Ниша», чтобы собрать одинаковые плашки, ещё раз — вернуть как было. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. Спенд, CPC и сценарии цены — в карточке.</p>
 <div class="tw"><table class="fit"><colgroup><col style="width:11%"><col style="width:14%"><col style="width:24%"><col style="width:12%"><col style="width:12%"><col style="width:7%"><col style="width:6%"><col style="width:7%"><col style="width:7%"></colgroup>
-<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
-<th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody><tr class=""><td><a href="#zeely" class="nm">Zeely</a></td>
+<thead><tr><th>Приложение</th><th><button type="button" class="niche-sort">Ниша</button></th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody><tr class="" data-niche="Реклама для бизнеса" data-i="0"><td><a href="#zeely" class="nm">Zeely</a></td>
 <td><span class="chip n-earn">Реклама для бизнеса</span></td>
 <td class="desc">ИИ-платформа маркетинга для малого бизнеса: делает рекламные креативы, видео и запускает рекламу за пару минут.</td><td><span class="chip c-go">Продолжать</span></td>
 <td>US 71%, GB 12%, CA 6%, UA 5%, AU 2%</td><td class="r">$96</td><td class="r">1,14</td>
-<td class="r"><b>0,97</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#prayers-academy" class="nm">Prayers Academy</a></td>
+<td class="r"><b>0,97</b></td><td>2–3 мес.</td></tr><tr class="" data-niche="Вера" data-i="1"><td><a href="#prayers-academy" class="nm">Prayers Academy</a></td>
 <td><span class="chip n-faith">Вера</span></td>
 <td class="desc">Христианские духовные практики и молитвы.</td><td><span class="chip c-go">Продолжать</span></td>
 <td>US 100%</td><td class="r">$69</td><td class="r">0,74</td>
-<td class="r"><b>0,63</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#memoryos" class="nm">memoryOS</a></td>
+<td class="r"><b>0,63</b></td><td>2–3 мес.</td></tr><tr class="" data-niche="Память" data-i="2"><td><a href="#memoryos" class="nm">memoryOS</a></td>
 <td><span class="chip n-self">Память</span></td>
 <td class="desc">Тренировка памяти в игровом формате: запоминать имена, детали, иностранные слова.</td><td><span class="chip c-go">Продолжать</span></td>
 <td>US 72%, GB 7%, IT 7%, TR 7%, PL 6%</td><td class="r">$65</td><td class="r">0,40</td>
-<td class="r"><b>0,34</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#intch" class="nm">Intch</a></td>
+<td class="r"><b>0,34</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Карьера" data-i="3"><td><a href="#intch" class="nm">Intch</a></td>
 <td><span class="chip n-work">Карьера</span></td>
 <td class="desc">Поиск удалённых проектов и part-time работы, ИИ-нетворкинг: «из-за кризиса компании переходят на part-time — подключим вас к этим возможностям».<div class="idea-line">💡 Идея: резюме, собеседования, тренинг</div></td><td><span class="chip c-go">Продолжать</span></td>
 <td>US 74%, TR 8%, CA 6%, GB 6%, AU 6%</td><td class="r">$56</td><td class="r">0,29</td>
-<td class="r"><b>0,25</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#skilario" class="nm">Skilario</a></td>
+<td class="r"><b>0,25</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Обучение ИИ" data-i="4"><td><a href="#skilario" class="nm">Skilario</a></td>
 <td><span class="chip n-learn">Обучение ИИ</span></td>
 <td class="desc">Обучение ИИ для заработка: «как простой PDF превратить в доход», создание цифровых продуктов с ИИ.<div class="idea-line">💡 Идея: сразу проба Claude, продаём токены</div></td><td><span class="chip c-go">Продолжать</span></td>
 <td>US 72%, AU 13%, CA 7%, GB 6%, ZA 2%</td><td class="r">$67</td><td class="r">0,28</td>
-<td class="r"><b>0,24</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#therealintro" class="nm">TheRealIntro</a></td>
+<td class="r"><b>0,24</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Флирт" data-i="5"><td><a href="#therealintro" class="nm">TheRealIntro</a></td>
 <td><span class="chip n-flirt">Флирт</span></td>
 <td class="desc">Обучение знакомствам и флирту для мужчин: «что сказать, чтобы её заинтересовать».<div class="idea-line">💡 Идея: фанфики, как в Character.AI</div></td><td><span class="chip c-chk">Проверить</span></td>
 <td>нет в выгрузке; квиз и объявление на немецком (quizlang=de)</td><td class="r">$91</td><td class="r">0,95</td>
-<td class="r"><b>0,81</b></td><td>2–3 мес.</td></tr><tr class=""><td><a href="#honey" class="nm">Honey (ИИ-девушка)</a></td>
+<td class="r"><b>0,81</b></td><td>2–3 мес.</td></tr><tr class="" data-niche="ИИ-компаньон" data-i="6"><td><a href="#honey" class="nm">Honey (ИИ-девушка)</a></td>
 <td><span class="chip n-fan">ИИ-компаньон</span></td>
 <td class="desc">ИИ-компаньон: создай свою «девушку мечты» и общайся в чате.<div class="idea-line">💡 Идея: фанфики, как в Character.AI</div></td><td><span class="chip c-chk">Проверить</span></td>
 <td>TW 62%, MX 38%</td><td class="r">$61</td><td class="r">0,55</td>
-<td class="r"><b>0,48</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#mozart-ai" class="nm">Mozart AI</a></td>
+<td class="r"><b>0,48</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Музыка" data-i="7"><td><a href="#mozart-ai" class="nm">Mozart AI</a></td>
 <td><span class="chip n-music">Музыка</span></td>
 <td class="desc">ИИ-генератор песен: «спой любую песню своим голосом» — создаёт голосовую модель и кавер, видео с вашим фото.<div class="idea-line">💡 Идея: подписка для ИИ-артистов</div></td><td><span class="chip c-chk">Проверить</span></td>
 <td>US 74%, AU 11%, CA 8%, GB 7%</td><td class="r">$38</td><td class="r">0,41</td>
-<td class="r"><b>0,35</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#dear-melodies" class="nm">Dear Melodies</a></td>
+<td class="r"><b>0,35</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Музыка" data-i="8"><td><a href="#dear-melodies" class="nm">Dear Melodies</a></td>
 <td><span class="chip n-music">Музыка</span></td>
 <td class="desc">Персональная песня в подарок: пишут песню о партнёре/родителях/ребёнке по вашей истории (ИИ + доставка за 3 дня).<div class="idea-line">💡 Идея: подписка для ИИ-артистов</div></td><td><span class="chip c-chk">Проверить</span></td>
 <td>US 57%, MX 33%, CA 10%</td><td class="r">$55</td><td class="r">0,34</td>
-<td class="r"><b>0,29</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#aligned" class="nm">Aligned</a></td>
+<td class="r"><b>0,29</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Семья" data-i="9"><td><a href="#aligned" class="nm">Aligned</a></td>
 <td><span class="chip n-fam">Семья</span></td>
 <td class="desc">ИИ-коуч и планировщик жизни: еда, уборка, дети, счета — всё спланировано.</td><td><span class="chip c-chk">Проверить</span></td>
 <td>US 87%, GB 6%, CA 4%, AU 3%, IE 1%</td><td class="r">$179</td><td class="r">0,26</td>
-<td class="r"><b>0,22</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#guardio" class="nm">Guardio</a></td>
+<td class="r"><b>0,22</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="" data-i="10"><td><a href="#guardio" class="nm">Guardio</a></td>
 <td></td>
 <td class="desc">Антивирус и защита от мошенничества для телефона и браузера: проверяет сайты, ссылки, сообщения и аккаунты.</td><td><span class="chip c-low">Низкий приоритет</span></td>
 <td>US 92%, CA 4%, AU 4%</td><td class="r">$209</td><td class="r">0,52</td>
-<td class="r"><b>0,44</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#kidology" class="nm">Kidology</a></td>
+<td class="r"><b>0,44</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="Детям" data-i="11"><td><a href="#kidology" class="nm">Kidology</a></td>
 <td><span class="chip n-kids">Детям</span></td>
 <td class="desc">Коуч для родителей: «родительство бывает громким» — тест на стиль воспитания и план.</td><td><span class="chip c-low">Низкий приоритет</span></td>
 <td>US 76%, MX 24%</td><td class="r">$96</td><td class="r">0,19</td>
-<td class="r"><b>0,16</b></td><td>позже 3 мес.</td></tr><tr class=""><td><a href="#cloaked" class="nm">Cloaked</a></td>
+<td class="r"><b>0,16</b></td><td>позже 3 мес.</td></tr><tr class="" data-niche="" data-i="12"><td><a href="#cloaked" class="nm">Cloaked</a></td>
 <td></td>
 <td class="desc">Сервис защиты персональных данных: удаляет ваши данные с сайтов-брокеров, даёт виртуальные номера и почты, блокирует спам-звонки.</td><td><span class="chip c-no">Отклонить</span></td>
 <td>US 100%</td><td class="r">$474</td><td class="r">0,16</td>
-<td class="r"><b>0,14</b></td><td>позже 3 мес.</td></tr><tr class="bad"><td><a href="#mob" class="nm">Mob (рецепты)</a></td>
+<td class="r"><b>0,14</b></td><td>позже 3 мес.</td></tr><tr class="bad" data-niche="" data-i="13"><td><a href="#mob" class="nm">Mob (рецепты)</a></td>
 <td></td>
 <td class="desc">Рецепты и планировщик питания: «готовь раз в воскресенье — ешь хорошо всю неделю», batch cooking.</td><td><span class="chip c-no">Отклонить</span></td>
 <td>GB 51%, US 37%, AU 8%, IE 4%</td><td class="r">$36</td><td class="r">0,05</td>
-<td class="r"><b>0,04</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#zurna" class="nm">Zurna (ИИ-фото)</a></td>
+<td class="r"><b>0,04</b></td><td>не знаем</td></tr><tr class="bad" data-niche="Музыка" data-i="14"><td><a href="#zurna" class="nm">Zurna (ИИ-фото)</a></td>
 <td><span class="chip n-music">Музыка</span></td>
 <td class="desc">ИИ-генератор музыкальных клипов: «каверы и клипы из вашего фото и голоса» (Pixery).<div class="idea-line">💡 Идея: подписка для ИИ-артистов</div></td><td><span class="chip c-no">Отклонить</span></td>
 <td>US 69%, IT 10%, GB 10%, MX 6%, CA 4%</td><td class="r">$191</td><td class="r">0,06</td>
-<td class="r"><b>0,05</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#reverse-lookup" class="nm">Reverse Lookup</a></td>
+<td class="r"><b>0,05</b></td><td>не знаем</td></tr><tr class="bad" data-niche="" data-i="15"><td><a href="#reverse-lookup" class="nm">Reverse Lookup</a></td>
 <td></td>
 <td class="desc">Пробив по номеру телефона: кто звонил, имя, соцсети, адрес.</td><td><span class="chip c-no">Отклонить</span></td>
 <td>GB 27%, BR 23%, US 17%, AU 16%, IT 16%</td><td class="r">$101</td><td class="r">0,01</td>
-<td class="r"><b>0,01</b></td><td>не знаем</td></tr><tr class="bad"><td><a href="#trace" class="nm">Trace</a></td>
+<td class="r"><b>0,01</b></td><td>не знаем</td></tr><tr class="bad" data-niche="" data-i="16"><td><a href="#trace" class="nm">Trace</a></td>
 <td></td>
 <td class="desc">Пробив по номеру телефона: имя, соцсети, адрес.</td><td><span class="chip c-no">Отклонить</span></td>
 <td>FR 81%, DE 19%</td><td class="r">$51</td><td class="r">0,06</td>
@@ -658,4 +661,18 @@ dialog form{margin:0}
 const d=document.getElementById('zoom'),zi=document.getElementById('zoom-img'),zc=document.getElementById('zoom-cap');
 document.querySelectorAll('.shot').forEach(b=>b.addEventListener('click',()=>{zi.src=b.querySelector('img').src;zc.textContent=b.dataset.cap;d.showModal();}));
 d.addEventListener('click',ev=>{if(ev.target===d)d.close();});
+document.querySelectorAll('table.fit').forEach(table=>{
+  const btn=table.querySelector('button.niche-sort');
+  if(!btn)return;
+  const body=table.tBodies[0], orig=[...body.rows];
+  btn.title='Собрать одинаковые ниши. Ещё раз — вернуть порядок';
+  btn.addEventListener('click',()=>{
+    const on=btn.classList.toggle('on');
+    const rows=on?[...body.rows].sort((a,b)=>{
+      const x=a.dataset.niche||'\uffff', y=b.dataset.niche||'\uffff';
+      return x.localeCompare(y,'ru')||((+a.dataset.i)-(+b.dataset.i));
+    }):orig;
+    rows.forEach(r=>body.appendChild(r));
+  });
+});
 </script></body></html>

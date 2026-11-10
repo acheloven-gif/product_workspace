@@ -80,6 +80,11 @@ def aname(app):
     return NAMES.get(app, app)
 
 
+def niche_name(app):
+    n = NICHES.get(app)
+    return n[0] if n else ""
+
+
 def niche_chip(app):
     n = NICHES.get(app)
     return f'<span class="chip {n[1]}">{e(n[0])}</span>' if n else ""
@@ -383,6 +388,9 @@ tr.bad td.r{color:var(--muted)}
 .n-faith{background:#f8f1e4;color:#7a5420}
 .idea-line{color:var(--gold);font-size:.8rem;margin-top:4px}
 table .chip{white-space:normal;line-height:1.25}
+button.niche-sort{font:inherit;font-weight:600;background:none;border:0;padding:0;color:inherit;cursor:pointer;text-align:left}
+button.niche-sort.on{color:var(--accent)}
+button.niche-sort.on::after{content:" · собрано"}
 .pill{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--surface);white-space:nowrap}
 .nav{display:flex;flex-wrap:wrap;gap:8px}
 .nav a{font-size:.85rem;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:var(--surface)}
@@ -775,11 +783,11 @@ def main():
     c_health = [a for a, fs in c_by_app.items() if fs[0]["health"]]
     c_pay = [a for a in c_main if max(r["cov_k85"] for r in c_by_app[a]) >= 1]
 
-    trs = "".join(f"""<tr class="{'bad' if r['bad'] else ''}"><td><a href="#{slug(r['app'])}" class="nm">{e(aname(r['app']))}</a></td>
+    trs = "".join(f"""<tr class="{'bad' if r['bad'] else ''}" data-niche="{e(niche_name(r['app']))}" data-i="{i}"><td><a href="#{slug(r['app'])}" class="nm">{e(aname(r['app']))}</a></td>
 <td>{niche_chip(r['app'])}</td>
 <td class="desc">{e(sentence(r['a']['about']))}{idea_line(r['app'])}</td><td>{chip(r['group'])}</td>
 <td>{e(r['a']['geo'])}</td><td class="r">{money(r['cpa'])}</td><td class="r">{x(r['roas'])}</td>
-<td class="r"><b>{x(r['cov_k85'])}</b></td><td>{e(pay_short(r['payback']))}</td></tr>""" for r in rs)
+<td class="r"><b>{x(r['cov_k85'])}</b></td><td>{e(pay_short(r['payback']))}</td></tr>""" for i, r in enumerate(rs))
 
     sections = ""
     for g in ORDER:
@@ -789,13 +797,13 @@ def main():
             sections += "".join(app_section(app, fs, med) for app, fs in part)
     nav = "".join(f'<a href="#{slug(app)}">{e(aname(app).split(" (")[0])}</a>' for app in by_app)
 
-    c_trs = "".join(f"""<tr><td><a href="#c-{slug(c['app'])}" class="nm">{e(aname(c['app']))}</a>
+    c_trs = "".join(f"""<tr data-niche="{e(niche_name(c['app']))}" data-i="{i}"><td><a href="#c-{slug(c['app'])}" class="nm">{e(aname(c['app']))}</a>
 {'<span class="chip c-go">28.10</span>' if c['sel'] else ''}</td>
 <td>{niche_chip(c['app'])}</td>
 <td class="desc">{e(blurb(c))}{idea_line(c['app'])}</td><td>{e(c['geo'])}</td>
 <td class="r"><b>{money(c['cpa'])}</b></td><td class="r"><b>{x(c['roas'])}</b></td>
 <td class="r"><b>{x(c['cov_k85'])}</b></td><td>{e(pay_short(c['payback']))}</td>
-<td>{e(binfo[c['app']]['trend'].split(' (')[0].split(':')[0])}</td></tr>""" for c in cands)
+<td>{e(binfo[c['app']]['trend'].split(' (')[0].split(':')[0])}</td></tr>""" for i, c in enumerate(cands))
     c_sections = "".join(cand_section(a, c_by_app[a], about, hist) for a in c_main)
     c_nav = "".join(f'<a href="#c-{slug(a)}">{e(aname(a).split(" (")[0])}</a>' for a in c_by_app)
     ex_rows = "".join(f"<tr><td><b>{e(d['Приложение (группа)'])}</b></td><td class='r'>{e(d['ID строки'])}</td>"
@@ -843,16 +851,16 @@ def main():
 <tr><td>Запускать сразу несколько воронок с разными пейволами и нарративами</td><td class="todo">к тесту</td><td>В карточках — список воронок бренда (до 6) как варианты для теста. Пейволы и нарративы — после прохода воронок.</td></tr>
 </tbody></table></div></section>
 <section id="cands"><h2>Кандидаты по CPA и ROAS — вся выгрузка 10.10</h2>
-<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
+<p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сейчас порядок по CPA. Нажмите «Ниша» — одинаковые плашки соберутся вместе, ещё раз — порядок вернётся. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
 <div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:16%"><col style="width:22%"><col style="width:11%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:9%"><col style="width:8%"></colgroup>
-<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<thead><tr><th>Приложение</th><th><button type="button" class="niche-sort">Ниша</button></th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
 <th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody>{c_trs}</tbody></table></div>
 <nav class="nav">{c_nav}</nav>{c_sections}</section>
 <section><h2>Идеи — на всех приложениях этой темы</h2><div class="ideas">{''.join(idea_card(i, by_app, c_by_app) for i in IDEAS)}</div></section>
 <section><h2>Выборка 28.10: все воронки</h2>
-<p class="meta2">Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. 💡 — есть идея. Спенд, CPC и сценарии цены — в карточке.</p>
+<p class="meta2">Порядок — по решению. Нажмите «Ниша», чтобы собрать одинаковые плашки, ещё раз — вернуть как было. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. Спенд, CPC и сценарии цены — в карточке.</p>
 <div class="tw"><table class="fit"><colgroup><col style="width:11%"><col style="width:14%"><col style="width:24%"><col style="width:12%"><col style="width:12%"><col style="width:7%"><col style="width:6%"><col style="width:7%"><col style="width:7%"></colgroup>
-<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<thead><tr><th>Приложение</th><th><button type="button" class="niche-sort">Ниша</button></th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
 <th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody>{trs}</tbody></table></div></section>
 <section><h2>Выборка 28.10: по каждому приложению</h2><nav class="nav">{nav}</nav>{sections}</section>
 <section><h2>Выборка 28.10: исключено из расчёта</h2>
@@ -875,6 +883,20 @@ def main():
 const d=document.getElementById('zoom'),zi=document.getElementById('zoom-img'),zc=document.getElementById('zoom-cap');
 document.querySelectorAll('.shot').forEach(b=>b.addEventListener('click',()=>{{zi.src=b.querySelector('img').src;zc.textContent=b.dataset.cap;d.showModal();}}));
 d.addEventListener('click',ev=>{{if(ev.target===d)d.close();}});
+document.querySelectorAll('table.fit').forEach(table=>{{
+  const btn=table.querySelector('button.niche-sort');
+  if(!btn)return;
+  const body=table.tBodies[0], orig=[...body.rows];
+  btn.title='Собрать одинаковые ниши. Ещё раз — вернуть порядок';
+  btn.addEventListener('click',()=>{{
+    const on=btn.classList.toggle('on');
+    const rows=on?[...body.rows].sort((a,b)=>{{
+      const x=a.dataset.niche||'\\uffff', y=b.dataset.niche||'\\uffff';
+      return x.localeCompare(y,'ru')||((+a.dataset.i)-(+b.dataset.i));
+    }}):orig;
+    rows.forEach(r=>body.appendChild(r));
+  }});
+}});
 </script></body></html>"""
     with open(OUT, "w", encoding="utf-8") as f:
         f.write(doc)

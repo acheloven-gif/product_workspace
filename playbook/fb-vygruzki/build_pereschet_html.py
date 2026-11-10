@@ -26,25 +26,68 @@ ORDER = ["Продолжать", "Проверить", "Низкий приор�
 GCLS = {"Продолжать": "go", "Проверить": "chk", "Низкий приоритет": "low", "Отклонить": "no"}
 
 IDEAS = [
-    dict(apps=["Intch"], title="Intch → карьерный помощник",
-         text="Брать не агрегатор вакансий, а подготовку к работе: генератор и улучшатель резюме + симулятор "
-              "собеседований с ИИ + тренинг прохождения собеседований. Сейчас Intch — поиск удалённой и part-time работы.",
+    dict(apps=["Educly", "ProMuse", "AI Corso", "Kodree", "Skilario", "Finestro", "Zenfy"],
+         title="Сразу проба Claude, токены наши",
+         short="Идея: сразу проба Claude, продаём токены",
+         text="Не отдельный курс «заработай на ИИ». Человек сразу пробует модель: как пользоваться Claude, "
+              "наш API для Claude, мы продаём токены, чтобы он им пользовался. Обучение и доступ — в одной подписке.",
+         src="идея Наташи, на приложения этой темы"),
+    dict(apps=["Honey (ИИ-девушка)", "TheRealIntro", "Muses Academy", "MusesAcred"],
+         title="Фанфики, как в Character.AI",
+         short="Идея: фанфики, как в Character.AI",
+         text="Как в старой сборке для Honey: не только чат с ИИ-девушкой, а фанфики и диалоги в духе Character.AI. "
+              "У TheRealIntro это стыкуется с обучением флирту: отработка в диалоге плюс фанфик. "
+              "У Muses Academy и MusesAcred та же тема «стань той, кого он пожалеет, что потерял» — тот же приём.",
+         src="выборка 28.10, перенесено на похожую тему", cai=True),
+    dict(apps=["Intch"], title="Не вакансии, а подготовка к работе",
+         short="Идея: резюме, собеседования, тренинг",
+         text="Брать не агрегатор вакансий, а подготовку к работе: генератор и улучшатель резюме, симулятор "
+              "собеседований с ИИ и тренинг прохождения собеседований.",
          src="выборка 28.10, дополнено 09.11"),
-    dict(apps=["Skilario"], title="Skilario + агрегатор ИИ-инструментов",
-         text="Объединить с нашим приложением-агрегатором ИИ-инструментов: в одной подписке доступ к сервисам "
-              "и обучение по ним.", src="выборка 28.10"),
-    dict(apps=["TheRealIntro", "Honey (ИИ-девушка)"], title="Флирт + ИИ-компаньон: TheRealIntro + Honey",
-         text="Объединить обучение флирту (TheRealIntro) с ИИ-компаньоном (Honey): отработка уроков флирта "
-              "в диалоге + генерация фанфиков.", src="выборка 28.10", cai=True),
     dict(apps=["Mozart AI", "Dear Melodies", "Zurna (ИИ-фото)", "HyperMusic AI (w2a.one)"],
-         title="Генераторы песен и клипов → подписка для ИИ-артистов",
-         text="Подписка для тех, кто делает свои ИИ-музыкальные группы и ИИ-артистов. По четырём приложениям "
-              "медианный CPA $46,4 против $79 по всей выгрузке 10.10.", src="выборка 28.10"),
-    dict(apps=["Chillio"], title="Chillio + блокер экранного времени",
+         title="Подписка для своих ИИ-артистов",
+         short="Идея: подписка для ИИ-артистов",
+         text="Подписка для тех, кто делает свои ИИ-музыкальные группы и ИИ-артистов.",
+         src="выборка 28.10"),
+    dict(apps=["Chillio"], title="Дела по дому и блокер экранного времени",
+         short="Идея: вместе с блокером экранного времени",
          text="Объединить ИИ-планировщик домашних дел с блокером экранного времени. В пересчёт не попал: "
-              "доход по пикселю 0, продукт на паузе с 06.11.", src="выборка 28.10"),
+              "доход по пикселю 0, продукт на паузе с 06.11.",
+         src="выборка 28.10"),
 ]
 IDEA_BY_APP = {a: i for i in IDEAS for a in i["apps"]}
+NAMES = {"fnlfx (беттинг)": "AI Stats"}
+NICHES = {
+    "Educly": ("Обучение ИИ", "n-learn"), "ProMuse": ("Обучение ИИ", "n-learn"),
+    "AI Corso": ("Обучение ИИ", "n-learn"), "Kodree": ("Обучение ИИ", "n-learn"),
+    "Skilario": ("Обучение ИИ", "n-learn"),
+    "Finestro": ("Заработок на ИИ", "n-earn"), "Zenfy": ("Заработок на ИИ", "n-earn"),
+    "Muses Academy": ("Саморазвитие для девушек", "n-girls"),
+    "MusesAcred": ("Саморазвитие для девушек", "n-girls"),
+    "BetterMe": ("Отношения", "n-rel"), "TheRealIntro": ("Флирт", "n-flirt"),
+    "Honey (ИИ-девушка)": ("ИИ-компаньон", "n-fan"),
+    "fnlfx (беттинг)": ("Ставки", "n-bet"), "KitUp": ("Саморазвитие", "n-self"),
+    "Famio": ("Семья", "n-fam"), "Education4Kids": ("Детям", "n-kids"),
+    "Intch": ("Карьера", "n-work"), "Zeely": ("Реклама для бизнеса", "n-earn"),
+    "memoryOS": ("Память", "n-self"), "Prayers Academy": ("Вера", "n-faith"),
+    "Mozart AI": ("Музыка", "n-music"), "Dear Melodies": ("Музыка", "n-music"),
+    "Zurna (ИИ-фото)": ("Музыка", "n-music"), "Aligned": ("Семья", "n-fam"),
+    "Kidology": ("Детям", "n-kids"),
+}
+
+
+def aname(app):
+    return NAMES.get(app, app)
+
+
+def niche_chip(app):
+    n = NICHES.get(app)
+    return f'<span class="chip {n[1]}">{e(n[0])}</span>' if n else ""
+
+
+def idea_line(app):
+    idea = IDEA_BY_APP.get(app)
+    return f'<div class="idea-line">💡 {e(idea["short"])}</div>' if idea else ""
 
 
 def e(s):
@@ -331,6 +374,15 @@ tr.bad td.r{color:var(--muted)}
 .c-go{background:var(--go-soft);color:var(--go)}.c-chk{background:var(--gold-soft);color:var(--gold)}
 .c-low{background:var(--low-soft);color:var(--low)}.c-no{background:var(--no-soft);color:var(--no)}
 .c-idea{background:var(--gold-soft);color:var(--gold)}.c-lbl{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.n-learn{background:#e3e8fb;color:#243e9e}.n-earn{background:#e2f3ea;color:#17693f}
+.n-girls{background:#fde7f3;color:#9d245f}.n-rel{background:#fbf0dc;color:#8a5408}
+.n-flirt{background:#fde8e4;color:#9f1d14}.n-fan{background:#efe7fb;color:#5c348c}
+.n-bet{background:#eceef3;color:#3d4660}.n-self{background:#e5f4f1;color:#0c5c52}
+.n-fam{background:#e7f0ea;color:#24573f}.n-kids{background:#e7f1fb;color:#1a4f96}
+.n-work{background:#eef3e4;color:#3d6218}.n-music{background:#f3e8fb;color:#6d348c}
+.n-faith{background:#f8f1e4;color:#7a5420}
+.idea-line{color:var(--gold);font-size:.8rem;margin-top:4px}
+table .chip{white-space:normal;line-height:1.25}
 .pill{font-size:.8rem;border:1px solid var(--line);border-radius:999px;padding:1px 10px;background:var(--surface);white-space:nowrap}
 .nav{display:flex;flex-wrap:wrap;gap:8px}
 .nav a{font-size:.85rem;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:var(--surface)}
@@ -379,15 +431,22 @@ def slug(app):
     return re.sub(r"[^a-z0-9]+", "-", app.lower()).strip("-") or "app"
 
 
-def idea_card(i, shown):
+def idea_card(i, shown, cands_ids):
     cai = ""
     if i.get("cai"):
         cai = ('<div class="cai"><div><b>Пользователи в месяц</b>28 млн — пик 2024 · ~20 млн — 2025</div>'
                '<div><b>Выручка за год</b>$32M — 2024 · $30–50M — оценка 2025</div></div>'
                '<p class="src">Ориентир — Character.AI, подписка c.ai+ $9,99/мес. Оценки Sacra и Axis Intelligence, '
                'официальной отчётности нет.</p>')
-    links = " · ".join(f'<a href="#{slug(a)}">{e(a.split(" (")[0])}</a>' if a in shown
-                       else f'{e(a.split(" (")[0])} (исключено)' for a in i["apps"])
+    def link(a):
+        if a in cands_ids:
+            href = "#c-" + slug(a)
+        elif a in shown:
+            href = "#" + slug(a)
+        else:
+            return e(aname(a)) + " (нет в этом срезе)"
+        return f'<a href="{href}">{e(aname(a))}</a>'
+    links = " · ".join(link(a) for a in i["apps"])
     return (f'<div class="idea"><b>💡 {e(i["title"])}</b><p>{e(i["text"])}</p>{cai}'
             f'<p class="src">Приложения: {links} · источник: {e(i["src"])}</p></div>')
 
@@ -436,7 +495,7 @@ def app_section(app, fs, med):
                     for k, lbl in (("crea", "Креатив"), ("shot", "Лендинг")) if k in im)
     rows_id = ", ".join(i for r in fs for i in r.get("row_ids", [str(r["d"]["ID строки"])]))
     return f"""<section class="app" id="{slug(app)}">
-<div class="ah"><h3>{e(app)}</h3>{chip(r0['group'])}{'<span class="chip c-idea">💡 идея</span>' if idea else ''}
+<div class="ah"><h3>{e(aname(app))}</h3>{niche_chip(app)}{chip(r0['group'])}{'<span class="chip c-idea">💡 идея</span>' if idea else ''}
 <span class="chip c-lbl">{e(n['label'])}</span>{pills}</div>
 <p class="about">{e(a['about'])}</p>{ibox}
 <div class="grid2"><div style="display:flex;flex-direction:column;gap:10px;min-width:0">
@@ -453,9 +512,9 @@ BLURB = {
     "Famio": "Семейный GPS-трекер: где сейчас близкие, на карте.",
     "BetterMe": "Отношения: квиз про стиль привязанности.",
     "Muses Academy": "Отношения: «стань той, кого он потерял и хочет вернуть».",
-    "Zenfy": "Заработок: удалённая работа вместо графика 9–5.",
+    "Zenfy": "Заработок на ИИ: удалённая работа вместо графика 9–5.",
     "ProMuse": "Обучение ИИ: 28-дневная программа с сертификатом.",
-    "fnlfx (беттинг)": "ИИ-прогнозы на спорт для ставок.",
+    "fnlfx (беттинг)": "AI Stats: прогнозы на спорт. FunnelFox — платформа воронки, не бренд.",
     "AI Corso": "Обучение ИИ с сертификатом.",
     "MusesAcred": "Отношения: «стань женщиной, которую он не может оставить».",
     "Education4Kids": "Детское образование.",
@@ -630,8 +689,9 @@ def fold_same(rows, with_media=False):
 
 
 def shot_button(src, label, app):
-    return (f'<button class="shot" type="button" data-cap="{e(label)}: {e(app)}">'
-            f'<img src="{src}" alt="{e(label)}: {e(app)}" loading="lazy"><span>{e(label)}</span></button>')
+    cap = aname(app)
+    return (f'<button class="shot" type="button" data-cap="{e(label)}: {e(cap)}">'
+            f'<img src="{src}" alt="{e(label)}: {e(cap)}" loading="lazy"><span>{e(label)}</span></button>')
 
 
 def href(u):
@@ -683,8 +743,8 @@ def cand_section(app, fs, about, hist):
              ("Адреса одной воронки" if many else "Воронка", "<br>".join(links))]
     dl = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts)
     return f"""<section class="app" id="c-{slug(app)}">
-<div class="ah"><h3>{e(app)}</h3>{chips}{pills}</div>
-<p class="about">{e(txt)}</p>{ibox}
+<div class="ah"><h3>{e(aname(app))}</h3>{niche_chip(app)}{chips}{pills}</div>
+<p class="about">{e(txt)}</p>{'<p class="meta2">В выгрузке строка называется fnlfx. Это FunnelFox — платформа, на которой собрана воронка, не название бренда. Бренд — AI Stats.</p>' if app == 'fnlfx (беттинг)' else ''}{ibox}
 <div class="grid2"><div style="display:flex;flex-direction:column;gap:10px;min-width:0"><dl class="facts">{dl}</dl></div>
 <div class="shots">{shots_html}</div></div>
 {scen_table(fs)}
@@ -715,9 +775,9 @@ def main():
     c_health = [a for a, fs in c_by_app.items() if fs[0]["health"]]
     c_pay = [a for a in c_main if max(r["cov_k85"] for r in c_by_app[a]) >= 1]
 
-    trs = "".join(f"""<tr class="{'bad' if r['bad'] else ''}"><td><a href="#{slug(r['app'])}" class="nm">{e(r['app'])}</a>
-{'<span class="chip c-idea">💡</span>' if r['app'] in IDEA_BY_APP else ''}</td>
-<td class="desc">{e(sentence(r['a']['about']))}</td><td>{chip(r['group'])}</td>
+    trs = "".join(f"""<tr class="{'bad' if r['bad'] else ''}"><td><a href="#{slug(r['app'])}" class="nm">{e(aname(r['app']))}</a></td>
+<td>{niche_chip(r['app'])}</td>
+<td class="desc">{e(sentence(r['a']['about']))}{idea_line(r['app'])}</td><td>{chip(r['group'])}</td>
 <td>{e(r['a']['geo'])}</td><td class="r">{money(r['cpa'])}</td><td class="r">{x(r['roas'])}</td>
 <td class="r"><b>{x(r['cov_k85'])}</b></td><td>{e(pay_short(r['payback']))}</td></tr>""" for r in rs)
 
@@ -727,20 +787,26 @@ def main():
         if part:
             sections += f'<div class="ghead"><h2>{e(g)}</h2>{chip(g)}<span class="meta2">{len(part)} прил.</span></div>'
             sections += "".join(app_section(app, fs, med) for app, fs in part)
-    nav = "".join(f'<a href="#{slug(app)}">{e(app.split(" (")[0])}</a>' for app in by_app)
+    nav = "".join(f'<a href="#{slug(app)}">{e(aname(app).split(" (")[0])}</a>' for app in by_app)
 
-    c_trs = "".join(f"""<tr><td><a href="#c-{slug(c['app'])}" class="nm">{e(c['app'])}</a>
+    c_trs = "".join(f"""<tr><td><a href="#c-{slug(c['app'])}" class="nm">{e(aname(c['app']))}</a>
 {'<span class="chip c-go">28.10</span>' if c['sel'] else ''}</td>
-<td class="desc">{e(blurb(c))}</td><td>{e(c['geo'])}</td>
+<td>{niche_chip(c['app'])}</td>
+<td class="desc">{e(blurb(c))}{idea_line(c['app'])}</td><td>{e(c['geo'])}</td>
 <td class="r"><b>{money(c['cpa'])}</b></td><td class="r"><b>{x(c['roas'])}</b></td>
 <td class="r"><b>{x(c['cov_k85'])}</b></td><td>{e(pay_short(c['payback']))}</td>
 <td>{e(binfo[c['app']]['trend'].split(' (')[0].split(':')[0])}</td></tr>""" for c in cands)
     c_sections = "".join(cand_section(a, c_by_app[a], about, hist) for a in c_main)
-    c_nav = "".join(f'<a href="#c-{slug(a)}">{e(a.split(" (")[0])}</a>' for a in c_by_app)
+    c_nav = "".join(f'<a href="#c-{slug(a)}">{e(aname(a).split(" (")[0])}</a>' for a in c_by_app)
     ex_rows = "".join(f"<tr><td><b>{e(d['Приложение (группа)'])}</b></td><td class='r'>{e(d['ID строки'])}</td>"
                       f"<td class='r'>{mln(num(d['спенд за 28 дней']))}</td><td class='r'>{money(num(d['CPA за 28 дней']))}</td>"
                       f"<td class='r'>{x(num(d['ROAS за 28 дней']))}</td><td>{e(why)}</td></tr>" for d, why in excl)
-    pay_txt = ", ".join(c_pay)
+    pay_txt = ", ".join(aname(a) for a in c_pay)
+    grow = ", ".join(aname(a) for a in c_by_app if binfo[a]["trend"].startswith("растёт"))
+    accel = ", ".join(aname(a) for a in c_by_app if (binfo[a]["accel"] or 0) > 1.15)
+    fresh = ", ".join(aname(a) for a in c_by_app if binfo[a]["trend"].startswith("новый"))
+    fall = ", ".join(aname(a) for a in c_by_app if binfo[a]["trend"].startswith("падает"))
+    border_txt = ", ".join(aname(a) for a in border)
 
     doc = f"""<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Пересчёт FB-кандидатов — 09.11.2026</title>
@@ -755,15 +821,15 @@ def main():
 <div class="kpi"><span class="ki">🔍</span><span class="kv">{n_web}</span><span class="kl">веб-воронок с видимым доходом из {total} строк выгрузки</span></div>
 <div class="kpi"><span class="ki">🎯</span><span class="kv">{len(c_by_app)}</span><span class="kl">приложений: CPA ≤ {money(cpa_med)} и ROAS ≥ 0,75, без health ({len(cands)} воронок)</span></div>
 <div class="kpi"><span class="ki">⏱️</span><span class="kv">{len(c_pay)}</span><span class="kl">окупаются в 1-й месяц при CR конкурента × 0,85</span></div>
-<div class="kpi"><span class="ki">💡</span><span class="kv">{len(IDEAS)}</span><span class="kl">идей по объединению приложений (выборка 28.10)</span></div>
+<div class="kpi"><span class="ki">💡</span><span class="kv">{len(IDEAS)}</span><span class="kl">идей: стоят на приложениях той же темы, не только на исходном названии</span></div>
 </div></header>
 <section class="sum"><h2>Главное</h2><ol>
 <li>Правило отбора: CPA не дороже медианы по веб-воронкам выгрузки ({money(cpa_med)}) и ROAS 28 дней от 0,75 (верхняя четверть). Спенд не учитывается, health и фитнес исключены. Прошли {len(c_main)} приложений.</li>
 <li>В первый месяц при конверсии на 15% хуже конкурента окупаются: {e(pay_txt)}. Покрытие при CR конкурента × 0,85 равно 0,85 × ROAS, поэтому окупаемость в первый месяц требует ROAS от 1,18.</li>
-<li>Динамика по выгрузкам (замена охватам, пока нет spy-данных): растут — {e(", ".join(a for a in c_by_app if binfo[a]["trend"].startswith("растёт")))}; разгоняются за последние 7 дней — {e(", ".join(a for a in c_by_app if (binfo[a]["accel"] or 0) > 1.15))}; новые — {e(", ".join(a for a in c_by_app if binfo[a]["trend"].startswith("новый")))}; падают — {e(", ".join(a for a in c_by_app if binfo[a]["trend"].startswith("падает")))}.</li>
-<li>CPA выше медианы, но ROAS ≥ 1 — в отбор не попали: {e(", ".join(border))}.</li>
+<li>Динамика по выгрузкам (замена охватам, пока нет spy-данных): растут — {e(grow)}; разгоняются за последние 7 дней — {e(accel)}; новые — {e(fresh)}; падают — {e(fall)}.</li>
+<li>CPA выше медианы, но ROAS ≥ 1 — в отбор не попали: {e(border_txt)}.</li>
 <li>Из выборки 28.10 правило проходит только TheRealIntro (одна воронка). Zeely — ROAS 1,14, но CPA $96 выше медианы. У остальных ROAS 0,2–0,5.</li>
-<li>Событие CPA везде — предположение по доходу с конверсии; подтверждается только проходом воронки до пейволла. Ниши и воронки новых кандидатов не оценивали.</li>
+<li>Плашки ниш — группировка по формулировкам Наташи. Идеи из выборки 28.10 стоят на приложениях той же темы: проба Claude и продажа токенов — на обучении и заработке с ИИ; фанфики как в Character.AI — на Honey и похожих. Событие CPA по-прежнему предположение.</li>
 </ol></section>
 <section><h2>Методика ресерча: что сделано</h2>
 <div class="tw"><table><thead><tr><th>Шаг методики</th><th>Статус</th><th>Как в отчёте</th></tr></thead><tbody>
@@ -778,15 +844,15 @@ def main():
 </tbody></table></div></section>
 <section id="cands"><h2>Кандидаты по CPA и ROAS — вся выгрузка 10.10</h2>
 <p class="meta2">Одна строка — одна воронка, без health и фитнеса. Сортировка по CPA. Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. CPC, доход с конверсии и все сценарии цены — в карточке.</p>
-<div class="tw"><table class="fit"><colgroup><col style="width:13%"><col style="width:27%"><col style="width:14%"><col style="width:8%"><col style="width:8%"><col style="width:9%"><col style="width:12%"><col style="width:9%"></colgroup>
-<thead><tr><th>Приложение</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:16%"><col style="width:22%"><col style="width:11%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:9%"><col style="width:8%"></colgroup>
+<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
 <th class="r">Покрытие</th><th>Окупаемость</th><th>Тренд</th></tr></thead><tbody>{c_trs}</tbody></table></div>
 <nav class="nav">{c_nav}</nav>{c_sections}</section>
-<section><h2>Выборка 28.10: идеи по приложениям</h2><div class="ideas">{''.join(idea_card(i, by_app) for i in IDEAS)}</div></section>
+<section><h2>Идеи — на всех приложениях этой темы</h2><div class="ideas">{''.join(idea_card(i, by_app, c_by_app) for i in IDEAS)}</div></section>
 <section><h2>Выборка 28.10: все воронки</h2>
 <p class="meta2">Покрытие при CR конкурента × 0,85: 1,0 — окупается в первый месяц. Серым в цифрах — строки, где доход по пикселю не виден. 💡 — есть идея. Спенд, CPC и сценарии цены — в карточке.</p>
-<div class="tw"><table class="fit"><colgroup><col style="width:12%"><col style="width:28%"><col style="width:14%"><col style="width:16%"><col style="width:8%"><col style="width:7%"><col style="width:8%"><col style="width:7%"></colgroup>
-<thead><tr><th>Приложение</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
+<div class="tw"><table class="fit"><colgroup><col style="width:11%"><col style="width:14%"><col style="width:24%"><col style="width:12%"><col style="width:12%"><col style="width:7%"><col style="width:6%"><col style="width:7%"><col style="width:7%"></colgroup>
+<thead><tr><th>Приложение</th><th>Ниша</th><th>Про что</th><th>Решение</th><th>Гео</th><th class="r">CPA</th><th class="r">ROAS</th>
 <th class="r">Покрытие</th><th>Окупаемость</th></tr></thead><tbody>{trs}</tbody></table></div></section>
 <section><h2>Выборка 28.10: по каждому приложению</h2><nav class="nav">{nav}</nav>{sections}</section>
 <section><h2>Выборка 28.10: исключено из расчёта</h2>

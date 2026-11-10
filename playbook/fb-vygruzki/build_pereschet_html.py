@@ -156,11 +156,23 @@ EXPORTS = [("web2web giants #5", "18.05"), ("web2web giants #6.1", "29.06"), ("w
 STORE = re.compile(r"apps\.apple\.com|play\.google\.com|w2a\.one|onelink|app\.link", re.I)
 
 
+def land_key(url):
+    """Адрес воронки без меток. landing_uuid, cohort и хвост рекламы — не другая воронка."""
+    u = re.sub(r"^https?://", "", str(url or "")).split("?")[0]
+    u = re.sub(r"/landing_uu?id=.*", "", u)
+    return u.rstrip("/").lower() or "—"
+
+
+# Один и тот же первый экран, в выгрузке записан разными адресами.
+ALIASES = {
+    "finestro.lu/quiz24fasign": "finestro.io/quiz7assign",
+    "finestro.io/quiz7assignment": "finestro.io/quiz7assign",
+}
+
+
 def path_key(u):
-    u = re.sub(r"^https?://", "", str(u or ""))
-    base = u.split("?")[0].rstrip("/")
-    variant = re.findall(r"(?:landing_uu?id|cohort|flow|quizlang)=([^&]+)", u)
-    return (base + (" · " + " · ".join(variant) if variant else "")) or "—"
+    k = land_key(u)
+    return ALIASES.get(k, k)
 
 
 def history():
@@ -422,7 +434,7 @@ def app_section(app, fs, med):
     shots = "".join(f'<button class="shot" type="button" data-cap="{lbl}: {e(app)}"><img src="{im[k]}" '
                     f'alt="{lbl}: {e(app)}" loading="lazy"><span>{lbl}</span></button>'
                     for k, lbl in (("crea", "Креатив"), ("shot", "Лендинг")) if k in im)
-    rows_id = ", ".join(str(r["d"]["ID строки"]) for r in fs)
+    rows_id = ", ".join(i for r in fs for i in r.get("row_ids", [str(r["d"]["ID строки"])]))
     return f"""<section class="app" id="{slug(app)}">
 <div class="ah"><h3>{e(app)}</h3>{chip(r0['group'])}{'<span class="chip c-idea">💡 идея</span>' if idea else ''}
 <span class="chip c-lbl">{e(n['label'])}</span>{pills}</div>
@@ -453,11 +465,8 @@ BLURB = {
 
 
 def blurb(c):
-    land = str(c["d"]["ссылка на ленд"])
     if c["app"] == "Finestro":
-        if "quiz24" in land:
-            return "Личные финансы: «приложение изменило, как я веду деньги»."
-        return "Заработок на ИИ: «построй будущее с ИИ»."
+        return "Заработок на ИИ: фриланс, на первом экране выбор пола. Два адреса — один экран."
     return BLURB.get(c["app"], str(c["cat"]))
 
 
@@ -516,6 +525,110 @@ def drive_image(url):
     return f"data:{ctype};base64,{base64.b64encode(data).decode()}"
 
 
+def screen_hash(url):
+    fid = drive_id(url)
+    paths = list(CACHE.glob(fid + ".*")) if fid else []
+    if not paths:
+        return None
+    from PIL import Image
+    im = Image.open(paths[0]).convert("L").resize((16, 16))
+    px = list(im.get_flattened_data())
+    avg = sum(px) / len(px)
+    return tuple(p > avg for p in px), im.size
+
+
+def same_screen(a, b):
+    """Один экран: тот же адрес или скрин воронки почти тот же (другой кроп, другой домен)."""
+    if land_key(a["d"]["ссылка на ленд"]) == land_key(b["d"]["ссылка на ленд"]):
+        return True
+    ha, hb = screen_hash(a.get("shot")), screen_hash(b.get("shot"))
+    if not ha or not hb:
+        return False
+    return sum(x != y for x, y in zip(ha[0], hb[0])) <= 40
+
+
+def cluster_rows(rows):
+    groups = []
+    for row in sorted(rows, key=lambda r: -r["spend"]):
+        for group in groups:
+            if same_screen(group[0], row):
+                group.append(row)
+                break
+        else:
+            groups.append([row])
+    return groups
+
+
+def apply_metrics(row, rows):
+    spend = sum(r["spend"] for r in rows)
+    rev = sum(r["spend"] * r["roas"] for r in rows)
+    conv = sum(r["conv"] for r in rows)
+    clicks = sum(r["clicks"] for r in rows)
+    row["spend"], row["clicks"], row["conv"] = spend, clicks, conv
+    row["roas"] = rev / spend
+    row["cpa"] = spend / conv
+    row["cpc"] = spend / clicks
+    row["rpc"] = rev / conv
+    row["cr"] = conv / clicks
+    cpc, cr, rpc = row["cpc"], row["cr"], row["rpc"]
+    row["cost"] = {s: cpc / s for s in CR_SCEN}
+    row["cost_k"], row["cost_k85"] = cpc / cr, cpc / (cr * COPY_K)
+    row["cov"] = {s: rpc / c for s, c in row["cost"].items()}
+    row["cov_k"], row["cov_k85"] = rpc / row["cost_k"], rpc / row["cost_k85"]
+    row["bad"] = row["roas"] < 0.1 or rpc < 5
+    cov = row["cov_k85"]
+    if row["bad"]:
+        row["payback"] = "Не знаем — доход не виден"
+    elif cov >= 1:
+        row["payback"] = "1-й месяц"
+    elif cov >= 0.5:
+        row["payback"] = "2–3 мес., если держатся продления"
+    else:
+        row["payback"] = "за 3 мес. маловероятно"
+    row["row_ids"] = [str(r["d"]["ID строки"]) for r in rows]
+    return row
+
+
+def fold_same(rows, with_media=False):
+    """Строки одной и той же воронки одного приложения становятся одной: цифры сложены, скрин один."""
+    by, order = defaultdict(list), []
+    for r in rows:
+        if r["app"] not in by:
+            order.append(r["app"])
+        by[r["app"]].append(r)
+    out = []
+    for app in order:
+        for group in cluster_rows(by[app]):
+            row = dict(group[0])
+            if len(group) > 1:
+                apply_metrics(row, group)
+            else:
+                row["row_ids"] = [str(row["d"]["ID строки"])]
+            if with_media:
+                creas, lands = [], []
+                best, best_area = None, -1
+                for r in group:
+                    if drive_id(r.get("crea")) and r["crea"] not in creas:
+                        creas.append(r["crea"])
+                    size = screen_hash(r.get("shot"))
+                    area = size[1][0] * size[1][1] if size else 0
+                    if area >= best_area and r.get("shot"):
+                        best, best_area = r["shot"], area
+                    link = r["d"]["ссылка на ленд"]
+                    if land_key(link) not in {land_key(x) for x in lands}:
+                        lands.append(link)
+                row["creas"], row["shots"], row["lands"] = creas, ([best] if best else []), lands
+                raw = defaultdict(int)
+                for r in group:
+                    for code, val in re.findall(r'"?([A-Z]{2})"?\s*[:\-]\s*(\d+)', str(r["d"].get("спенд топ-стран") or "")):
+                        raw[code] += int(val)
+                if raw:
+                    total = sum(raw.values())
+                    row["geo"] = ", ".join(f"{k} {raw[k] * 100 // total}%" for k in sorted(raw, key=lambda k: -raw[k])[:3])
+            out.append(row)
+    return out
+
+
 def shot_button(src, label, app):
     return (f'<button class="shot" type="button" data-cap="{e(label)}: {e(app)}">'
             f'<img src="{src}" alt="{e(label)}: {e(app)}" loading="lazy"><span>{e(label)}</span></button>')
@@ -546,22 +659,28 @@ def cand_section(app, fs, about, hist):
         txt = f"{r0['cat']}. Текст объявления: «{ad[:140]}»" if ad and "{{" not in ad else str(r0["cat"])
     idea = IDEA_BY_APP.get(app)
     ibox = f'<p class="ibox">💡 <b>Идея:</b> {e(idea["text"])}</p>' if idea else ""
-    funnels = "<br>".join(f'<a href="{e(href(r["d"]["ссылка на ленд"]))}" target="_blank" rel="noopener">'
-                          f'{e(re.sub(r"^https?://", "", r["d"]["ссылка на ленд"])[:60])} ↗</a>' for r in fs)
-    shots = []
-    for i, r in enumerate(fs):
-        mark = f" {i + 1}" if len(fs) > 1 else ""
-        for key, label in (("crea", "Креатив"), ("shot", "Воронка")):
-            src = drive_image(r[key])
+    links, frames = [], []
+    for r in fs:
+        for link in r.get("lands") or [r["d"]["ссылка на ленд"]]:
+            links.append(f'<a href="{e(href(link))}" target="_blank" rel="noopener">'
+                         f'{e(re.sub(r"^https?://", "", link)[:60])} ↗</a>')
+        creas = r.get("creas") or ([r["crea"]] if r.get("crea") else [])
+        for i, url in enumerate(creas):
+            src = drive_image(url)
             if src:
-                shots.append(shot_button(src, label + mark, app))
-    shots_html = "".join(shots) or '<p class="meta2">Скринов креатива и воронки в выгрузке нет.</p>'
+                frames.append(shot_button(src, "Креатив" + (f" {i + 1}" if len(creas) > 1 else ""), app))
+        for url in r.get("shots") or ([r["shot"]] if r.get("shot") else []):
+            src = drive_image(url)
+            if src:
+                frames.append(shot_button(src, "Воронка", app))
+    many = sum(len(r.get("lands") or [1]) for r in fs) > len(fs)
+    shots_html = "".join(frames) or '<p class="meta2">Скринов креатива и воронки в выгрузке нет.</p>'
     facts = [("Компания · категория", f"{e(r0['owner'])} · {e(r0['cat'])}"),
-             ("Гео (доли спенда)", "; ".join(e(r["geo"]) for r in fs)),
+             ("Гео (доли спенда)", "; ".join(dict.fromkeys(r["geo"] for r in fs))),
              ("CPC · CR переход → событие", "; ".join(f'{money(r["cpc"], 2)} · {pct(r["cr"], 2)}' for r in fs)),
              ("Событие CPA", "; ".join(e(event_guess(r)) for r in fs)),
              ("Окупаемость (CR конкурента × 0,85)", "<b>" + "; ".join(e(r["payback"]) for r in fs) + "</b>"),
-             ("Воронка" + ("и" if len(fs) > 1 else ""), funnels)]
+             ("Адреса одной воронки" if many else "Воронка", "<br>".join(links))]
     dl = "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts)
     return f"""<section class="app" id="c-{slug(app)}">
 <div class="ah"><h3>{e(app)}</h3>{chips}{pills}</div>
@@ -570,12 +689,13 @@ def cand_section(app, fs, about, hist):
 <div class="shots">{shots_html}</div></div>
 {scen_table(fs)}
 <p class="eyebrow">Ресерч бренда по выгрузкам 18.05–10.10</p>{brand_block(b)}
-<p class="meta2">Строки выгрузки 10.10: {e(", ".join(str(r["d"]["ID строки"]) for r in fs))} · метка: Видно в данных (CPA, ROAS), событие — предположение</p>
+<p class="meta2">{''.join(f'Строки {e(", ".join(r["row_ids"]))} — один экран, цифры суммированы. ' for r in fs if len(r.get("row_ids", [])) > 1)}Метка: видно в данных (CPA, ROAS), событие — предположение.</p>
 </section>"""
 
 
 def main():
     rs, excl, selected = rows()
+    rs = fold_same(rs)
     med = media()
     by_app = {}
     for r in rs:
@@ -584,6 +704,7 @@ def main():
     best = sorted([r for r in rs if not r["bad"]], key=lambda r: -r["cov_k85"])[:4]
     best_txt = ", ".join(f"{r['app']} ({x(r['cov_k85'])})" for r in best)
     total, n_web, cpa_med, cands, border = candidates(selected)
+    cands = fold_same(cands, with_media=True)
     about = about_index()
     hist = history()
     binfo = {c["app"]: brand_info(c["app"], hist) for c in cands}

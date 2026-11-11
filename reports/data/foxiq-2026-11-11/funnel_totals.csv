@@ -1,7 +1,5 @@
-slice,slice_meaning,project,first_screen,first_question,paywall,opened_payment,started_payment,paid,paywall_from_question,paid_from_paywall,paid_from_question
-full_period,07.10 00:00 MSK through 11.11 14:00 MSK,foxiq_ff,12116,5205,1998,1957,478,191,0.384,0.096,0.037
-full_period,07.10 00:00 MSK through 11.11 14:00 MSK,azora_ff,74075,32619,15711,14862,3108,1479,0.482,0.094,0.045
-v32_window,17.10 00:00 MSK through 02.11 24:00 MSK,foxiq_ff,9205,3239,940,923,191,65,0.290,0.069,0.020
-v32_window,17.10 00:00 MSK through 02.11 24:00 MSK,azora_ff,46722,19382,9130,8423,1685,833,0.471,0.091,0.043
-after_v32,03.11 00:00 MSK through 11.11 14:00 MSK,foxiq_ff,2912,1976,1057,1033,286,125,0.535,0.118,0.063
-after_v32,03.11 00:00 MSK through 11.11 14:00 MSK,azora_ff,26811,13058,6490,6232,1369,616,0.497,0.095,0.047
+slice,project,first_screen,first_question,paywall,opened_payment,started_payment,paid,paywall_from_question,paid_from_paywall,paid_from_question
+full_period,foxiq_ff,12066,5160,1955,1918,454,186,0.379,0.095,0.036
+full_period,azora_ff,73910,32400,15444,14632,2942,1337,0.477,0.087,0.041
+v32_window,foxiq_ff,,3208,901,,,63,0.281,0.070,0.020
+v32_window,azora_ff,,19164,8886,,,694,0.464,0.078,0.036

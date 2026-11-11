@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Путь покупателей FoxIQ — версия 4</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#fff8f3;--surface:#fff;--ink:#2b1d17;--muted:#7a6359;--line:#f2dfd3;--soft:#fff0e6;--accent:#e0703f;--accent-soft:#ffe7d9;--crit:#c2412d;--crit-soft:#fde8e3;--warn:#b26a12;--warn-soft:#fff1dc;--ok:#2f8a5b;--ok-soft:#e6f5ec;--info:#a8573a;--bar:#f08a5d;--f-body:"Golos Text","Segoe UI",sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace}
+body{margin:0;background:linear-gradient(180deg,#ffe9dc 0,var(--bg) 420px) no-repeat,var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{margin:0;line-height:1.2} h1{font-size:2.1rem} h2{font-size:1.45rem} h3{font-size:1.05rem}
+p{margin:0} .muted{color:var(--muted)} .small{font-size:.88rem} .num{font-family:var(--f-mono)}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi,.card,.tbl,details{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 18px rgba(224,112,63,.06)}
+.kpi{padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.kpi .kv{font-family:var(--f-mono);font-size:1.4rem;font-weight:700;color:var(--accent)}
+.kpi .kl{font-size:.82rem;color:var(--muted)}
+.summary{border-top:4px solid var(--accent);padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.tli{display:grid;grid-template-columns:36px 1fr;gap:10px;padding:10px 12px;border-radius:12px;background:var(--soft);border-left:4px solid var(--accent)}
+.tli.warn{border-left-color:var(--warn)} .tli.ok{border-left-color:var(--ok)} .tli.crit{border-left-color:var(--crit)}
+.card{padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.tbl{overflow-x:auto;border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:640px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);background:var(--soft)}
+td.r,th.r{text-align:right} tr:last-child td{border-bottom:none}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 12px 12px 0}
+.hb{display:grid;grid-template-columns:150px 1fr auto;gap:8px;align-items:center;font-size:.88rem}
+.ht{height:12px;background:var(--soft);border-radius:999px;overflow:hidden}
+.hf{display:block;height:100%;background:var(--bar);border-radius:999px}
+.hv{font-family:var(--f-mono);font-size:.82rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px}
+a{color:var(--accent)}
+details summary{cursor:pointer;padding:12px 16px;font-weight:600}
+details .pad{padding:0 16px 16px}
+ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<p class="eyebrow">FoxIQ · версия 4 · 7 октября – 11 ноября 2026</p>
+<h1>Путь покупателей FoxIQ</h1>
+<p class="muted">Деньги — Primer, 226 покупателей триала за $1 после исключения тестов. Поведение — PostHog, 207 человек с <code>subscription_started</code>. Записи сессий нашлись через API записей: 530 записей. Время — МСК. Личных данных в файле нет.</p>
+<div class="kpis">
+<div class="kpi"><span class="kv">226</span><span class="kl">купили триал $1, Primer</span></div>
+<div class="kpi"><span class="kv">25%</span><span class="kl">продлили из 118, чей триал закончился</span></div>
+<div class="kpi"><span class="kv">3,6%</span><span class="kl">сквозная воронка, весь период</span></div>
+<div class="kpi"><span class="kv">15</span><span class="kl">покупателей в день, 5–10 ноября</span></div>
+</div>
+</header>
+
+<section class="summary">
+<h2>Коротко</h2>
+<div class="tli ok"><span>🏠</span><div><b>Главную не переделываем.</b> Вывода «переделать главную» нет, экран оставляем как есть.</div></div>
+<div class="tli crit"><span>🧠</span><div><b>Одинаковый балл остаётся поводом чинить результат.</b> В версии 3.2 у всех был IQ 137. За этот период балл заново не пересчитывался: отдельного запроса по <code>iq_score</code> не было.</div></div>
+<div class="tli"><span>🔻</span><div><b>FoxIQ больше не хуже Azora на оплате.</b> За весь период оплата с пейволла 9,5% против 8,7% у Azora. До пейволла FoxIQ всё ещё ниже: 38% против 48%. В старом окне 17.10–02.11 разрыв был, и те цифры версии 3.2 подтвердились.</div></div>
+<div class="tli warn"><span>📈</span><div><b>Поток вырос, и это и трафик, и конверсия.</b> 5–10 ноября в среднем 15 покупок в день, 9 ноября — 20, 10 ноября — 30. Google почти ушёл, Meta осталась. Внутри Meta доля дошедших до пейволла всё равно выросла с 39% до 56%, и причину этой ступени в репозитории найти не удалось.</div></div>
+<div class="tli crit"><span>🚪</span><div><b>Вход без оплаты — баг.</b> 315 человек видели экран пропуска или неуспешной оплаты, 268 из них без <code>subscription_started</code> на том же person_id. Это не решение Димы или Никиты.</div></div>
+</section>
+
+<section>
+<h2>Деньги, Primer</h2>
+<p>Клиент FoxIQ — тот, у кого первый платёж пришёл из <code>/test-iq</code>, <code>/iq-test-web-v1</code>, <code>/start-iq-test</code> или <code>/you-may-wish</code>. Повторные списания взяты по <code>customerId</code>. Суммы в файле — в центах. Тесты сняты фильтром из <code>playbook/posthog.md</code> и списком <code>reports/foxiq-test-users-list-2026-10-30.csv</code>: 18 клиентов. Отдельного списка почт Дани, Максима и Наташи за 9–11 ноября нет; эти люди уже входят в тот список, если писали с плюс-адреса, gox-media или известной почты Наташи.</p>
+<div class="tbl"><table>
+<thead><tr><th>Сумма</th><th class="r">Успешно, люди</th><th class="r">Отказ, люди или события</th><th>Сверка</th></tr></thead>
+<tbody>
+<tr><td>$1 триал</td><td class="r num">226</td><td class="r num">276 событий</td><td>В файле без фильтра 227 успешных и 300 отказов. Ориентир 227 и 307: успех совпал, отказов на 7 меньше.</td></tr>
+<tr><td>$29,99</td><td class="r num">21</td><td class="r num">68</td><td>Совпало.</td></tr>
+<tr><td>$20,99</td><td class="r num">0</td><td class="r num">53</td><td>Совпало.</td></tr>
+<tr><td>$15</td><td class="r num">7</td><td class="r num">37</td><td>Совпало.</td></tr>
+<tr><td>$49,99</td><td class="r num">1</td><td class="r num">2</td><td>Совпало.</td></tr>
+</tbody>
+</table></div>
+<p>Закончившие триал — покупка $1 не позже 4 ноября, чтобы к 11 ноября прошло 7 дней. Таких 118. Продлили 29, отказ после попытки 62, попытки не было у 27. Ориентир был 119 / 29 / 62 / 28: расхождение в одного человека.</p>
+<p>Предоплаченные карты среди закончивших триал: 22, продлили 0. Ещё 4 предоплаченных триала семи дней не дожили, их в эти 22 не клал. Среди всех 26 предоплаченных продлений тоже нет.</p>
+<p>Причины отказа $1, сколько удалось разобрать из <code>declineReasons</code>: не прошла аутентификация 47, к эмитенту 46, нет денег 42, do not honor 23, ошибка 18, неверный номер 8, эмитент недоступен 6. Это 190 из 300 отказов. Остальные строки причины одним кодом не разобрались.</p>
+<p class="small muted">Неделя сломанного меню, 27.10 08:12 – 02.11 16:07 UTC, в деньгах остаётся. Из неё не вычитаем.</p>
+</section>
+
+<section>
+<h2>Воронка, одно определение</h2>
+<p>Люди, проекты <code>foxiq_ff</code> и <code>azora_ff</code>, один и тот же фильтр тестовых почт. Первый экран — <code>funnel_start</code>. Первый вопрос — <code>screen_index = 1</code>. Пейволл — экран с id ровно <code>paywall</code> или <code>Paywall</code>, без экранов отказа и без <code>cta_skip_paywall</code>. Оплата — <code>funnel_purchase_success</code>. Так считается и FoxIQ, и Azora.</p>
+<p>Почему прошлый пересчёт Azora дал 47,1% / 9,1% / 4,3%. Он брал любой экран, в чьём id есть слово paywall, включая отказы, и не снимал тестовые почты. С определением выше окно версии 3.2 (17.10–02.11) даёт FoxIQ 28% / 7,0% / 2,0% и Azora 46% / 7,8% / 3,6%. Оплаты сошлись точно: 63 и 694. На пейволле остаётся несколько человек против напечатанных 897 и 8 893.</p>
+<div class="card">
+<p class="small muted">Весь период, 7.10–11.11, люди после фильтра тестов.</p>
+<p>Первый вопрос → пейволл</p>
+<div class="hb"><span>FoxIQ</span><span class="ht"><span class="hf" style="width:38%"></span></span><span class="hv">38% · 1 955 / 5 160</span></div>
+<div class="hb"><span>Azora</span><span class="ht"><span class="hf" style="width:48%"></span></span><span class="hv">48% · 15 444 / 32 400</span></div>
+<p>Пейволл → оплата</p>
+<div class="hb"><span>FoxIQ</span><span class="ht"><span class="hf" style="width:95%"></span></span><span class="hv">9,5% · 186 / 1 955</span></div>
+<div class="hb"><span>Azora</span><span class="ht"><span class="hf" style="width:87%"></span></span><span class="hv">8,7% · 1 337 / 15 444</span></div>
+<p>Сквозная, от первого вопроса</p>
+<div class="hb"><span>FoxIQ</span><span class="ht"><span class="hf" style="width:36%"></span></span><span class="hv">3,6%</span></div>
+<div class="hb"><span>Azora</span><span class="ht"><span class="hf" style="width:41%"></span></span><span class="hv">4,1%</span></div>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Неделя с</th><th class="r">FoxIQ, вопрос → пейволл</th><th class="r">FoxIQ, сквозная</th><th class="r">Azora, сквозная</th></tr></thead>
+<tbody>
+<tr><td>12.10</td><td class="r num">15%</td><td class="r num">1,6%</td><td class="r num">2,2%</td></tr>
+<tr><td>19.10</td><td class="r num">29%</td><td class="r num">2,1%</td><td class="r num">3,3%</td></tr>
+<tr><td>26.10</td><td class="r num">37%</td><td class="r num">1,9%</td><td class="r num">4,0%</td></tr>
+<tr><td>2.11</td><td class="r num">52%</td><td class="r num">5,7%</td><td class="r num">4,8%</td></tr>
+<tr><td>9.11</td><td class="r num">55%</td><td class="r num">6,9%</td><td class="r num">4,5%</td></tr>
+</tbody>
+</table></div>
+<p>Неделя 9.11 обрезана 11 ноября 14:00, это не полная неделя. Azora в последних полных неделях 4,0–4,8%, не ровная полка 4,3–4,9%.</p>
+<p><b>Откуда ступени.</b> На неделе 12.10 Google дал 3 724 первых экрана из 4 156, и с Google оплатил 1 человек. К неделе 9.11 Google исчез, Meta — 1 208 из 1 373. Доля «первый экран → первый вопрос» с 25% до 73% объясняется этой сменой. Внутри одной Meta пейволл всё равно вырос: 96 из 249 (39%) на неделе 12.10 и 531 из 942 (56%) на неделе 9.11. Записи в репозитории и журнале про смену квиза или текстов IQ-воронки на этих датах нет. Эта часть не решена.</p>
+</section>
+
+<section>
+<h2>Поток</h2>
+<p>Покупки триала по дням, Primer, после фильтра тестов. 5–10 ноября: 7, 16, 4, 12, 20, 30. Среднее 15. 11 ноября к 14:00 уже 19, день не закрыт. Раньше в отчёте было около 4–7 в день.</p>
+<p>Источник этих 226: Meta (<code>utm_source</code> 4, 19, 22) — 205, Google — 2, googlemail — 7, int3 — 11, пусто — 1. Воронки: <code>/test-iq</code> 133, <code>/iq-test-web-v1</code> 86, <code>/start-iq-test</code> 7. Рост — это объём Meta плюс более высокая конверсия, не один из двух факторов.</p>
+</section>
+
+<section>
+<h2>Вход без оплаты</h2>
+<p>Баг, не продуктовое решение. Экран <code>cta_skip_paywall</code> или <code>failed_payment_message</code>: 315 человек. У 47 тот же <code>person_id</code> потом получил <code>subscription_started</code>. У 268 — нет. В проекте приложения из этих 268 видны 264: приложение открыли 50, игру 19, тест 11, урок 7, сертификат 0, пейволл в приложении 44. Воронка и приложение часто заводят разных людей на одну почту, поэтому 50 — нижняя граница.</p>
+</section>
+
+<section>
+<h2>Воронка отмены с 9 ноября</h2>
+<p>События идут с 9.11 07:45 UTC. Экран <code>discount</code> открыли 39 человек за 9–11 ноября, это вместе с тестами. В опросе <code>cancellation_survey_completed</code> строки без <code>is_test</code> дают около 23 человек: 5 остались, около 18 отменили. Это те же примерно 25 входов и 5 оставшихся (20%), что в задаче. Старая база «0 из 10» больше не используется.</p>
+<p>Входы по дням на экран скидки, люди, вместе с тестами: 9.11 — 18, 10.11 — 11, 11.11 — 11. Для срока теста беру оценку реальных входов около 9 в день, не сырые 39 за три дня.</p>
+</section>
+
+<section>
+<h2>Поведение</h2>
+<p>Записи есть. API записей и таблица <code>raw_session_replay_events</code>: 530 записей, 418 id. Пустая выборка в первой выгрузке была из-за другого фильтра таблицы, не потому что записей нет.</p>
+<p>До 12.10 записей 41 у 30 id. Из 16 ранних покупателей Primer запись есть у 15. У одного нет ни записи, ни событий — путь неизвестен. У шести есть события приложения, но нет <code>subscription_started</code>. Воронки FoxIQ до 16.10 в PostHog нет, поэтому ранний квиз по событиям не восстановить.</p>
+<p>Злые тапы (3 нажатия в одну точку за 1,5 с) заново не считались: в метаданных записи есть число кликов, но не место и не интервал. Цифра версии 3.2 остаётся: 4 из 62, период до 3.11. Медиана активного времени 42 секунды — тоже до 3.11. Новое среднее по 257 записям покупателей после 12.10 — 195 секунд активности; это среднее, не медиана, и со старой цифрой его не смешиваю.</p>
+<p>Неделя сломанного меню в выборке остаётся. По событиям PostHog, не по первому часу: 28 покупателей, игру открыли 8, тест 3, урок 2, сертификат 11, отмену нажали 3. Это отдельный блок, не норма поведения.</p>
+</section>
+
+<section>
+<h2>Тесты</h2>
+<p>Поток для срока — около 15 покупателей в день (5–10 ноября). Промежуточная проверка через неделю, не через две. Для T2 — через неделю после старта.</p>
+<div class="grid">
+<div class="card"><h3>T1. Первая тренировка с результата</h3><p>73 человека на вариант, 146 всего. При 15 в день набор около 10 дней. Метрика прежняя: вернулись в другой день. Проверка через неделю после старта.</p></div>
+<div class="card"><h3>T2. Воронка отмены</h3><p>35 на вариант, 70 входов в отмену. При около 9 реальных входах в день набор около 8–9 дней. База теперь 20% остались, не 0 из 10. Цель: доля оставшихся с 20% до 35%. Защитная метрика: доля продлений не ниже текущих 25% (29 из 118).</p></div>
+<div class="card"><h3>T3. Уровень балла</h3><p>73 на вариант, 219 всего, три уровня. При 15 в день набор около 15 дней. Проверка через неделю после старта, итог позже.</p></div>
+</div>
+</section>
+
+<section>
+<h2>Сейчас, для таблицы плана</h2>
+<div class="tbl"><table>
+<thead><tr><th>Метрика</th><th class="r">Сейчас</th><th>Период и выборка</th></tr></thead>
+<tbody>
+<tr><td>Покупатели триала</td><td class="r num">226</td><td>7.10–11.11, Primer, без тестов</td></tr>
+<tr><td>Продление после триала</td><td class="r num">25%</td><td>118 человек с покупкой до 4.11 включительно</td></tr>
+<tr><td>Предоплаченные продлили</td><td class="r num">0 / 22</td><td>те же закончившие триал, тип карты PREPAID</td></tr>
+<tr><td>Сквозная воронка</td><td class="r num">3,6%</td><td>7.10–11.11, люди, определение выше; у Azora 4,1%</td></tr>
+<tr><td>Оплата с пейволла</td><td class="r num">9,5%</td><td>тот же период; у Azora 8,7%</td></tr>
+<tr><td>Поток</td><td class="r num">15 / день</td><td>5–10.11, Primer</td></tr>
+<tr><td>Остались в отмене</td><td class="r num">20%</td><td>9–11.11, опрос без is_test, около 5 из 25</td></tr>
+</tbody>
+</table></div>
+</section>
+
+<section>
+<h2>Чего нет</h2>
+<ul>
+<li>Один покупатель из 16 ранних: нет ни событий, ни записи. Путь неизвестен.</li>
+<li>Причина роста пейволла внутри Meta с 39% до 56%. Смена Google → Meta объясняет только верх воронки.</li>
+<li>307 отказов $1. В Primer на этих воронках 300.</li>
+<li>Злые тапы и медиана 42 секунды за новый период. Старые цифры подписаны «до 3.11».</li>
+<li>Балл IQ за новых покупателей отдельным запросом не пересчитан.</li>
+<li>Сырой <code>payments-36.csv</code> в репозиторий не положен: там почты и карты. Сводка — <code>reports/data/foxiq-2026-11-11/</code>.</li>
+</ul>
+</section>
+</div>
+</body>
+</html>

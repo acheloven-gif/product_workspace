@@ -1,0 +1,7 @@
+group,people,note
+primer_trial_before_12oct,16,settled $1, test filter applied, no email stored
+posthog_subscription_started,5,five of the sixteen have subscription_started somewhere in the window; four of those purchases fall on 10.10
+app_events_without_subscription,6,page, game or result events exist; funnel events do not, funnel tracking starts 16.10
+no_posthog_events,5,no foxiq or foxiq_ff events for that email
+recording_before_12oct,15,FoxIQ app recording before 12.10 00:00 MSK
+no_recording_and_no_events,1,behavior unknown

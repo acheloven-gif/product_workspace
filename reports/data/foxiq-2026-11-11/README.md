@@ -1,104 +1,39 @@
-# FoxIQ data extract, 11.11.2026
+# FoxIQ data, 11.11.2026
 
 Window: 07.10.2026 00:00 MSK through 11.11.2026 14:00 MSK.
-UTC bounds used in queries: 2026-10-06 21:00:00 to 2026-11-11 11:00:00.
-Counts are people (`person_id`), not events, unless a file has an `events` column.
-Projects: `foxiq` for the app and server events, `foxiq_ff` for the purchase funnel, `azora_ff` for the Azora funnel.
-Emails are not stored. Test accounts are flagged and removed by the filter in `playbook/posthog.md`.
+People, not events, except where a file has an events column.
+The raw Primer file stays on the local machine. It contains emails and card data, so it is not in the repository. Counts are in `primer_summary.json`.
 
-## buyers.csv
+## Money
 
-Kept trial buyers from `subscription_started` in `foxiq`.
+`primer_summary.json`. A FoxIQ customer is someone whose first payment has funnel path `/test-iq`, `/iq-test-web-v1`, `/start-iq-test` or `/you-may-wish`. Later charges are taken by `customerId`. Tests are the email filter in `playbook/posthog.md` plus `reports/foxiq-test-users-list-2026-10-30.csv`: 18 customers removed. No separate mailbox list for Danya, Maxim and Natasha on 09–11.11 was supplied; those names are already represented in that list (plus-addresses, gox-media, the Natasha mailbox).
 
-- `person_id` — PostHog person.
-- `purchased_at_utc`, `purchased_at_msk` — first `subscription_started` in the window.
-- `device` — `platform` on that event (`ios` or `web`). Browser and app are not on this server event.
-- `country` — `$geoip_country_code` on that event. Empty when PostHog did not send it.
-- `source` — `unknown` on every row. `utm_source` on `subscription_started` is empty. Source of funnel payments is in `funnel_paid_by_source.csv` and is not the same set of people.
-- `status` — `оплатил` if `subscription_renewed` exists; `отменил` if `subscription_cancelled` is more than 120 seconds before `subscription_expired`, or there is no expiry; `отказ` if cancel and `payment_failed` expiry arrive together; `триал_не_закрыт` if neither renewal, cancel nor expiry has arrived.
-- `is_test` — `0` for kept rows. The property `is_test` was not used: in FoxIQ it is not a reliable flag.
-- `broken_menu` — `1` when the purchase is inside 27.10 08:12 UTC through 02.11 16:07 UTC. These 28 people stay in the file.
-- `exclusion_reason` — empty here. Excluded people are in `exclusions.csv`.
+Real trial buyers: 226. The file also has 227 settled $1 events before the test filter. Declined $1 events: 300 before the filter, 276 after. The check figure 307 was not found. Renewals match the check: $29.99 is 21 settled and 68 declined, $20.99 is 53 declined, $15 is 7 settled and 37 declined, $49.99 is 1 settled and 2 declined.
 
-207 kept people: 28 оплатил, 30 отказ, 62 отменил, 87 триал не закрыт. 28 of them are in the broken-menu week.
+Of 118 buyers whose trial had ended by 11.11 (purchase at least 7 days earlier): 29 renewed, 62 were declined, 27 had no renewal attempt. Prepaid cards among those 118: 22, and 0 renewed.
 
-## exclusions.csv
+## Buyers and the early gap
 
-Two people removed from `buyers.csv`.
+`buyers.csv` is the PostHog `subscription_started` list: 207 kept people. `exclusions.csv` is the two PostHog people removed earlier (gox-media on 03.11, Armenia account on 28.10).
 
-- `0b5b097e-45b1-5638-8368-53767b182c49` — email matches the gox-media test filter. Purchase 03.11 20:34 MSK.
-- `9a2bfd0d-b22f-53e5-91e0-9c2bab06ef35` — own Armenia account, 28.10, cancelled about 9 minutes later.
+Primer 226 and PostHog 207 are not the same set. Sixteen Primer buyers paid before 12.10. Five of them have `subscription_started` somewhere in the window. Six have app events and no subscription. Five have no FoxIQ events. `early_buyers.csv` has these counts and no emails.
 
-No other address matched the test filter on 10–11.11. If Danya, Maxim or Natasha used a normal mailbox, that person is still inside the 207.
+## Recordings
 
-## funnel_daily.csv, funnel_weekly.csv, funnel_totals.csv
+`recordings_summary.csv`. The recordings API and `raw_session_replay_events` do have FoxIQ recordings. The earlier empty result was the wrong table filter.
 
-People in `foxiq_ff` and `azora_ff`.
+530 recordings, 418 distinct ids, for the whole window. Before 12.10: 41 recordings, 30 ids. Fifteen of the sixteen early Primer buyers have a recording; one has neither a recording nor events, so that path is unknown. Rage taps (3 clicks in one place within 1.5 seconds) were not recomputed. Mean active time on later buyer recordings is 195 seconds; that is not the median of 42 seconds in version 3.2.
 
-- `first_screen` — `funnel_start`.
-- `first_question` — `funnel_screen_open` with `screen_index = 1`.
-- `paywall` — `funnel_screen_open` whose `screen_id` contains `paywall`.
-- `opened_payment` — `funnel_checkout_open`.
-- `started_payment` — `funnel_purchase_start`.
-- `paid` — `funnel_purchase_success`.
+## Funnel
 
-Daily and weekly numbers must not be added: a person is counted once per day or week, and again in another period. `funnel_totals.csv` has the unique people. `full_period` is the whole window. `v32_window` is 17.10 00:00 through 02.11 24:00 MSK. `after_v32` is the rest of the window. A person can appear in both slices.
+`funnel_definition.csv` is the only definition used in version 4. `funnel_weekly.csv` and `funnel_totals.csv` use it. `funnel_daily.csv` and `funnel_paid_by_source.csv` are the earlier unfiltered extract and are not the comparison.
 
-FoxIQ funnel events start on 16.10. There is no funnel for 07–15.10.
-The funnel files are not filtered by the test-email rule.
+The first recount (47.1% / 9.1% / 4.3% for Azora) counted every screen whose id contains `paywall`, including failure screens, and did not apply the test filter. With the exact paywall screen and the shared filter, the version 3.2 window reproduces the printed rates.
 
-Whole window, FoxIQ: 12 116 first screen, 5 205 first question, 1 998 paywall, 1 957 opened payment, 478 started payment, 191 paid.
-Paywall / first question 38.4%. Paid / paywall 9.6%. Paid / first question 3.7%.
-Azora, same window: 74 075, 32 619, 15 711, 14 862, 3 108, 1 479. Rates 48.2%, 9.4%, 4.5%.
+Whole window: FoxIQ 37.9% to the paywall, 9.5% pay from the paywall, 3.6% through. Azora 47.7%, 8.7%, 4.1%.
 
-## funnel_paid_by_source.csv
+The rise from the first screen to the first question follows the traffic mix. In the week of 12.10 Google was 3 724 of 4 156 first screens and almost nobody from Google paid. By the week of 09.11 Google is gone and Meta is 1 208 of 1 373. Inside Meta only, the paywall rate still rises from 39% to 56%. No IQ-quiz or copy change for that step was found in the repository or the journal. That part is unresolved.
 
-`funnel_purchase_success` only. Meta 165, Google 2, other or empty 24. Total 191, the same as the unfiltered paid count.
+## Other files
 
-## buyer_behavior.csv
-
-Kept buyers, any product event in the window, not the first hour. The first hour was not calculated.
-
-- `played_game` — `game_started`.
-- `started_test` — `test_started`.
-- `completed_lesson` — `lesson_completed`. There is no separate lesson-start event in this extract.
-- `downloaded_certificate` — `certificate_downloaded`.
-- `opened_page` — `$pageview`. This is not a confirmed home screen.
-- `opened_settings` — `settings_open`. This is the closest profile event.
-- `active_on_2_plus_days` — product events on two or more Moscow dates. Billing and email events are not counted.
-- `clicked_cancel` — `subscription_cancel_click`.
-
-`broken_menu` is the 28 purchases inside the broken-menu window. `other` is the other 179.
-
-## unpaid_entry.csv
-
-People with `funnel_screen_open` on `cta_skip_paywall` or `failed_payment_message`.
-315 people saw one of those screens. 47 of the same `person_id` later have `subscription_started`. 268 do not.
-264 of the non-payers are visible in project `foxiq`: 50 opened the app, 19 started a game, 11 started a test, 7 completed a lesson, 0 downloaded a certificate, 44 saw `paywall_shown`.
-The app and the funnel often use different person ids. This file does not stitch by email, so the app counts are a lower bound.
-
-## cancel_funnel_daily.csv, cancel_survey.csv
-
-From 09.11 07:45 UTC through 11.11 14:00 MSK.
-Screens found: `discount`, `cancel-done`, `cancel-error`, `discount-done`. No screen named as the first “are you sure” step. Daily `discount` people are the best available entry count: 18, 11 and 11. Unique people on `discount` for the whole slice: 39.
-`subscription_cancel_click` in the app, same days: 14, 8 and 10 people. It is not the same set.
-`cancel_survey.csv` is `cancellation_survey_completed` with `outcome`, `reason`, `completed` and `is_test` as stored. `is_test` is true on part of these rows. Rows were not dropped. People are not unique across rows.
-
-## primer_payments.csv
-
-`primer_payment` in `foxiq` for the whole window. 726 events. `billing_reason` is empty on every row, so the decline reason is not in PostHog. No Primer export was attached. Do not treat these amounts as the money total.
-
-## coverage.json
-
-Daily FoxIQ events, people and buyers for 07–14.10, plus the recording and Primer gaps.
-
-07–09.10 have events and no `subscription_started`. The first four kept buyers are on 10.10. 11–12.10 are almost empty (23 and 9 events). One more buyer appears on 13.10. Funnel tracking starts on 16.10.
-`session_replay_events` has 0 rows on 13.10 MSK and 0 rows whose URL contains `foxiq` in the whole window. `$snapshot` is not an event in this project. Paths for 07–11.10 cannot be restored from recordings in this extract.
-
-## Compared with report 3.2
-
-Report: 65 buyers from 12.10 through 03.11, broken-menu week excluded. This extract, same exclusion rules, purchases from 12.10 through 03.11 12:00 MSK outside that week: 59. Four more kept buyers are on 10.10, before the report’s start. The sets were not forced to match. Likely causes: the report also used Primer and merged two persons per buyer; this file is one `subscription_started` person.
-
-Report funnel, 17.10–02.11: FoxIQ paid / first question 2.0% and paid / paywall about 7%. Recount of that window: 65 paid, 3 239 first question, 940 paywall, so 2.0% and 6.9%. Azora in the same recount is 47.1%, 9.1% and 4.3%, not the printed 46%, 7.8% and 3.6%. The Azora definition or window in the report is not fully reproduced.
-
-Report money runs through 06.11 from Primer. This folder has PostHog `primer_payment` only, through 11.11 14:00 MSK, with no decline reason and no Primer check.
+`unpaid_entry.csv`, `cancel_funnel_daily.csv`, `cancel_survey.csv`, `buyer_behavior.csv` and `coverage.json` are the earlier PostHog extract. Behavior there is any event in the window, not the first hour.

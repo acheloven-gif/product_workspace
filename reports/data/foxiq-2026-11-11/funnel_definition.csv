@@ -1,0 +1,12 @@
+definition,value
+unit,person_id
+projects,"foxiq_ff and azora_ff, same rules"
+test_filter,"playbook/posthog.md FoxIQ email filter, applied to both products"
+first_screen,funnel_start
+first_question,"funnel_screen_open and screen_index = 1"
+paywall,"funnel_screen_open and screen_id exactly paywall or Paywall"
+opened_payment,funnel_checkout_open
+started_payment,funnel_purchase_start
+paid,funnel_purchase_success
+not_counted_as_paywall,"paywall_failed, cta_skip_paywall, paywall_do_not_honor and other decline screens"
+why_v32_differed,"the first recount used contains(paywall) and did not apply the test filter. That produced Azora 47.1% / 9.1% / 4.3%. The definition above, window 17.10 00:00 through 02.11 24:00 MSK, gives FoxIQ 901/3208 = 28.1%, 63/901 = 7.0%, 63/3208 = 2.0% and Azora 8886/19164 = 46.4%, 694/8886 = 7.8%, 694/19164 = 3.6%. Printed version 3.2 is 897/3207, 63 and 8893/19165, 694. Paid counts match. The remaining gap is a few people on the paywall step."

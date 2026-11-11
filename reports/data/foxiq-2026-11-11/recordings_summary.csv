@@ -1,0 +1,6 @@
+slice,recordings,people,avg_active_sec,avg_clicks,avg_duration_sec,note
+foxiq_app_all,530,418,,,,first_url contains foxiq.app, 07.10 00:00 through 11.11 14:00 MSK, recordings API and raw_session_replay_events
+foxiq_app_through_11oct,41,30,,,,same, recordings that start before 12.10 00:00 MSK
+buyer_email_later,257,195,195,209,531,distinct_id equals the email on subscription_started; recordings from 12.10 onward
+buyer_email_through_11oct,4,4,37,15,183,same match, recordings before 12.10
+early_primer_16,23,15,,,,"15 of 16 Primer trial buyers before 12.10 have a FoxIQ recording; one has neither a recording nor PostHog events"

@@ -1,0 +1,3 @@
+person_id,purchased_at_utc,purchased_at_msk,country,device,is_test,exclusion_reason
+0b5b097e-45b1-5638-8368-53767b182c49,2026-11-03T17:34:49Z,2026-11-03T20:34:49+03:00,ID,ios,1,email matches the FoxIQ test filter (gox-media)
+9a2bfd0d-b22f-53e5-91e0-9c2bab06ef35,2026-10-28T07:29:46Z,2026-10-28T10:29:46+03:00,AM,ios,1,"own account, Armenia, 28.10; cancelled about 9 minutes later"

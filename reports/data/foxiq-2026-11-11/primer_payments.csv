@@ -1,0 +1,12 @@
+project,status,amount,billing_reason,people,events
+foxiq,declined,1,,210,307
+foxiq,settled,1,,226,227
+foxiq,declined,29.99,,68,68
+foxiq,declined,20.99,,52,52
+foxiq,declined,15,,37,37
+foxiq,settled,29.99,,21,21
+foxiq,settled,15,,7,7
+foxiq,cancelled,1,,3,3
+foxiq,declined,49.99,,2,2
+foxiq,settled,49.99,,1,1
+foxiq,failed,1,,1,1

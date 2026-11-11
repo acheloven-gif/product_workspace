@@ -1,0 +1,11 @@
+day_msk,screen_id,people,events
+2026-11-09,discount,18,21
+2026-11-09,cancel-done,12,12
+2026-11-09,cancel-error,4,4
+2026-11-09,discount-done,3,3
+2026-11-10,discount,11,12
+2026-11-10,cancel-done,9,9
+2026-11-10,cancel-error,2,2
+2026-11-11,discount,11,16
+2026-11-11,cancel-done,11,11
+2026-11-11,cancel-error,2,5

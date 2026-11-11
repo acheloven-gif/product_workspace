@@ -1,0 +1,4 @@
+source,people,definition
+Meta,165,funnel_purchase_success in foxiq_ff; utm_source 4, 19 or 22
+Google,2,funnel_purchase_success; utm_source google
+other_or_empty,24,funnel_purchase_success; source missing or not Meta/Google

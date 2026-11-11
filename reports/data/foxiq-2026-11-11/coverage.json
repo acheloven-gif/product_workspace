@@ -1,0 +1,26 @@
+{
+  "extracted_at_msk": "2026-11-11T14:00:00+03:00",
+  "window_utc": ["2026-10-06T21:00:00Z", "2026-11-11T11:00:00Z"],
+  "window_msk": ["2026-10-07T00:00:00+03:00", "2026-11-11T14:00:00+03:00"],
+  "buyers_kept": 207,
+  "buyers_status": {"оплатил": 28, "отказ": 30, "отменил": 62, "триал_не_закрыт": 87},
+  "buyers_broken_menu_included": 28,
+  "buyers_excluded": 2,
+  "buyers_before_12_10_msk": 4,
+  "buyers_before_03_11_12_msk_outside_broken_menu": 63,
+  "comparable_to_report_65_from_12_10": 59,
+  "coverage_events_people_buyers": {
+    "2026-10-07": [194, 29, 0],
+    "2026-10-08": [684, 132, 0],
+    "2026-10-09": [871, 209, 0],
+    "2026-10-10": [263, 82, 4],
+    "2026-10-11": [23, 19, 0],
+    "2026-10-12": [9, 8, 0],
+    "2026-10-13": [69, 18, 1],
+    "2026-10-14": [575, 93, 9]
+  },
+  "foxiq_ff_first_day": "2026-10-16",
+  "session_recordings": "session_replay_events returned 0 rows for 13.10 MSK and 0 rows with foxiq in the URL for the whole window. Event $snapshot is not in the taxonomy. A per-buyer recording list was not built.",
+  "primer_decline_reason": "billing_reason is empty on every foxiq primer_payment in this window. No Primer export was available.",
+  "recent_named_tests": "The email filter matched one gox-media account on 03.11 and the Armenia account on 28.10. No extra match on 10-11.11. Tests by Danya, Maxim or Natasha on a normal mailbox cannot be separated."
+}

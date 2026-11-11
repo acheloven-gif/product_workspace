@@ -1,0 +1,11 @@
+metric,people,note
+saw_cta_skip_paywall_or_failed_payment_message,315,person_id across foxiq and foxiq_ff
+same_person_later_subscription_started,47,same person_id only; email stitching not applied
+same_person_no_subscription_started,268,same person_id only
+app_project_no_subscription,264,subset visible in project foxiq
+app_opened,50,of the 264
+game_started,19,of the 264
+test_started,11,of the 264
+lesson_completed,7,of the 264
+certificate_downloaded,0,of the 264
+paywall_shown,44,of the 264

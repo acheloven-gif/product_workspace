@@ -4,3 +4,4 @@ foxiq_app_through_11oct,41,30,,,,same, recordings that start before 12.10 00:00 
 buyer_email_later,257,195,195,209,531,distinct_id equals the email on subscription_started; recordings from 12.10 onward
 buyer_email_through_11oct,4,4,37,15,183,same match, recordings before 12.10
 early_primer_16,23,15,,,,"15 of 16 Primer trial buyers before 12.10 have a FoxIQ recording; one has neither a recording nor PostHog events"
+buyer_median_after_12oct,257,199,41,,12,"median active seconds and median clicks; sum per distinct_id, recordings from 12.10 through 11.11 14:00 MSK. First-hour training on app events: 34 of 203 buyers, 13.10 17:00 UTC through 11.11 14:00 MSK"

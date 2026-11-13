@@ -195,7 +195,7 @@ details .pad{padding:4px 16px 16px}
 .fc .hb{grid-template-columns:62px 1fr auto}
 [data-tip]{cursor:help}
 .hb[data-tip]:hover .hf,.c[data-tip]:hover .col,.seg[data-tip]:hover{filter:brightness(.9)}
-.kpi[data-tip]:hover,.st[data-tip]:hover,.fact[data-tip]:hover,.tli[data-tip]:hover{border-color:var(--accent)}
+.kpi[data-tip]:hover,.st[data-tip]:hover,.fact[data-tip]:hover,.tli[data-tip]:hover{border-color:var(--accent);transform:translateY(-1px);transition:transform .15s}
 .hb{border-radius:8px;padding:2px 4px;margin:3px -4px}
 .hb:hover{background:var(--soft)}
 #tip{background:#3a241b;color:#fff8f3;font-size:.84rem;line-height:1.4;padding:8px 11px;border-radius:10px;max-width:300px;box-shadow:0 8px 24px rgba(120,60,30,.25)}
@@ -241,7 +241,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 </div>
 <div class="note small">Неделя со сломанным меню (27.10–02.11, 28 человек) в деньгах учтена, в поведении показана отдельно.</div>
 <div class="note small"><p class="h4">📝 Версия 4 по замечаниям Кати к версии 3</p><ol class="list">
-<li>Период 07.10–11.11, с первых покупателей. В версии 3 покупатели были до 03.11, воронка до 02.11. Деньги, воронка и тренировка в первый час пересчитаны. Типы пути, таблица функций и места злых тапов остались по покупкам 12.10–03.11: в выгрузке до 11.11 нет порядка экранов и точки клика. Помета «данные до 03.11».</li>
+<li>Период 07.10–11.11. Деньги, воронка, тренировка в первый час и активное время включают 03.11–11.11. Типы пути, таблица функций и места нажатий — покупки по 03.11. Покупатели 04.11–11.11 (113 человек, 11.11 до 14:00 МСК) в эти три блока не входят. Их экраны за это окно: результат 113, сертификат 37, Fox Memory 18. Места нажатий по записям до 03.11.</li>
 <li>Главная остаётся. Через неё идут к отмене, саму отмену она не вызывает.</li>
 <li>Вход без оплаты — баг. В приложение попасть можно, всё платное за пейволлом. Задача: <a href="https://app.clickup.com/t/1249d35ptgn">вход в приложение без оплаты</a>.</li>
 <li>Тесты по порядку: T1 — первая тренировка, T2 — воронка отмены, T3 — уровень балла.</li>
@@ -276,7 +276,8 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <tr><td>Покупатели с <code>subscription_started</code>, PostHog</td><td>07.10–11.11</td><td class="r num">207</td><td class="r num">—</td><td>Поведение по событиям</td></tr>
 <tr><td>Покупатели с событиями первого часа</td><td>13.10 17:00 UTC – 11.11</td><td class="r num">203</td><td class="r num">34<span class="sub">17%</span></td><td>База T1 и T3: 34 из 203 (17%). До 13.10 событий первого часа нет</td></tr>
 <tr><td>Покупатели с записью сессии</td><td>12.10–11.11</td><td class="r num">199<span class="sub">257 записей</span></td><td class="r num">—</td><td>Медиана активного времени 41 с</td></tr>
-<tr><td>Разбор экранов и путей</td><td>покупки 12.10–03.11</td><td class="r num">64 с путём из 65</td><td class="r num">—</td><td>Типы пути, функции, злые тапы — старый период, подписан</td></tr>
+<tr><td>Разбор экранов и путей</td><td>покупки 12.10–03.11</td><td class="r num">64 с путём из 65</td><td class="r num">—</td><td>Типы пути, функции, злые тапы — покупки по 03.11</td></tr>
+<tr><td>Покупатели 04.11–11.11</td><td>04.11–11.11 14:00 МСК</td><td class="r num">113</td><td class="r num">—</td><td>В деньгах и первом часе есть. В типах пути, функциях и местах нажатий нет. Экраны за окно: результат 113, сертификат 37, Fox Memory 18</td></tr>
 <tr><td>Первый заход по неделям</td><td>12.10–06.11</td><td class="r num">52 / 28 / 38</td><td class="r num">34<span class="sub">17%, начали тренировку</span></td><td>Таблица «Первый заход»</td></tr>
 <tr><td>Вошедшие в воронку отмены, без тестовых</td><td>09.11–11.11</td><td class="r num">около 25, остались 5</td><td class="r num">—</td><td>База T2</td></tr>
 <tr><td>Видели экран пропуска или неуспешной оплаты</td><td>16.10–11.11</td><td class="r num">315<span class="sub">из них 268 без подписки</span></td><td class="r num">—</td><td>Вход без оплаты</td></tr>

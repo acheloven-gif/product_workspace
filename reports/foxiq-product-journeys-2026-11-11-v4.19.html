@@ -711,6 +711,58 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <h3>Сроки отмены</h3>
 <p>Самостоятельных отмен за 8 дней, видимых к 11.11 14:00, — 65. Медиана от покупки до <code>subscription_cancelled</code> — 9 мин 31 с. В первый час — 46 из 65. До 5 минут — 26, 5–15 минут — 10, 15–60 минут — 10, 1–24 часа — 9, позже суток — 10. Сумма корзин 26+10+10+9+10 = 65. Пара отмены и окончания подписки в пределах 2 минут есть у 1 человека. Ещё у 40 отмена есть, а <code>subscription_expired</code> за 8 дней нет. У 25 окончание подписки пришло позже чем через 2 минуты. 40 + 25 + 1 = 66 человек с <code>subscription_cancelled</code> за 8 дней.</p>
 <p>Защитная метрика считается отдельно: <code>subscription_cancelled</code> с <code>reason = user_initiated</code> в течение часа после <code>subscription_started</code>. Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Позже 11.11 13:00 МСК покупок нет, последняя — в 11:58. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). Среди этих 46 нет пары отмены и окончания подписки в пределах 2 минут, поэтому FoxIQ по правилу 2 минут — те же 46 из 208. Цель — не выше 22,1%. База считается по всем 208 и по тем, у кого час закрыт.</p>
+<h3>Динамика отмены в первый час</h3>
+<p>22,1% — среднее по всему окну. До 08.11 было 12,6%, с 08.11 — 37,0%. При старте теста сравнивать с контрольной группой A в тот же период.</p>
+<ul class="list">
+<li>До 08.11: 16 из 127 (12,6%, интервал 7,9–19,5%).</li>
+<li>С 08.11 по 11.11 14:00: 30 из 81 (37,0%, интервал 27,3–47,9%).</li>
+<li>Внутри: 28.10–07.11 — 8 из 69 (11,6%). По дням с 08.11: 5 из 12, 8 из 20, 8 из 30, 9 из 19.</li>
+<li>16 + 30 = 46. 127 + 81 = 208. Интервалы до и после 08.11 не пересекаются. Рост реальный, начинается с 08.11, не с 28.10.</li>
+<li>Что изменилось в данных с 08.11, без установленной причины: <code>utm_source = 4</code> вырос с 5 из 58 до 64 из 81, а отмены внутри него — с 1 из 25 до 25 из 64. Android — 24 из 81 и отменяет так же, как iOS: 9 из 24 и 21 из 57. 20 из 30 отмен короче 5 минут.</li>
+<li>Чего не хватает: что изменилось 08.11 у источника <code>utm_source = 4</code>; сверка 46 отмен с Primer.</li>
+</ul>
+<div class="tbl"><table>
+<thead><tr><th>Неделя покупки, МСК</th><th class="r">Отменили в час</th><th class="r">Доля</th><th class="r">Интервал 95%</th></tr></thead>
+<tbody>
+<tr><td>07–12.10</td><td class="r num">1 из 4</td><td class="r num">25%</td><td class="r num">4,6–69,9%</td></tr>
+<tr><td>13–19.10</td><td class="r num">5 из 36</td><td class="r num">13,9%</td><td class="r num">6,1–28,7%</td></tr>
+<tr><td>20–27.10</td><td class="r num">2 из 18</td><td class="r num">11,1%</td><td class="r num">3,1–32,8%</td></tr>
+<tr><td>28.10–03.11</td><td class="r num">4 из 37</td><td class="r num">10,8%</td><td class="r num">4,3–24,7%</td></tr>
+<tr><td>04–11.11</td><td class="r num">34 из 113</td><td class="r num">30,1%</td><td class="r num">22,4–39,1%</td></tr>
+</tbody></table></div>
+<p class="small">Дни без покупок: 07–09.10, 11–12.10, 24–26.10. 11.11 — до 14:00. Сумма дней — 208 покупателей и 46 отмен.</p>
+<div class="tbl"><table>
+<thead><tr><th>День покупки, МСК</th><th class="r">Покупателей</th><th class="r">Отменили в час</th></tr></thead>
+<tbody>
+<tr><td>10.10</td><td class="r num">4</td><td class="r num">1 из 4</td></tr>
+<tr><td>13.10</td><td class="r num">1</td><td class="r num">0 из 1</td></tr>
+<tr><td>14.10</td><td class="r num">9</td><td class="r num">1 из 9</td></tr>
+<tr><td>15.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>16.10</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>17.10</td><td class="r num">7</td><td class="r num">2 из 7</td></tr>
+<tr><td>18.10</td><td class="r num">8</td><td class="r num">1 из 8</td></tr>
+<tr><td>19.10</td><td class="r num">3</td><td class="r num">0 из 3</td></tr>
+<tr><td>20.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>21.10</td><td class="r num">7</td><td class="r num">2 из 7</td></tr>
+<tr><td>22.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>23.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>27.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>28.10</td><td class="r num">10</td><td class="r num">1 из 10</td></tr>
+<tr><td>29.10</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>30.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>31.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>01.11</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>02.11</td><td class="r num">4</td><td class="r num">0 из 4</td></tr>
+<tr><td>03.11</td><td class="r num">10</td><td class="r num">1 из 10</td></tr>
+<tr><td>04.11</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>05.11</td><td class="r num">7</td><td class="r num">1 из 7</td></tr>
+<tr><td>06.11</td><td class="r num">16</td><td class="r num">2 из 16</td></tr>
+<tr><td>07.11</td><td class="r num">4</td><td class="r num">1 из 4</td></tr>
+<tr><td>08.11</td><td class="r num">12</td><td class="r num">5 из 12</td></tr>
+<tr><td>09.11</td><td class="r num">20</td><td class="r num">8 из 20</td></tr>
+<tr><td>10.11</td><td class="r num">30</td><td class="r num">8 из 30</td></tr>
+<tr><td>11.11 до 14:00</td><td class="r num">19</td><td class="r num">9 из 19</td></tr>
+</tbody></table></div>
 <h3>Подтвердили отмену</h3>
 <p>События экрана скидки в PostHog нет. <code>subscription_cancel_confirm</code> за 8 дней есть у 42, и у всех 42 есть <code>subscription_cancelled</code>. События продления в те же 8 дней среди них нет. Что именно предложила скидка на год, по событиям не видно.</p>
 </section>
@@ -783,7 +835,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <tr><td>Вошедшие в воронку отмены, без тестовых</td><td>09.11–11.11</td><td class="r num">около 25, остались 5</td><td>База T2, измерена до кнопки отмены на каждом экране</td></tr>
 <tr><td>Видели экран пропуска или неуспешной оплаты</td><td>16.10–11.11</td><td class="r num">315<span class="sub">из них 268 без подписки</span></td><td>Вход без оплаты</td></tr>
 <tr><td>Воронка FoxIQ и Azora, люди</td><td>07.10–11.11</td><td class="r num">5 160 / 32 399<span class="sub">первый вопрос</span></td><td>Сравнение воронок</td></tr>
-<tr><td>Отмена в первый час</td><td>покупки 13–27.10</td><td class="r num">6 из 52<span class="sub">12%</span></td><td>Отмена в первый час, покупки 13–27.10: 6 из 52 (12%). Это была прежняя база плана, малая выборка. На всех 208 получилось 22,1% (46 из 208), поэтому в плане база и цель обновлены.</td></tr>
+<tr><td>Отмена в первый час</td><td>покупки 13–27.10</td><td class="r num">7 из 54<span class="sub">13%</span></td><td>Отмена в первый час, покупки 13–27.10: 7 из 54 (13%). Ранее в плане стояло 6 из 52. Список этих людей в данных не найден, поэтому используем 7 из 54. На всех 208 — 22,1% (46 из 208). Цель плана — не выше 22,1%.</td></tr>
 </tbody></table></div>
 <p class="small muted">226 — покупатели в Primer. 208 — люди с subscription_started после почтового фильтра, каждый один раз. Типы пути, экраны, отмены и нажатия в этом файле считаются по этим 208.</p>
 </section>
@@ -846,7 +898,7 @@ button.showppl{align-self:flex-start;margin-top:4px}
 <thead><tr><th>Метрика</th><th>Сейчас</th><th>Цель</th><th>Пункт плана</th><th>Источник и период</th></tr></thead>
 <tbody>
 <tr><td><b>Начали тренировку в первый час</b><span class="sub">игра, тест или урок, люди</span></td><td class="num">16%<span class="sub">34 из 208, 07.10–11.11. Те же 34 человека дают 17% из 203: пять покупок раньше 13.10 17:00 UTC, событий тренировки тогда ещё не было.</span></td><td class="num">35%</td><td>T1, T3</td><td>PostHog: <code>game_started</code>, <code>test_started</code> или <code>lesson_completed</code> после <code>subscription_started</code>. Окно — 1 час</td></tr>
-<tr><td><b>Отмена в первый час</b><span class="sub">защитная</span></td><td class="num">22,1%<span class="sub">Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). База считается обоими способами.</span><span class="sub">Было в плане: 12% (6 из 52, покупки 13–27.10).</span></td><td class="num">не выше 22,1%</td><td>T1, T3</td><td>PostHog: <code>subscription_cancelled</code> с <code>reason = user_initiated</code>. Окно — 1 час после оплаты</td></tr>
+<tr><td><b>Отмена в первый час</b><span class="sub">защитная</span></td><td class="num">22,1%<span class="sub">Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). База считается обоими способами.</span><span class="sub">База на покупках 13–27.10: 13% (7 из 54), по правилам этого отчёта.</span><span class="sub">До 08.11: 12,6% (16 из 127). С 08.11: 37,0% (30 из 81).</span></td><td class="num">не выше 22,1%</td><td>T1, T3</td><td>PostHog: <code>subscription_cancelled</code> с <code>reason = user_initiated</code>. Окно — 1 час после оплаты</td></tr>
 <tr><td><b>Активность в 2+ дня за первые 7 дней</b></td><td class="num">5,8%<span class="sub">12 из 208, контентный экран в два дня, события не позже 11.11 14:00. Как было, события до 18.11: 21 из 208. Закрытая неделя: 7 из 100. Покупки 13–27.10: контентный экран в два дня — 3 из 54, события приложения — 4 из 54.</span></td><td class="num">25%</td><td>T1, письма-возвраты</td><td>PostHog: события приложения в двух и более днях. Окно — 7 дней после покупки</td></tr>
 <tr><td><b>Сами отменили в триале</b></td><td class="num">24%<span class="sub">14 из 58, покупки 12–27.10; 11% (3 из 28) — 27.10–02.11</span></td><td class="num">18%</td><td>T1, T3</td><td>Primer и <code>primer_payment</code>. Отмена — <code>subscription_cancelled</code> с <code>reason = user_initiated</code> до списания. Окно — 7 дней триала</td></tr>
 <tr><td><b>Остались после входа в отмену</b></td><td class="num">20%<span class="sub">5 из около 25, 09.11–11.11, без тестовых</span></td><td class="num">35%</td><td>T2</td><td>PostHog: <code>funnel_screen_open</code> и <code>cancellation_survey_completed</code>. Окно — сессия отмены</td></tr>

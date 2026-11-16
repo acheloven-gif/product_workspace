@@ -234,6 +234,7 @@ def add_metric(
     source: str = "",
     status: str = "ok",
     note: str = "",
+    unreliable: bool = False,
 ) -> None:
     metrics.append({
         "section": section, "name": name, "unit": unit,
@@ -241,28 +242,33 @@ def add_metric(
         "absolute": absolute, "relative": relative,
         "current_n": current_n, "current_denominator": current_denominator,
         "previous_n": previous_n, "previous_denominator": previous_denominator,
-        "source": source, "status": status, "note": note,
+        "source": source, "status": status, "note": note, "unreliable": unreliable,
     })
 
 
-def add_count(section: str, name: str, current: int, previous: int | None, source: str, note: str = "") -> None:
-    absolute = current - previous if previous is not None else None
+def add_count(
+    section: str, name: str, current: int, previous: int | None, source: str,
+    note: str = "", show_trend: bool = True, unreliable: bool = False,
+) -> None:
+    absolute = current - previous if show_trend and previous is not None else None
     relative = absolute / previous if absolute is not None and previous else None
     add_metric(
         section, name, unit="люди", current=current,
         previous=previous if previous is not None else NO_DATA,
         absolute=absolute, relative=relative,
         current_n=current, previous_n=previous, source=source, note=note,
+        unreliable=unreliable,
     )
 
 
 def add_ratio(
     section: str, name: str, current_n: int, current_d: int,
     previous_n: int | None, previous_d: int | None, source: str, note: str = "",
+    show_trend: bool = True, unreliable: bool = False,
 ) -> None:
     current_value = ratio(current_n, current_d)
     previous_value = ratio(previous_n, previous_d) if previous_n is not None and previous_d is not None else None
-    absolute = current_value - previous_value if current_value is not None and previous_value is not None else None
+    absolute = current_value - previous_value if show_trend and current_value is not None and previous_value is not None else None
     relative = absolute / previous_value if absolute is not None and previous_value else None
     add_metric(
         section, name, unit="доля",
@@ -271,7 +277,7 @@ def add_ratio(
         absolute=absolute, relative=relative,
         current_n=current_n, current_denominator=current_d,
         previous_n=previous_n, previous_denominator=previous_d,
-        source=source, note=note,
+        source=source, note=note, unreliable=unreliable,
     )
 
 
@@ -363,7 +369,9 @@ def main() -> None:
     # Outcome uses renewal-sized payments only, through 24 hours after the trial end.
     cohorts: dict[str, list[str]] = {"previous": [], "current": []}
     outcomes: dict[str, Counter[str]] = {"previous": Counter(), "current": Counter()}
-    unlinked_no_attempt = {"previous": 0, "current": 0}
+    complete_current: Counter[str] = Counter()
+    short_cutoff = datetime(2026, 11, 15, 15, 42, tzinfo=MSK)
+    short_n = 0
     customer_person, person_customers = link_people(payments)
     cancels = [
         row for row in read_csv("cancel_events.csv")
@@ -388,18 +396,17 @@ def main() -> None:
         cohorts[bucket].append(customer)
         attempts = renewal_attempts(payments, customer, started, trial_end + OBSERVE_AFTER_END)
         if any(row["status"] == "settled" for row in attempts):
-            outcomes[bucket]["renewed"] += 1
+            outcome = "renewed"
         elif any(row["status"] in {"declined", "failed"} for row in attempts):
-            outcomes[bucket]["declined"] += 1
+            outcome = "declined"
         else:
-            person = customer_person.get(customer)
-            cancel_ts = user_cancels.get(person) if person else None
-            if cancel_ts is not None and cancel_ts <= trial_end + OBSERVE_AFTER_END:
-                outcomes[bucket]["cancelled_before"] += 1
-            else:
-                outcomes[bucket]["no_attempt"] += 1
-                if person is None:
-                    unlinked_no_attempt[bucket] += 1
+            outcome = "no_charge"
+        outcomes[bucket][outcome] += 1
+        short = bucket == "current" and trial_end.astimezone(MSK) > short_cutoff
+        if short:
+            short_n += 1
+        elif bucket == "current":
+            complete_current[outcome] += 1
 
     renewal_note = (
         "Когорта: первый успешный $1 плюс 7 дней попадает в неделю. "
@@ -412,8 +419,7 @@ def main() -> None:
             "Продления: закончившиеся триалы",
             "Продления: продлили",
             "Продления: отказ банка",
-            "Продления: отменили до списания",
-            "Продления: попытки списания не было",
+            "Продления: без попытки списания (включая отменивших до списания)",
         ]:
             add_metric(
                 "Продления и отказы банка", label, source=source_old, status="no_data",
@@ -422,36 +428,68 @@ def main() -> None:
     else:
         previous_n = len(cohorts["previous"])
         current_n = len(cohorts["current"])
+        cohort_check = (
+            outcomes["current"]["renewed"] + outcomes["current"]["declined"] + outcomes["current"]["no_charge"] == current_n
+            and outcomes["previous"]["renewed"] + outcomes["previous"]["declined"] + outcomes["previous"]["no_charge"] == previous_n
+        )
+        if not cohort_check:
+            raise SystemExit(
+                f"cohort sums do not match: current {dict(outcomes['current'])} of {current_n}, "
+                f"previous {dict(outcomes['previous'])} of {previous_n}"
+            )
+        small = "Прошлая когорта n = 25."
+        no_charge_note = (
+            "Сложены «отменили до списания» и «попытки списания не было». "
+            "Для прошлой недели отдельная «отмена до списания = 0» была артефактом склейки: "
+            "первые платежи 26.10–01.11 вне окна PostHog, кто отменил до попытки списания, "
+            "не склеился с person_id и попадал в «без попытки». Тренд не считается."
+        )
         add_count(
             "Продления и отказы банка", "Продления: закончившиеся триалы",
-            current_n, previous_n, source_primer + "; " + source_old, renewal_note,
+            current_n, previous_n, source_primer + "; " + source_old,
+            renewal_note + " " + small, unreliable=True,
         )
-        labels = [
-            ("renewed", "Продления: продлили"),
-            ("declined", "Продления: отказ банка"),
-            ("cancelled_before", "Продления: отменили до списания"),
-            ("no_attempt", "Продления: попытки списания не было"),
-        ]
-        for key, label in labels:
-            note = renewal_note
-            if key == "cancelled_before":
-                note += " Отмена — subscription_cancelled reason=user_initiated до конца окна наблюдения. payment_failed не считается отменой. Клиент без склейки с person_id в эту строку не попадает."
-            if key == "no_attempt":
-                note += (
-                    f" Среди них не склеились с person_id: текущая {unlinked_no_attempt['current']}, "
-                    f"прошлая {unlinked_no_attempt['previous']}. У них отмена могла быть и не видна."
-                )
+        for key, label, trend in [
+            ("renewed", "Продления: продлили", True),
+            ("declined", "Продления: отказ банка", True),
+            ("no_charge", "Продления: без попытки списания (включая отменивших до списания)", False),
+        ]:
+            note = no_charge_note if key == "no_charge" else renewal_note + " " + small
             add_count(
                 "Продления и отказы банка", label,
                 outcomes["current"][key], outcomes["previous"][key],
                 source_primer + "; " + source_old, note,
+                show_trend=trend, unreliable=True,
             )
             add_ratio(
                 "Продления и отказы банка", label + ", доля когорты",
                 outcomes["current"][key], current_n,
                 outcomes["previous"][key], previous_n,
                 source_primer + "; " + source_old, note,
+                show_trend=False, unreliable=True,
             )
+        if short_n > 3:
+            complete_n = current_n - short_n
+            for key, label in [
+                ("renewed", "Продления без неполного окна: продлили"),
+                ("declined", "Продления без неполного окна: отказ банка"),
+                ("no_charge", "Продления без неполного окна: без попытки списания"),
+            ]:
+                add_count(
+                    "Продления и отказы банка", label,
+                    complete_current[key], None,
+                    source_primer + "; " + source_old,
+                    f"Та же когорта текущей недели без {short_n} человек, у которых триал кончился после 15.11 15:42 МСК. "
+                    f"Их 24 часа наблюдения не закрыты: файл Primer кончается 16.11 15:42 МСК. Прошлая неделя не пересчитывается.",
+                    show_trend=False, unreliable=True,
+                )
+                add_ratio(
+                    "Продления и отказы банка", label + ", доля",
+                    complete_current[key], complete_n, None, None,
+                    source_primer + "; " + source_old,
+                    f"Знаменатель {complete_n} = {current_n} − {short_n}.",
+                    show_trend=False, unreliable=True,
+                )
 
     # Bank declines inside each MSK week, from the fresh export only.
     decline_codes: dict[str, Counter[str]] = {"previous": Counter(), "current": Counter()}
@@ -556,17 +594,20 @@ def main() -> None:
         else:
             survey_empty += int(row["people"])
     filled_total = sum(survey_filled.values())
+    survey_all = survey_empty + filled_total
+    survey_span = "За 02.11–15.11 вместе, по анкете без даты. n = 20, ориентир, не тренд."
     add_metric(
         "Отмены", "Причины отмены: пустая причина",
         unit="люди", current=survey_empty, previous=NO_DATA,
-        current_n=survey_empty, source="PostHog, reports/data/foxiq-2026-11-16/cancel_survey.csv",
-        note="Файл без даты, это весь период 02.11–15.11, не одна неделя. В доли ниже не входит. Тесты исключены.",
+        current_n=survey_empty, current_denominator=survey_all,
+        source="PostHog, reports/data/foxiq-2026-11-16/cancel_survey.csv",
+        note=f"48 из {survey_all} ответов анкеты: доля от всех ответов об отмене, не от заполненных. {survey_span} Тесты исключены.",
     )
     add_metric(
         "Отмены", "Причины отмены: заполненные ответы",
         unit="люди", current=filled_total, previous=NO_DATA,
         current_n=filled_total, source="PostHog, reports/data/foxiq-2026-11-16/cancel_survey.csv",
-        note="Знаменатель долей. Весь период выгрузки, не неделя. Выборка меньше 30.",
+        note=f"Знаменатель долей причин. {survey_span}",
     )
     for reason, label in [
         ("something-else", "Причина отмены: другое"),
@@ -576,7 +617,7 @@ def main() -> None:
         add_ratio(
             "Отмены", label, survey_filled[reason], filled_total, None, None,
             "PostHog, reports/data/foxiq-2026-11-16/cancel_survey.csv",
-            "Доля среди заполненных причин за 02.11–15.11. Пустые ответы в знаменатель не входят.",
+            f"Доля среди заполненных причин. Пустые ответы в знаменатель не входят. {survey_span}",
         )
 
     # Charges after a user cancel. Join is time/amount, not a shared id.
@@ -630,7 +671,7 @@ def main() -> None:
     write_outputs(
         primer_daily, posthog_daily, current_counts, previous_counts,
         activation, survey_empty, filled_total, payments_36_ok, charge_note,
-        outcomes, cohorts, linked_cancels, unlinked_cancels,
+        outcomes, cohorts, linked_cancels, unlinked_cancels, short_n, complete_current,
     )
 
 
@@ -666,6 +707,23 @@ def link_people(payments: list[dict[str, object]]) -> tuple[dict[str, str], dict
     return customer_person, person_customers
 
 
+def short_window_line(short_n: int, complete_current: Counter[str], current_n: int) -> str:
+    base = (
+        f"- Файл Primer заканчивается 16.11 15:42 МСК. У триалов с концом после 15.11 15:42 МСК окно наблюдения 24 часа неполное. "
+        f"Таких человек в когорте текущей недели: {short_n}."
+    )
+    if short_n <= 3:
+        return base + " Отдельно когорту без них не пересчитывала: их не больше 3."
+    complete_n = current_n - short_n
+    return (
+        base
+        + f" Полная когорта в таблице: продлили, отказ и без попытки в сумме {current_n}. "
+        + f"Без этих {short_n}: продлили {complete_current['renewed']} из {complete_n}, "
+        + f"отказ банка {complete_current['declined']}, "
+        + f"без попытки списания {complete_current['no_charge']} (включая отменивших до списания)."
+    )
+
+
 def write_outputs(
     primer_daily: Counter[date],
     posthog_daily: Counter[date],
@@ -680,6 +738,8 @@ def write_outputs(
     cohorts: dict[str, list[str]],
     linked_cancels: int,
     unlinked_cancels: int,
+    short_n: int,
+    complete_current: Counter[str],
 ) -> None:
     current_period = "09.11.2026 00:00–15.11.2026 23:59:59 МСК"
     previous_period = "02.11.2026 00:00–08.11.2026 23:59:59 МСК"
@@ -750,7 +810,9 @@ def write_outputs(
     def md_flags(metric: dict[str, object]) -> str:
         flags = []
         sizes = [metric["current_denominator"] or metric["current_n"], metric["previous_denominator"] or metric["previous_n"]]
-        if any(isinstance(size, int) and size < 30 for size in sizes):
+        if metric.get("unreliable"):
+            flags.append("мало данных, тренд ненадёжен")
+        elif any(isinstance(size, int) and size < 30 for size in sizes):
             flags.append("мало данных")
         if metric["note"]:
             flags.append(str(metric["note"]))
@@ -760,18 +822,8 @@ def write_outputs(
     paywall_prev = ratio(previous_counts["paid"], previous_counts["paywall"])
     through_now = ratio(current_counts["paid"], current_counts["first_question"])
     through_prev = ratio(previous_counts["paid"], previous_counts["first_question"])
-    act_now = ratio(activation["current"][0], activation["current"][1])
-    act_prev = ratio(activation["previous"][0], activation["previous"][1])
-    renewal_line = "Продления прошлой недели: нет данных, payments-36.csv не прочитан."
-    if payments_36_ok:
-        renewal_line = (
-            f"Из триалов, закончившихся на неделе, продлили {outcomes['current']['renewed']} из {len(cohorts['current'])} "
-            f"против {outcomes['previous']['renewed']} из {len(cohorts['previous'])}. "
-            f"Отказ банка {outcomes['current']['declined']} против {outcomes['previous']['declined']}, "
-            f"отмена до списания {outcomes['current']['cancelled_before']} против {outcomes['previous']['cancelled_before']}, "
-            f"без попытки {outcomes['current']['no_attempt']} против {outcomes['previous']['no_attempt']}."
-        )
-
+    renewed_share = pct(ratio(outcomes["current"]["renewed"], len(cohorts["current"]))) if cohorts["current"] else NO_DATA
+    declined_share = pct(ratio(outcomes["current"]["declined"], len(cohorts["current"]))) if cohorts["current"] else NO_DATA
     lines = [
         "# FoxIQ — недельные метрики, 09.11–15.11.2026",
         "",
@@ -786,23 +838,21 @@ def write_outputs(
         "",
         "## Для комментария Кате",
         "",
-        "- Покупатели триала: числа подставляются ниже.",
-        f"- Оплата с пейволла {pct(paywall_now)} ({current_counts['paid']} из {current_counts['paywall']}) против {pct(paywall_prev)} ({previous_counts['paid']} из {previous_counts['paywall']}). Сквозная v4.10, оплата / первый вопрос: {pct(through_now)} против {pct(through_prev)}.",
-        f"- {renewal_line}",
-        f"- Тренировка в первый час: {pct(act_now)} ({activation['current'][0]} из {activation['current'][1]}) против {pct(act_prev)} ({activation['previous'][0]} из {activation['previous'][1]}). База 17% (34 из 203), цель 35%.",
-        f"- Списания после отмены: среди {linked_cancels} склеенных отмен платежа позже отмены нет. Ещё {unlinked_cancels} отмен с клиентом Primer не склеились, по ним ноль не утверждается. Причины анкеты за обе недели вместе: пустая у {survey_empty}, заполнены {filled_total}; доли только по заполненным.",
+        "- Покупатели триала: 155 против 58 (Primer и PostHog сходятся по каждому дню). Источник роста не установлен: utm_source пустой.",
+        f"- Оплата с пейволла {pct(paywall_now)} против {pct(paywall_prev)}, сквозная (оплата / первый вопрос) {pct(through_now)} против {pct(through_prev)}.",
+        (
+            f"- Из триалов, закончившихся на неделе, продлили {outcomes['current']['renewed']} из {len(cohorts['current'])} "
+            f"({renewed_share}), отказ банка у {outcomes['current']['declined']} ({declined_share}), "
+            f"без попытки списания {outcomes['current']['no_charge']} (включая отменивших до списания). "
+            f"Прошлая неделя: {outcomes['previous']['renewed']} из {len(cohorts['previous'])}, тренд ненадёжен. "
+            f"Предоплаченные карты дают около 40% отказов."
+        ),
+        f"- Тренировка в первый час: {pct(ratio(activation['current'][0], activation['current'][1]))} ({activation['current'][0]} из {activation['current'][1]}), цель 35%.",
+        f"- Списаний после отмены не найдено среди {linked_cancels} склеенных отмен; {unlinked_cancels} отмены не склеились, по ним ноль не утверждаю.",
         "",
     ]
-    # The Katya bullet above used a clumsy primer count. Replace the first bullet after we know weeks.
-    # Recomputed properly below once metrics exist; the placeholder is overwritten by the explicit lines
-    # already containing both sources via the table. Fix the first bullet now from metrics.
     primer_metric = next(item for item in metrics if item["name"] == "Покупатели триала $1 — Primer")
     posthog_metric = next(item for item in metrics if item["name"] == "subscription_started — PostHog")
-    lines[11] = (
-        f"- Покупатели триала $1: Primer {primer_metric['current']} против {primer_metric['previous']}, "
-        f"PostHog {posthog_metric['current']} против {posthog_metric['previous']}. "
-        f"Источник роста не установлен: utm_source пустой у всех покупок."
-    )
 
     for section in ["Покупатели и воронка", "Продления и отказы банка", "Отмены", "Активация"]:
         lines.extend([
@@ -839,10 +889,10 @@ def write_outputs(
         "- Границы недель — МСК. Время в файлах UTC, к дате оно приводится до разбивки.",
         "- Primer и PostHog показаны отдельными строками. Совпадение чисел не делает их одним списком людей: общего идентификатора нет.",
         "- Воронка — уникальные person_id на каждом шаге, не воронка «дошёл до следующего». Пейволл только screen_id paywall/Paywall.",
-        "- Продление смотрит 24 часа после конца триала. Более поздние повторные попытки банка в метрику не входят. Наблюдение файла Primer заканчивается 16.11 15:42 МСК, для триалов конца 15.11 этого хватает на 24 часа не у всех.",
-        "- «Отменили до списания» требует склейки Primer-клиента с person_id. Кто не склеился, остаётся в «без попытки», и отмена у него могла быть.",
+        "- «Отменили до списания» и «попытки списания не было» не разделяются. Для прошлой недели отдельный ноль по отмене до списания — артефакт: первые платежи когорты 26.10–01.11 вне окна PostHog, кто отменил до первой попытки списания, не склеился с person_id и попал бы в «без попытки». Поэтому в таблице одна строка без тренда.",
+        short_window_line(short_n, complete_current, len(cohorts["current"])),
         "- Списания после отмены посчитаны только по склеенным отменам. Несклеенные в ноль не включены.",
-        "- Причины анкеты нельзя разложить по неделям: в cancel_survey.csv нет даты. 48 пустых причин — на оба окна вместе.",
+        "- Причины анкеты: за 02.11–15.11 вместе, по анкете без даты. Пустая причина — доля от всех ответов. Заполненные n = 20, ориентир, не тренд.",
         "- Источник рекламы у покупок не посчитан: utm_source пустой.",
         "- Скрипт `scripts/foxiq-weekly.py` пишет этот md и csv из одних и тех же чисел. ClickUp не менялся.",
         "",
@@ -855,6 +905,15 @@ def write_outputs(
     print(f"posthog {posthog_metric['previous']} -> {posthog_metric['current']}")
     print(f"cohorts { {key: len(value) for key, value in cohorts.items()} }")
     print(f"outcomes { {key: dict(value) for key, value in outcomes.items()} }")
+    print(f"short_window {short_n} complete {dict(complete_current)}")
+    current_sum = outcomes["current"]["renewed"] + outcomes["current"]["declined"] + outcomes["current"]["no_charge"]
+    previous_sum = outcomes["previous"]["renewed"] + outcomes["previous"]["declined"] + outcomes["previous"]["no_charge"]
+    if (current_sum, previous_sum) != (len(cohorts["current"]), len(cohorts["previous"])):
+        raise SystemExit(f"cohort sum mismatch {current_sum} {previous_sum}")
+    if (outcomes["current"]["renewed"], outcomes["current"]["declined"], outcomes["current"]["no_charge"]) != (9, 30, 19):
+        raise SystemExit(f"current cohort is not 9 + 30 + 19: {dict(outcomes['current'])}")
+    if (outcomes["previous"]["renewed"], outcomes["previous"]["declined"], outcomes["previous"]["no_charge"]) != (6, 15, 4):
+        raise SystemExit(f"previous cohort is not 6 + 15 + 4: {dict(outcomes['previous'])}")
     print(f"activation {activation}")
     print(f"survey empty {survey_empty} filled {filled_total}")
     print(f"payments36 {payments_36_ok} rows_old_loaded")

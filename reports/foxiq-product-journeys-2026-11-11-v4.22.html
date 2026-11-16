@@ -1,0 +1,1270 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Путь покупателей FoxIQ — версия 4.22</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column (~960px), same visual system as the Azora Japan journeys report (Katya's template). Summary, product map, archetypes, every user, features, what recordings show, why people cancel, ideal paths with LTV calculator, tests, limits, glossary. */
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding-block:40px 64px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:46px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:2.1rem;font-weight:700;letter-spacing:-.01em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.12rem;font-weight:650}
+p{margin:0}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{display:flex;flex-direction:column;gap:12px}
+header .meta{color:var(--muted);font-size:.95rem;max-width:72ch}
+section{display:flex;flex-direction:column;gap:16px}
+section > p, .card > p{max-width:72ch}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+.summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:11px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;letter-spacing:.03em;padding:2px 9px;border-radius:999px;white-space:nowrap;vertical-align:2px}
+.chip.crit{background:var(--crit-soft);color:var(--crit)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.info{background:var(--info-soft);color:var(--info)}
+.chip.plain{background:var(--soft);color:var(--muted)}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+tr:last-child td{border-bottom:none}
+tr.tot td{background:var(--soft);font-weight:600}
+td.r,th.r{text-align:right}
+td .sub{display:block;color:var(--muted);font-size:.8rem}
+td.bar{width:32%}
+.barline{display:flex;align-items:center;gap:8px}
+.barline .b{height:10px;border-radius:0 4px 4px 0;background:var(--bar);display:inline-block;flex:none}
+.barline .b.lo{background:var(--s-crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.h4{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+ul.list,ol.list{margin:0;padding-left:1.25em;display:flex;flex-direction:column;gap:6px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .v{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact .l{font-size:.84rem;color:var(--muted);line-height:1.35}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0;max-width:74ch}
+.steps{counter-reset:st;display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+.steps > li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;display:flex;flex-direction:column;gap:6px}
+.steps > li::before{content:counter(st);position:absolute;left:16px;top:13px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-family:var(--f-mono);font-size:.82rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+.steps .meta2{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.84rem;color:var(--muted)}
+.steps .meta2 b{color:var(--ink);font-weight:600}
+dl.gloss{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:8px 16px;margin:0}
+dl.gloss dt{font-weight:600}
+dl.gloss dd{margin:0;color:var(--muted)}
+code{font-family:var(--f-mono);font-size:.86em;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-word}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible,input:focus-visible,[data-tip]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.92rem}
+details{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+details > summary{cursor:pointer;padding:12px 16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+details > summary::-webkit-details-marker{display:none}
+details > summary::before{content:"▸";color:var(--muted)}
+details[open] > summary::before{content:"▾"}
+details .tbl{border:none;border-top:1px solid var(--line);border-radius:0 0 10px 10px}
+/* stacked 100% bar */
+.stack{display:flex;gap:2px;height:24px;background:var(--surface)}
+.stack .seg{height:100%;min-width:3px}
+.stack .seg:last-child{border-radius:0 4px 4px 0}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.88rem}
+.legend .k{display:inline-flex;align-items:center;gap:7px}
+.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
+.g-good{background:var(--s-good)} .g-warn{background:var(--s-warn)} .g-crit{background:var(--s-crit)} .g-neutral{background:var(--s-neutral)}
+.g-c1{background:var(--c1)} .g-c2{background:var(--c2)} .g-c3{background:var(--c3)} .g-c4{background:var(--c4)}
+/* column chart */
+.cols{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;align-items:end;height:190px;border-bottom:1px solid var(--line);padding-top:8px}
+.cols .c{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.cols .c .val{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+.cols .c .col{width:24px;max-width:100%;background:var(--bar);border-radius:4px 4px 0 0}
+.cols-x{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;font-size:.78rem;color:var(--muted);text-align:center;line-height:1.25}
+/* calculator */
+.calc table{min-width:640px}
+.calc td input{width:100%;max-width:120px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc td.inp{width:150px}
+.calc tr.out td{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calc tr.out td:first-child{font-family:var(--f-body)}
+.calc tr.head td{background:var(--soft);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.b{font:inherit;font-size:.88rem;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button.b:hover{background:var(--soft)}
+.delta-up{color:var(--ok)} .delta-down{color:var(--crit)}
+#tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:.82rem;line-height:1.35;padding:6px 9px;border-radius:6px;max-width:260px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+
+.wrap{max-width:960px}
+.arch{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.arch .card{gap:9px}
+.arch .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.arch .share{font-family:var(--f-mono);font-size:1.15rem;font-weight:600}
+.mini{display:flex;height:10px;border-radius:3px;overflow:hidden;background:var(--soft)}
+.mini span{height:100%}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:.88rem}
+.kv dt{color:var(--muted)} .kv dd{margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.flow .st{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:.86rem;display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 150px}
+.flow .st b{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.flow .st.hot{border-color:var(--crit);background:var(--crit-soft)}
+.flow .arrow{align-self:center;color:var(--muted);font-family:var(--f-mono)}
+.ja{font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",var(--f-body)}
+.quote{border-left:3px solid var(--line);padding:2px 0 2px 12px;color:var(--ink)}
+.filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.filters label{font-size:.84rem;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.filters select,.filters input{font:inherit;font-size:.9rem;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);min-width:150px}
+#ppl td .story{display:block;font-size:.8rem;color:var(--muted);line-height:1.45;margin-top:3px}
+#ppl table{min-width:760px}
+.hyp{display:flex;flex-direction:column;gap:12px}
+.hyp .card h3{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.cols2 > div{min-width:0;display:flex;flex-direction:column;gap:4px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.days{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:.9rem}
+.days li{display:grid;grid-template-columns:78px 1fr;gap:8px}
+.days li b{font-family:var(--f-mono);font-size:.82rem;color:var(--accent);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.calc2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
+.calc2 .inputs{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;font-size:.9rem}
+.calc2 .inputs input{width:110px;font:inherit;font-family:var(--f-mono);font-size:.9rem;padding:4px 7px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.calc2 .out{display:flex;flex-direction:column;gap:10px;min-width:0}
+.big{font-family:var(--f-mono);font-size:1.6rem;font-weight:600}
+button.b.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+@media (max-width:720px){.cols2,.calc2{grid-template-columns:1fr}}
+
+@media (max-width:560px){h1{font-size:1.65rem} .card{padding:16px} dl.gloss{grid-template-columns:1fr} dl.gloss dd{margin-bottom:6px} .cols .c .col{width:18px} .cols-x{font-size:.7rem}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+tr.st td{border-top:none;padding-top:0}
+:root{
+  --bg:#fff8f3; --surface:#ffffff; --ink:#2b1d17; --muted:#7a6359; --line:#f2dfd3; --soft:#fff0e6;
+  --accent:#e0703f; --accent-soft:#ffe7d9;
+  --crit:#c2412d; --crit-soft:#fde8e3; --warn:#b26a12; --warn-soft:#fff1dc; --ok:#2f8a5b; --ok-soft:#e6f5ec; --info:#a8573a; --info-soft:#fdeee5;
+  --bar:#f08a5d; --bar2:#f7d6c4;
+  --s-good:#4caf7d; --s-warn:#f4b860; --s-crit:#e06a55; --s-neutral:#e8d3c7;
+  --c1:#f08a5d; --c2:#e0703f; --c3:#4caf7d; --c4:#f4b860;
+  --f-body:"Golos Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+body{background:linear-gradient(180deg,#ffe9dc 0,var(--bg) 420px) no-repeat,var(--bg)}
+.card,.summary,.tbl,details,.fact,.flow .st{box-shadow:0 1px 2px rgba(160,90,60,.06),0 6px 18px rgba(224,112,63,.06)}
+.card,.summary{border-radius:16px}
+.tbl{border-radius:14px}
+.fact{border-radius:12px}
+.summary{border-top:4px solid var(--accent)}
+h1{color:var(--ink)}
+.eyebrow{color:var(--accent)}
+th{background:var(--soft)}
+.chip{border-radius:999px}
+.note{border-left-color:var(--accent);border-radius:0 12px 12px 0}
+button.b{border-radius:999px}
+button.b.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.toc a{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px;text-decoration:none}
+.toc a:hover{background:var(--accent-soft)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:4px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;box-shadow:0 6px 18px rgba(224,112,63,.07)}
+.kpi .ki{font-size:1.3rem}
+.kpi .kv{font-family:var(--f-mono);font-size:1.45rem;font-weight:700;color:var(--accent)}
+.kpi.warn .kv{color:var(--warn)} .kpi.crit .kv{color:var(--crit)}
+.kpi .kl{font-size:.82rem;color:var(--muted);line-height:1.3}
+.tl{display:flex;flex-direction:column;gap:10px}
+.tli{display:grid;grid-template-columns:40px 1fr;gap:10px;align-items:start;padding:10px 12px;border-radius:12px;background:var(--soft);border-left:4px solid var(--accent)}
+.tli.crit{border-left-color:var(--crit)} .tli.warn{border-left-color:var(--warn)} .tli.ok{border-left-color:var(--ok)}
+.tli .te{font-size:1.5rem;line-height:1.2;text-align:center}
+.hb{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:10px;align-items:center;font-size:.88rem;margin:5px 0}
+.hb .hl{color:var(--ink)}
+.hb .ht{height:14px;background:var(--soft);border-radius:999px;overflow:hidden}
+.hb .hf{display:block;height:100%;background:var(--bar);border-radius:999px}
+.hb .hf.hot{background:var(--crit)}
+.hb .hv{font-size:.82rem;color:var(--muted);min-width:64px;text-align:right}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.fc{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--bar);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;box-shadow:0 6px 18px rgba(224,112,63,.06)}
+.fc.crit{border-top-color:var(--crit)} .fc.warn{border-top-color:var(--warn)} .fc.ok{border-top-color:var(--ok)}
+.fc .fh{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:650;flex-wrap:wrap}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.hgrid .card h3{font-size:1rem}
+details .pad{padding:4px 16px 16px}
+.flow .arrow{font-size:1.1rem}
+@media (max-width:560px){.hb{grid-template-columns:90px 1fr auto}.kpi .kv{font-size:1.2rem}}
+
+:root{color-scheme:light}
+.fc .hb{grid-template-columns:62px 1fr auto}
+[data-tip]{cursor:help}
+.hb[data-tip]:hover .hf,.c[data-tip]:hover .col,.seg[data-tip]:hover{filter:brightness(.9)}
+.kpi[data-tip]:hover,.st[data-tip]:hover,.fact[data-tip]:hover,.tli[data-tip]:hover{border-color:var(--accent)}
+.hb{border-radius:8px;padding:2px 4px;margin:3px -4px}
+.hb:hover{background:var(--soft)}
+#tip{background:#3a241b;color:#fff8f3;font-size:.84rem;line-height:1.4;padding:8px 11px;border-radius:10px;max-width:300px;box-shadow:0 8px 24px rgba(120,60,30,.25)}
+.hint{font-size:.82rem;color:var(--muted)}
+.ppl-wrap > summary{font-size:1.05rem;padding:16px 18px}
+.ppl-wrap[open] > summary{border-bottom:1px solid var(--line)}
+button.showppl{align-self:flex-start;margin-top:4px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 6px 18px rgba(224,112,63,.06)}
+.tcard .th{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tcard .tcode{font-family:var(--f-mono);font-weight:700;color:#fff;background:var(--accent);border-radius:8px;padding:1px 7px;font-size:.85rem}
+.tcard .th .chip{margin-left:auto}
+.tcard .thyp{font-size:.92rem;margin:0}
+.tab{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:.85rem}
+.tab .ta,.tab .tb{padding:4px 9px;border-radius:999px;border:1px solid var(--line)}
+.tab .ta{background:var(--soft);color:var(--muted)} .tab .tb{background:var(--accent-soft);color:var(--ink);border-color:var(--accent)}
+.tcard .tr{display:grid;grid-template-columns:92px 1fr;gap:8px;font-size:.86rem;padding:3px 4px;border-radius:8px}
+.tcard .tr:hover{background:var(--soft)}
+.tcard .tk{color:var(--muted)}
+.steps2{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px}
+.steps2 li{padding:2px 4px;border-radius:6px} .steps2 li:hover{background:var(--soft)}
+.pflow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.84rem}
+.pflow .ps{background:var(--accent-soft);border:1px solid var(--line);border-radius:999px;padding:3px 9px}
+.pflow .ps:hover{border-color:var(--accent)}
+
+#ppl tbody tr:not(.st) td{border-bottom:none}
+#ppl .chip{white-space:normal;line-height:1.3;padding:3px 9px}
+.kpi .kd{display:block;font-size:.78rem;color:var(--muted);margin-top:6px;line-height:1.35}.tli .tlsrc{display:block;font-size:.8rem;color:var(--muted);margin-top:4px}.howto{margin-top:12px}.howto .list{margin:4px 0 0}#tests td,#plan td,#features td,#first td{vertical-align:top}.num .sub{white-space:normal;font-family:var(--f-body)}#features table{table-layout:fixed}#features table th,#features table td{overflow-wrap:anywhere;word-break:normal;font-size:.84rem}@media (max-width:760px){#features table{min-width:900px}}#plan table{table-layout:fixed;min-width:0}#tests table.tests-t{table-layout:fixed;width:100%;min-width:0}#tests table.tests-t th,#tests table.tests-t td{overflow-wrap:anywhere;word-break:normal;font-size:.84rem;padding:8px 8px}@media (max-width:760px){#tests table.tests-t{min-width:900px}}#features th{white-space:normal}.arch .mini{height:10px}.arch .kv{margin:2px 0}.arch .kv dd{font-size:.88rem}details.m2{border:none;background:none;box-shadow:none;border-radius:0;margin:0 0 12px;padding:0}details.m2>summary{padding:2px 0;font-size:.84rem;font-weight:600;color:var(--accent);cursor:pointer}details.m2>summary::before{content:"▸ ";color:var(--accent)}details.m2[open]>summary::before{content:"▾ "}details.m2>p{margin-top:6px}#tests details.m{border:none;background:none;box-shadow:none;border-radius:0;margin:4px 0}#tests details.m>summary{padding:2px 0;font-size:.82rem;font-weight:600;color:var(--accent)}#tests details.m>summary::before{content:"▸ ";color:var(--accent)}#tests details.m[open]>summary::before{content:"▾ "}#tests details.m .pad{padding:2px 0 4px}</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<p class="eyebrow">FoxIQ · веб · 7 октября – 11 ноября 2026 · версия 4.22 от 16.11</p>
+<h1>Путь покупателей FoxIQ</h1>
+<p class="meta">Один период: 07.10 00:00 – 11.11 14:00 МСК. Деньги — Primer. Поведение — все люди с первой <code>subscription_started</code> за эти даты, каждый человек один раз. Личных данных нет.</p>
+<div class="kpis">
+<div class="kpi"><span class="ki">🧑‍🤝‍🧑</span><span class="kv">226</span><span class="kl">покупателей триала в Primer</span><span class="kd">07.10–11.11. В PostHog subscription_started — 208.</span></div>
+<div class="kpi"><span class="ki">💳</span><span class="kv">25%</span><span class="kl">продлили месяц</span><span class="kd">29 из 118, у кого триал кончился к 11.11. Отказ банка 62, без попытки 27.</span></div>
+<div class="kpi crit"><span class="ki">🚪</span><span class="kv">16%</span><span class="kl">начали тренировку в первый час</span><span class="kd">34 из 208. База теста считается без пяти покупок раньше 13.10 17:00 UTC, поэтому база теста остаётся 34 из 203 (17%).</span></div>
+<div class="kpi warn"><span class="ki">👀</span><span class="kv">99</span><span class="kl">из 208 ушли с результата</span><span class="kd">47,6%, строго до 11.11 14:00. Сертификат и ушёл — 65. Игра в первый день — 31. Возвращается — 12. Как было, события до даты сборки 16.11: 92, 64, 30, 21.</span></div>
+<div class="kpi"><span class="ki">🔁</span><span class="kv">12</span><span class="kl">открывали приложение в два дня</span><span class="kd">5,8% из 208, события не позже 11.11 14:00. Как было, события до даты сборки 16.11: 21 (10,1%).<br>Закрытая неделя: 7 из 100 (7,0%). Неделя закрыта у 100 из 208: покупка не позже 04.11 14:00.</span></div>
+<div class="kpi"><span class="ki">🧠</span><span class="kv">137</span><span class="kl">балл у всех, кто увидел результат</span><span class="kd">207 из 207. Один покупатель до результата не дошёл.</span></div>
+</div>
+<div class="note small"><p class="h4">Замечания Кати</p><ol class="list">
+<li>Главная остаётся. Через неё идут к отмене, саму отмену она не вызывает.</li>
+<li>Вход без оплаты. Задача <a href="https://app.clickup.com/t/1249d35ptgn">вход в приложение без оплаты</a> — статус в ClickUp «запущено».</li>
+<li>Тесты по порядку: T1 — первая тренировка, T2 — воронка отмены, T3 — уровень балла. Этот порядок не менялся.</li>
+<li>Письма-возвраты: без контрольной группы, эффект до и после. Отдельного раздела нет. Задача <a href="https://app.clickup.com/t/1249d35nu7q">убрать неоплативших и контрольную группу</a> — статус в ClickUp «тестирование».</li>
+<li>Списание после отмены: 2 случая, оба на $49,99. Проблема решена, <a href="#fix-charge">задача закрыта</a>.</li>
+</ol></div>
+</header>
+
+<section id="summary" class="summary">
+<h2>Коротко</h2>
+<ol>
+<li>План тот же. Главная остаётся, вход без оплаты — задача в статусе «запущено», тесты идут T1, затем T2, затем T3.</li>
+<li>208 человек, один список, типы строго до 11.11 14:00. Результат и ушёл 99. Сертификат и ушёл 65. Игра в первый день 31. Возвращается 12. Контентный экран не открыл 1. Как было, события до даты сборки 16.11: 92, 64, 30, 21, 1.</li>
+<li>До пейволла за весь период FoxIQ доходит реже Azora: 37,9% (1 955 из 5 160) против 47,7% (15 444 из 32 399).</li>
+<li>На срез 11.11 14:00 самостоятельных отмен 65. Медиана 9 мин 31 с, в первый час этих 65 — 46. Защитная метрика отдельно: <code>reason = user_initiated</code> в первый час — 46 из 208 (22,1%). Подтвердили отмену 42: у всех затем есть <code>subscription_cancelled</code>, события продления в те же 8 дней нет.</li>
+<li>Карточки 208 человек — в разделе «Каждый покупатель»: день, тип пути и итог события. Пошаговая история из записей — нет данных. Истории 93 человек до 03.11 остаются в <a href="foxiq-product-journeys-2026-11-11-v4.14.html#people">версии 4.14</a>.</li>
+</ol>
+</section>
+
+<nav class="toc" aria-label="Разделы">
+<a href="#map">Карта</a>
+<a href="#days">Покупки по дням</a>
+<a href="#arch">Типы пути</a>
+<a href="#people">Покупатели</a>
+<a href="#first">Первый заход</a>
+<a href="#features">Функции</a>
+<a href="#us">Azora в США</a>
+<a href="#ads">Источники</a>
+<a href="#clicks">Нажатия</a>
+<a href="#rec">Записи</a>
+<a href="#rage">Злые тапы</a>
+<a href="#cancel">Отмены</a>
+<a href="#why">Почему отменяют</a>
+<a href="#money">Деньги</a>
+<a href="#funnel">Воронка и Azora</a>
+<a href="#samples">Выборки</a>
+<a href="#changes">Изменения 11.11</a>
+<a href="#tests">Тесты</a>
+<a href="#plan">Метрики плана</a>
+<a href="#ideal">Пути</a>
+<a href="#calc">LTV</a>
+<a href="#gloss">Словарь</a>
+<a href="#limits">Ограничения</a>
+<a href="#datasources">Источники данных</a>
+</nav>
+
+<section id="map">
+<h2>Карта продукта</h2>
+<div class="flow">
+<div class="st"><b>Реклама</b>Meta 162 из 208, Google 2 из 208, нет источника 26 из 208, прочие 18 (int3 11, googlemail 7)</div><span class="arrow">→</span>
+<div class="st"><b>Квиз</b>40 вопросов</div><span class="arrow">→</span>
+<div class="st"><b>Почта</b>сертификат на почту</div><span class="arrow">→</span>
+<div class="st hot"><b>Пейволл</b>$1 / 7 дней, затем $29.99/мес</div><span class="arrow">→</span>
+<div class="st hot"><b>Результат</b>IQ 137 у 207 из 207</div><span class="arrow">→</span>
+<div class="st"><b>Сертификат</b>имя, затем PDF</div><span class="arrow">→</span>
+<div class="st"><b>Главная</b>Daily Brain Training 0/5</div><span class="arrow">→</span>
+<div class="st hot"><b>Отмена</b>подтверждение, причина, скидка</div>
+</div>
+<p class="small muted"><b>Красным</b> отмечены этапы с главными потерями: до пейволла доходят 37,9% против 47,7% у Azora, на экране результата остаются 99 из 208, в первый час отменяют 46 из 208.</p>
+<p class="small">В версии 4.14 на карте стояло Meta 63 и Google 1. Это разбор покупок до 03.11, не 208 человек. У этих 208 источник — первое свойство <code>$initial_utm_source</code>: Meta 162 из 208 (кабинеты 4, 19 и 22), Google 2 из 208, нет источника 26 из 208, прочие 18 (int3 11, googlemail 7). Подробно — в разделе «Источники».</p>
+<div class="cols2">
+<div class="card"><h3>Воронка FoxIQ, 07.10–11.11</h3>
+<div class="hb"><span class="hl">Первый вопрос</span><span class="ht"><span class="hf" style="width:100%"></span></span><span class="hv num">5 160</span></div>
+<div class="hb"><span class="hl">Пейволл</span><span class="ht"><span class="hf" style="width:37.9%"></span></span><span class="hv num">1 955 · 37,9%</span></div>
+<div class="hb"><span class="hl">Оплатили</span><span class="ht"><span class="hf hot" style="width:3.6%"></span></span><span class="hv num">186 · 3,6%</span></div>
+<p class="small muted">Те же числа, что в разделе воронки этого файла. Открыли оплату и начали платить за весь период — нет данных: в 4.18 этих шагов нет.</p></div>
+<div class="card"><h3>FoxIQ и Azora, то же окно</h3>
+<p class="h4">Первый вопрос → пейволл</p>
+<div class="hb"><span class="hl">FoxIQ</span><span class="ht"><span class="hf hot" style="width:37.9%"></span></span><span class="hv num">37,9%</span></div>
+<div class="hb"><span class="hl">Azora</span><span class="ht"><span class="hf" style="width:47.7%"></span></span><span class="hv num">47,7%</span></div>
+<p class="h4">Пейволл → оплата</p>
+<div class="hb"><span class="hl">FoxIQ</span><span class="ht"><span class="hf" style="width:9.5%"></span></span><span class="hv num">9,5%</span></div>
+<div class="hb"><span class="hl">Azora</span><span class="ht"><span class="hf" style="width:8.7%"></span></span><span class="hv num">8,7%</span></div>
+<p class="small muted">Окно 17.10–02.11 из версии 4.14 другое: первый вопрос 3 207, пейволл 897 (28%), открыли оплату 886, начали платить 170, оплатили 63 (2,0%).</p><details class="m2"><summary>Подробнее</summary><p class="small">FoxIQ против Azora на том окне: 28% против 46%, оплата 7,0% против 7,8%, сквозная 2,0% против 3,6%. На 13-м экране q_grid_pattern уходили 9,7% (165 из 1 702) против 2,1% на остальных вопросах. Это не пересчитано на 11.11.</p></details></div>
+</div>
+<div class="card"><h3>Разделы приложения, 208 человек</h3>
+<p class="small">Числа — раздел «Чем пользуются», первые 7 дней. Таблица «из 64» в версии 4.14 — покупки 12.10–03.11, данные до 03.11.</p>
+<div class="tbl"><table>
+<thead><tr><th>Раздел</th><th>Что внутри</th><th class="r">Открывали</th><th class="r">Время, медиана</th></tr></thead>
+<tbody>
+<tr><td>Результат IQ</td><td>Балл, кривая, сертификат, короткая тренировка</td><td class="r num">207 из 208</td><td class="r num">33 с</td></tr>
+<tr><td>Сертификат</td><td>Имя, PDF, поделиться</td><td class="r num">83 из 208</td><td class="r num">0 с</td></tr>
+<tr><td>Главная</td><td>Daily Brain Training, 0/5 done</td><td class="r num">120 из 208</td><td class="r num">14 с</td></tr>
+<tr><td>Профиль</td><td>Настройки и страница подписки</td><td class="r num">74 из 208</td><td class="r num">10 с</td></tr>
+<tr><td>Игры</td><td>game_started или экран /games/</td><td class="r num">41 из 208</td><td class="r num">5 мин</td></tr>
+<tr><td>Explore</td><td>Каталог</td><td class="r num">27 из 208</td><td class="r num">18 с</td></tr>
+<tr><td>Тесты личности</td><td>Экран /tests</td><td class="r num">22 из 208</td><td class="r num">4 мин 40 с</td></tr>
+<tr><td>Трек уроков</td><td>/track и /lessons</td><td class="r num">33 из 208</td><td class="r num">18 с</td></tr>
+</tbody></table></div>
+</div>
+</section>
+
+<section id="days">
+<h2>Покупки по дням</h2>
+<p class="small">Человек считается в день первой <code>subscription_started</code>, проект foxiq, время МСК. Окно 07.10 00:00 – 11.11 14:00. Дни без покупок оставлены в таблице. Тестовые и свои адреса исключены.</p>
+<div class="tbl"><table>
+<thead><tr><th>День</th><th class="r">Покупатели</th></tr></thead>
+<tbody>
+<tr><td>07.10</td><td class="r num">0</td></tr>
+<tr><td>08.10</td><td class="r num">0</td></tr>
+<tr><td>09.10</td><td class="r num">0</td></tr>
+<tr><td>10.10</td><td class="r num">4</td></tr>
+<tr><td>11.10</td><td class="r num">0</td></tr>
+<tr><td>12.10</td><td class="r num">0</td></tr>
+<tr><td>13.10</td><td class="r num">1</td></tr>
+<tr><td>14.10</td><td class="r num">9</td></tr>
+<tr><td>15.10</td><td class="r num">5</td></tr>
+<tr><td>16.10</td><td class="r num">3</td></tr>
+<tr><td>17.10</td><td class="r num">7</td></tr>
+<tr><td>18.10</td><td class="r num">8</td></tr>
+<tr><td>19.10</td><td class="r num">3</td></tr>
+<tr><td>20.10</td><td class="r num">2</td></tr>
+<tr><td>21.10</td><td class="r num">7</td></tr>
+<tr><td>22.10</td><td class="r num">5</td></tr>
+<tr><td>23.10</td><td class="r num">2</td></tr>
+<tr><td>24.10</td><td class="r num">0</td></tr>
+<tr><td>25.10</td><td class="r num">0</td></tr>
+<tr><td>26.10</td><td class="r num">0</td></tr>
+<tr><td>27.10</td><td class="r num">2</td></tr>
+<tr><td>28.10</td><td class="r num">10</td></tr>
+<tr><td>29.10</td><td class="r num">3</td></tr>
+<tr><td>30.10</td><td class="r num">5</td></tr>
+<tr><td>31.10</td><td class="r num">2</td></tr>
+<tr><td>01.11</td><td class="r num">3</td></tr>
+<tr><td>02.11</td><td class="r num">4</td></tr>
+<tr><td>03.11</td><td class="r num">10</td></tr>
+<tr><td>04.11</td><td class="r num">5</td></tr>
+<tr><td>05.11</td><td class="r num">7</td></tr>
+<tr><td>06.11</td><td class="r num">16</td></tr>
+<tr><td>07.11</td><td class="r num">4</td></tr>
+<tr><td>08.11</td><td class="r num">12</td></tr>
+<tr><td>09.11</td><td class="r num">20</td></tr>
+<tr><td>10.11</td><td class="r num">30</td></tr>
+<tr><td>11.11 до 14:00</td><td class="r num">19</td></tr>
+<tr class="tot"><td>Всего</td><td class="r num">208</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="arch">
+<h2>Пять типов пути</h2>
+<div class="stack" role="img" aria-label="доли типов"><span class="seg" style="width:47.60%;background:var(--c4)"></span><span class="seg" style="width:31.25%;background:var(--c1)"></span><span class="seg" style="width:14.90%;background:var(--c3)"></span><span class="seg" style="width:5.77%;background:var(--c2)"></span><span class="seg" style="width:0.48%;background:var(--s-neutral)"></span></div>
+<div class="legend"><span class="k"><span class="sw g-c4"></span>Результат и ушёл 99</span><span class="k"><span class="sw g-c1"></span>Сертификат и ушёл 65</span><span class="k"><span class="sw g-c3"></span>Игра в первый день 31</span><span class="k"><span class="sw g-c2"></span>Возвращается 12</span><span class="k"><span class="sw g-neutral"></span>Не открыл контент 1</span></div>
+<p class="small muted">Полоска под описанием — итог за закрытую часть окна: <span class="chip ok">продление</span> <span class="chip crit">самостоятельная отмена</span> <span class="chip warn">нет события</span> <span class="chip plain">неделя не закрыта</span></p>
+<div class="arch">
+<div class="card"><div class="top"><h3>Посмотрел результат и ушёл</h3><span class="share">99 · 47,6%</span></div><p>Открыли результат.</p><div class="mini" role="img" aria-label="продление 9 · самостоятельная отмена 30 · нет события 16 · неделя не закрыта 44"><span class="g-good" style="width:9.09%" title="продление 9"></span><span class="g-crit" style="width:30.30%" title="самостоятельная отмена 30"></span><span class="g-warn" style="width:16.16%" title="нет события 16"></span><span class="g-neutral" style="width:44.44%" title="неделя не закрыта 44"></span></div><p class="small muted">продление 9 · самостоятельная отмена 30 · нет события 16 · неделя не закрыта 44</p><dl class="kv"><dt>Сертификат</dt><dd class="num">0 из 99</dd><dt>Игра или тест за 7 дней</dt><dd class="num">2 из 99</dd><dt>Отмена в первый час</dt><dd class="num">22 из 99</dd><dt>Событие отмены за 8 дней</dt><dd class="num">31 из 99</dd><dt>Медиана первого захода</dt><dd class="num">154 с</dd></dl><p><b>Что делать:</b> сразу после результата игра (тест T1).</p><details class="m2"><summary>Подробнее</summary><p class="small">Открыли результат. Сертификат не открывали, игру в день покупки не начинали, во второй день в приложение не заходили.</p><p class="small">На 208: сертификат 0 из 99, игру или тест за 7 дней начали 2 из 99, отмена в первый час 22 из 99, событие отмены за 8 дней 31 из 99. Медиана от первого до последнего события foxiq за 30 минут — 154 с. Что делать, из версии 3: сразу после результата игра, это тест T1. Деньги Primer по типу на 208 не пересчитаны.</p></details></div>
+<div class="card"><div class="top"><h3>Забрал сертификат и ушёл</h3><span class="share">65 · 31,3%</span></div><p>Открыли сертификат.</p><div class="mini" role="img" aria-label="продление 8 · самостоятельная отмена 19 · нет события 24 · неделя не закрыта 14"><span class="g-good" style="width:12.31%" title="продление 8"></span><span class="g-crit" style="width:29.23%" title="самостоятельная отмена 19"></span><span class="g-warn" style="width:36.92%" title="нет события 24"></span><span class="g-neutral" style="width:21.54%" title="неделя не закрыта 14"></span></div><p class="small muted">продление 8 · самостоятельная отмена 19 · нет события 24 · неделя не закрыта 14</p><dl class="kv"><dt>Сертификат</dt><dd class="num">65 из 65</dd><dt>Игра или тест за 7 дней</dt><dd class="num">0 из 65</dd><dt>Отмена в первый час</dt><dd class="num">14 из 65</dd><dt>Событие отмены за 8 дней</dt><dd class="num">20 из 65</dd><dt>Медиана первого захода</dt><dd class="num">263 с</dd></dl><p><b>Что делать:</b> та же первая игра до сертификата и экран «Want to improve your score?» (тест T1).</p><details class="m2"><summary>Подробнее</summary><p class="small">Открыли сертификат. Игру в день покупки не начинали и во второй день не заходили.</p><p class="small">На 208: сертификат 65 из 65, игру или тест за 7 дней начали 0 из 65, отмена в первый час 14 из 65, событие отмены за 8 дней 20 из 65. Медиана первого захода — 263 с. Что делать, из версии 3: та же первая игра до сертификата и экран «Want to improve your score?», тест T1.</p></details></div>
+<div class="card"><div class="top"><h3>Игра в первый день</h3><span class="share">31 · 14,9%</span></div><p>В день покупки был <code>game_started</code> или экран <code>/games/</code>.</p><div class="mini" role="img" aria-label="продление 3 · самостоятельная отмена 8 · нет события 12 · неделя не закрыта 8"><span class="g-good" style="width:9.68%" title="продление 3"></span><span class="g-crit" style="width:25.81%" title="самостоятельная отмена 8"></span><span class="g-warn" style="width:38.71%" title="нет события 12"></span><span class="g-neutral" style="width:25.81%" title="неделя не закрыта 8"></span></div><p class="small muted">продление 3 · самостоятельная отмена 8 · нет события 12 · неделя не закрыта 8</p><dl class="kv"><dt>Сертификат</dt><dd class="num">12 из 31</dd><dt>Игра или тест за 7 дней</dt><dd class="num">31 из 31</dd><dt>Отмена в первый час</dt><dd class="num">6 из 31</dd><dt>Событие отмены за 8 дней</dt><dd class="num">8 из 31</dd><dt>Медиана первого захода</dt><dd class="num">665 с</dd></dl><p><b>Что делать:</b> после первой игры сразу вторая. Это путь B, людей для вывода о деньгах мало.</p><details class="m2"><summary>Подробнее</summary><p class="small">В день покупки был <code>game_started</code> или экран <code>/games/</code>. Во второй день контент не открывали.</p><p class="small">На 208: сертификат 12 из 31, игру или тест за 7 дней начали 31 из 31, отмена в первый час 6 из 31, событие отмены за 8 дней 8 из 31. Медиана первого захода — 665 с. Что делать, из версии 3: после первой игры сразу вторая. Это путь B, людей для вывода о деньгах мало.</p></details></div>
+<div class="card"><div class="top"><h3>Возвращается</h3><span class="share">12 · 5,8%</span></div><p>Контентный экран был в двух разных днях по Москве, события не позже 11.11 14:00.</p><div class="mini" role="img" aria-label="самостоятельная отмена 6 · нет события 3 · неделя не закрыта 3"><span class="g-crit" style="width:50.00%" title="самостоятельная отмена 6"></span><span class="g-warn" style="width:25.00%" title="нет события 3"></span><span class="g-neutral" style="width:25.00%" title="неделя не закрыта 3"></span></div><p class="small muted">самостоятельная отмена 6 · нет события 3 · неделя не закрыта 3</p><dl class="kv"><dt>Сертификат</dt><dd class="num">5 из 12</dd><dt>Игра или тест за 7 дней</dt><dd class="num">8 из 12</dd><dt>Отмена в первый час</dt><dd class="num">3 из 12</dd><dt>Событие отмены за 8 дней</dt><dd class="num">6 из 12</dd><dt>Медиана первого захода</dt><dd class="num">524 с</dd></dl><p><b>Что делать:</b> при повторном заходе показывать своё, а не общую «0/5». Людей 12, это не вывод.</p><details class="m2"><summary>Подробнее</summary><p class="small">Контентный экран был в двух разных днях по Москве, события не позже 11.11 14:00. Этот тип считается раньше игры и сертификата: кто и играл, и вернулся, стоит здесь. Как было, события до даты сборки 16.11: 21 (10,1%). На закрытой неделе — 7 из 100, и там цифра не сменилась.</p><p class="small">На 208: сертификат 5 из 12, игру или тест за 7 дней начали 8 из 12, отмена в первый час 3 из 12, событие отмены за 8 дней 6 из 12. Медиана первого захода — 524 с. Что делать, из версии 3: при повторном заходе показывать своё, а не общую «0/5». Людей 12, это не вывод. Деньги Primer по типу не пересчитаны.</p></details></div>
+<div class="card"><div class="top"><h3>Не открыл контент</h3><span class="share">1 · 0,5%</span></div><p>События после покупки есть, экрана приложения кроме входа нет.</p><div class="mini" role="img" aria-label="самостоятельная отмена 1"><span class="g-crit" style="width:100.00%" title="самостоятельная отмена 1"></span></div><p class="small muted">самостоятельная отмена 1</p><dl class="kv"><dt>Сертификат</dt><dd class="num">0 из 1</dd><dt>Игра или тест за 7 дней</dt><dd class="num">0 из 1</dd><dt>Отмена в первый час</dt><dd class="num">1 из 1</dd><dt>Событие отмены за 8 дней</dt><dd class="num">1 из 1</dd><dt>Медиана первого захода</dt><dd class="num">1 740 с</dd></dl><p><b>Что делать:</b> отдельного действия нет, по одному человеку вывод не делается.</p><details class="m2"><summary>Подробнее</summary><p class="small">События после покупки есть, экрана приложения кроме входа нет.</p><p class="small">На 208: 1 из 208. Сертификат 0 из 1, игру не начинал, отмена в первый час 1 из 1, событие отмены за 8 дней 1 из 1. Медиана первого захода — 1 740 с: события есть, контентного экрана нет. Что делать, из версии 3: отдельного действия нет. По одному человеку вывод не делается.</p></details></div>
+</div>
+<div class="note">Самая большая группа останавливается на результате: 99 из 208, строго до 11.11 14:00. Как было, события до даты сборки 16.11: 92 из 208. Результат при этом открывают почти все, 207 из 208. Первый тест по-прежнему про тренировку сразу после результата.</div>
+<p class="small">Сумма отмен в первый час по типам: 22 + 14 + 6 + 3 + 1 = 46.</p><details class="m2"><summary>Подробнее</summary><p class="small">Событие <code>subscription_cancelled</code> за 8 дней: 31 + 20 + 8 + 6 + 1 = 66. Самостоятельных отмен по правилу 2 минут — 65: у 1 из 66 следующее <code>subscription_expired</code> ближе 2 минут. Тип этого одного человека по типам не разложен, поэтому столбец «за 8 дней» даёт 66, а не 65. Медиана — секунды от первого до последнего события <code>project = foxiq</code> в первые 30 минут, не активное время из записи.</p></details>
+<details class="howto small"><summary>Как считали типы</summary><div class="pad"><p>Покупка: первая <code>subscription_started</code>, <code>project = foxiq</code>, с 2026-10-06 21:00 UTC по 2026-11-11 11:00 UTC. Окно поведения: от покупки до покупки плюс 7 дней, и не позже 2026-11-11 11:00 UTC. Контентный экран: <code>$pageview</code> на web.foxiq.app, кроме <code>/auto-login</code>, <code>/magic-link-login</code> и <code>/auth</code>. День считается по Москве. Порядок типа: нет контента, два дня, игра в день покупки, сертификат, результат. Сумма 99 + 65 + 31 + 12 + 1 = 208. Как было, события до даты сборки 16.11: 92 + 64 + 30 + 21 + 1. Окно поведения — покупка плюс 7 дней. У последних покупок оно кончается 18.11. Данные на дату сборки (16.11) есть только по 16.11, поэтому „как было" включает события до 16.11. Повтор того окна сейчас даёт возвращается 22 и результат 91: один второй день пришёлся на 16.11 уже после той сборки.</p></div></details>
+</section>
+
+<section id="people">
+<h2>Каждый покупатель</h2>
+<p class="small">208 человек, каждый один раз. День — первая <code>subscription_started</code> по Москве.</p><details class="m2"><summary>Подробнее</summary><p class="small">Тип пути — строго по событиям не позже 11.11 14:00, тот же порядок, что в разделе типов. Номер в дне — порядок времени покупки. Итог — событие PostHog на срез 11.11 14:00 МСК, не оплата Primer. Пошаговая история из записей сессий для этих 208 — нет данных: нужен разбор записей. Оплата по человеку — нет данных: нужна выгрузка Primer. Источник рекламы посчитан отдельно, раздел «Источники». Истории 93 человек за покупки 12.10–03.11, с профилем и шагами, лежат в <a href="foxiq-product-journeys-2026-11-11-v4.14.html#people">версии 4.14</a>. Это другой список и другая дата, в эти 208 они не переложены.</p></details>
+<div class="filters">
+<label for="p-week">Период<select id="p-week"><option value="">Все</option><option>07.10–26.10</option><option>27.10–02.11</option><option>03.11–04.11</option><option>05.11–11.11</option></select></label>
+<label for="p-path">Тип пути<select id="p-path"><option value="">Все</option><option>Результат и ушёл</option><option>Сертификат и ушёл</option><option>Игра в первый день</option><option>Возвращается</option><option>Не открыл контент</option></select></label>
+<label for="p-out">Итог события<select id="p-out"><option value="">Все</option><option>событие продления</option><option>самостоятельная отмена</option><option>нет события</option><option>неделя не закрыта</option></select></label>
+<span class="small muted" id="p-count"></span>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>День</th><th>Тип пути</th><th>Итог на 11.11 14:00</th></tr></thead>
+<tbody id="p-body">
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="событие продления"><td>10.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>10.10 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.10 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>10.10 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>13.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>14.10 · 1</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>14.10 · 2</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="событие продления"><td>14.10 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>14.10 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>14.10 · 5</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>14.10 · 6</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>14.10 · 7</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="событие продления"><td>14.10 · 8</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>14.10 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>15.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>15.10 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>15.10 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>15.10 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>15.10 · 5</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>16.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Возвращается" data-out="нет события"><td>16.10 · 2</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>16.10 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>17.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>17.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>17.10 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>17.10 · 4</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="событие продления"><td>17.10 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>17.10 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>17.10 · 7</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="событие продления"><td>18.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>18.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="событие продления"><td>18.10 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>18.10 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>18.10 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>18.10 · 6</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>18.10 · 7</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>18.10 · 8</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="событие продления"><td>19.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>19.10 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>19.10 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>20.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>20.10 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>21.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>21.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Возвращается" data-out="нет события"><td>21.10 · 3</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Игра в первый день" data-out="нет события"><td>21.10 · 4</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Возвращается" data-out="самостоятельная отмена"><td>21.10 · 5</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>21.10 · 6</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>21.10 · 7</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="событие продления"><td>22.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="событие продления"><td>22.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="нет события"><td>22.10 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Сертификат и ушёл" data-out="нет события"><td>22.10 · 4</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="событие продления"><td>22.10 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>23.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="07.10–26.10" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>23.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="нет события"><td>27.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="нет события"><td>27.10 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="событие продления"><td>28.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>28.10 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>28.10 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="нет события"><td>28.10 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="нет события"><td>28.10 · 5</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="событие продления"><td>28.10 · 6</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>28.10 · 7</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="событие продления"><td>28.10 · 8</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="нет события"><td>28.10 · 9</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="нет события"><td>28.10 · 10</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="событие продления"><td>29.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>29.10 · 2</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Возвращается" data-out="самостоятельная отмена"><td>29.10 · 3</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="нет события"><td>30.10 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="нет события"><td>30.10 · 2</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="событие продления"><td>30.10 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="нет события"><td>30.10 · 4</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="нет события"><td>30.10 · 5</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="нет события"><td>31.10 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Возвращается" data-out="самостоятельная отмена"><td>31.10 · 2</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>01.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Возвращается" data-out="самостоятельная отмена"><td>01.11 · 2</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="событие продления"><td>01.11 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="событие продления"><td>02.11 · 1</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Результат и ушёл" data-out="событие продления"><td>02.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="нет события"><td>02.11 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="27.10–02.11" data-path="Игра в первый день" data-out="нет события"><td>02.11 · 4</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="нет события"><td>03.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Результат и ушёл" data-out="нет события"><td>03.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="нет события"><td>03.11 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Результат и ушёл" data-out="нет события"><td>03.11 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Игра в первый день" data-out="нет события"><td>03.11 · 5</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Не открыл контент" data-out="самостоятельная отмена"><td>03.11 · 6</td><td><span class="chip plain">Не открыл контент</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="нет события"><td>03.11 · 7</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="нет события"><td>03.11 · 8</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Результат и ушёл" data-out="событие продления"><td>03.11 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>03.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>04.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>04.11 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Игра в первый день" data-out="нет события"><td>04.11 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Игра в первый день" data-out="событие продления"><td>04.11 · 4</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip ok">событие продления</span></td></tr>
+<tr data-week="03.11–04.11" data-path="Возвращается" data-out="нет события"><td>04.11 · 5</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip plain">нет события</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>05.11 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>05.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>05.11 · 3</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>05.11 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Возвращается" data-out="самостоятельная отмена"><td>05.11 · 5</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>05.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Возвращается" data-out="самостоятельная отмена"><td>05.11 · 7</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>06.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>06.11 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>06.11 · 4</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>06.11 · 5</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 7</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>06.11 · 8</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>06.11 · 11</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>06.11 · 12</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>06.11 · 13</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>06.11 · 14</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>06.11 · 15</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Возвращается" data-out="неделя не закрыта"><td>06.11 · 16</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>07.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>07.11 · 2</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>07.11 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>07.11 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>08.11 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>08.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>08.11 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>08.11 · 4</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>08.11 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>08.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>08.11 · 7</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>08.11 · 8</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>08.11 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>08.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>08.11 · 11</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>08.11 · 12</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 1</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 3</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Возвращается" data-out="неделя не закрыта"><td>09.11 · 4</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>09.11 · 7</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 8</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>09.11 · 9</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 11</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>09.11 · 12</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 13</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>09.11 · 14</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>09.11 · 15</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>09.11 · 16</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Возвращается" data-out="неделя не закрыта"><td>09.11 · 17</td><td><span class="chip ok">Возвращается</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 18</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 19</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>09.11 · 20</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>10.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 4</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 5</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 7</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 8</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 11</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>10.11 · 12</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 13</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 14</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 15</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 16</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 17</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 18</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>10.11 · 19</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 20</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 21</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 22</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 23</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>10.11 · 24</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 25</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>10.11 · 26</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 27</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 28</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>10.11 · 29</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>10.11 · 30</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>11.11 · 1</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 2</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 3</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>11.11 · 4</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 5</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 6</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="неделя не закрыта"><td>11.11 · 7</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 8</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 9</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 10</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>11.11 · 11</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 12</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>11.11 · 13</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="неделя не закрыта"><td>11.11 · 14</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>11.11 · 15</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Сертификат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 16</td><td><span class="chip info">Сертификат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="самостоятельная отмена"><td>11.11 · 17</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Результат и ушёл" data-out="неделя не закрыта"><td>11.11 · 18</td><td><span class="chip warn">Результат и ушёл</span></td><td><span class="chip info">неделя не закрыта</span></td></tr>
+<tr data-week="05.11–11.11" data-path="Игра в первый день" data-out="самостоятельная отмена"><td>11.11 · 19</td><td><span class="chip ok">Игра в первый день</span></td><td><span class="chip crit">самостоятельная отмена</span></td></tr>
+</tbody></table></div>
+</section>
+
+
+<section id="first">
+<h2>Первый заход: что происходит в первую сессию</h2>
+<p>Человек видит результат и часто уходит, не начав тренировку. Цифры — события PostHog, люди. Тренировка, имя и отмена — первый час после покупки. Медиана и «ушли за минуту» — первые 30 минут: секунды от первого до последнего события <code>project = foxiq</code>. У всех 208 такое событие в эти 30 минут есть.</p>
+<div class="tbl"><table>
+<thead><tr><th>Первый заход</th><th class="r">07.10–27.10<br>58</th><th class="r">28.10–02.11<br>27</th><th class="r">03.11–07.11<br>42</th><th class="r">08.11–11.11<br>81</th><th class="r">До 08.11<br>127</th><th class="r">С 08.11<br>81</th><th class="r">Все 208</th></tr></thead>
+<tbody>
+<tr><td>Начали тренировку (игра, тест или урок)</td><td class="r num">8 из 58</td><td class="r num">7 из 27</td><td class="r num">7 из 42</td><td class="r num">12 из 81</td><td class="r num">22 из 127</td><td class="r num">12 из 81</td><td class="r num">34 из 208</td></tr>
+<tr><td>Ввели имя для сертификата</td><td class="r num">31 из 58</td><td class="r num">16 из 27</td><td class="r num">23 из 42</td><td class="r num">36 из 81</td><td class="r num">70 из 127</td><td class="r num">36 из 81</td><td class="r num">106 из 208</td></tr>
+<tr><td>Первые 30 минут, медиана</td><td class="r num">221,5 с</td><td class="r num">232 с</td><td class="r num">157 с</td><td class="r num">301 с</td><td class="r num">не считалась</td><td class="r num">301 с</td><td class="r num">не считалась</td></tr>
+<tr><td>Ушли за минуту</td><td class="r num">11 из 58</td><td class="r num">3 из 27</td><td class="r num">8 из 42</td><td class="r num">8 из 81</td><td class="r num">22 из 127</td><td class="r num">8 из 81</td><td class="r num">30 из 208</td></tr>
+<tr><td>Сами отменили в первый час</td><td class="r num">8 из 58</td><td class="r num">3 из 27</td><td class="r num">5 из 42</td><td class="r num">30 из 81</td><td class="r num">16 из 127</td><td class="r num">30 из 81</td><td class="r num">46 из 208</td></tr>
+</tbody></table></div>
+<p class="small">8 + 7 + 7 + 12 = 34. 22 + 12 = 34. 8 + 3 + 5 + 30 = 46. 16 + 30 = 46.</p><details class="m2"><summary>Подробнее</summary><p class="small">Это те же 34 и 46, что в T1 и в защитной метрике. По неделям покупки тренировку в первый час начали: до 13.10 — 0 из 4, 13–19.10 — 7 из 36, 20–26.10 — 1 из 16, 27.10–02.11 — 7 из 29, 03–09.11 — 14 из 74, 10–11.11 — 5 из 49. Сумма начавших 0 + 7 + 1 + 7 + 14 + 5 = 34, покупателей 4 + 36 + 16 + 29 + 74 + 49 = 208.</p></details>
+<p class="small">Календарь версии 3, отдельно, только число покупателей: 12.10–27.10 — 54, 27.10–02.11 — 29, 02.11–06.11 — 42. В версии 3 эти окна были 52, 28 и 38: там другой край (поломка меню 27.10 08:12 – 02.11 16:07 UTC) и другой список. Метрики первого захода по этим трём окнам здесь не посчитаны.</p>
+<details class="howto small"><summary>Как считали</summary><div class="pad"><p>Как в версии 3: первый час после покупки, люди. Тренировка — <code>game_started</code>, <code>test_started</code> или <code>lesson_completed</code>. Имя — <code>certificate_name_submitted</code>. Отмена — <code>subscription_cancelled</code> с <code>reason = user_initiated</code>. «Ушли за минуту» в версии 3 названо, но формула в блоке «Как считали» не расписана. Здесь это промежуток от первого до последнего события foxiq в первые 30 минут короче 60 секунд. Медиана двух групп «до 08.11» и «все 208» одним числом не усреднялась.</p></div></details>
+</section>
+
+<section id="features">
+<h2>Чем пользуются</h2>
+<p class="small">208 человек, первые 7 дней. «2+ дня» считается среди открывших. Время: медиана по открывшим, промежуток до следующего события в той же сессии, не больше 5 минут. Доля отмены ниже — события не позже 11.11 14:00 и не позже 7 дней после покупки. Основное число — те, кто открыл функцию до отмены. Столбец «Открывали» оставлен как в версии 4.20.</p>
+<div class="tbl"><table>
+<colgroup><col style="width:13%"><col style="width:9%"><col style="width:8%"><col style="width:8%"><col style="width:18%"><col style="width:14%"><col style="width:30%"></colgroup>
+<thead><tr><th>Функция</th><th class="r">Открывали</th><th class="r">2+ дня</th><th class="r">Время, медиана</th><th class="r">Отменили в первый час среди открывших</th><th class="r">Среди не открывших</th><th>Что с этим делать</th></tr></thead>
+<tbody>
+<tr><td><b>Результат IQ</b><span class="sub">/iq-result</span></td><td class="r num">207 из 208<span class="sub">99%</span></td><td class="r num">6 из 207</td><td class="r num">33 с</td><td class="r num">44 из 206<span class="sub">21,4%. Открыли до отмены. Ещё 1 только после отмены. Закрытая неделя, за 8 дней: 25 из 99 (25,3%).</span></td><td class="r num">1 из 1<span class="sub">Мало данных.</span></td><td><span class="chip crit">Переделать</span> экран во вход в первую игру, тест T1. Видят 207 из 208. Среди открывших до отмены первый час — 44 из 206 (21,4%). Не открыл результат 1 человек, сравнение с ним не ставится. Это не причина отмены. Сколько нажали кнопку тренировки на самом экране, на 208 не пересчитано.</td></tr>
+<tr><td><b>Главная</b><span class="sub">/</span></td><td class="r num">121 из 208<span class="sub">58%. В версии 4.20 было 120. Не хватало одного: купил 10.11, главную открыл 16.11. До среза 11.11 14:00 — 117: 110 до отмены и 7 только после, 110 + 7 = 117.</span></td><td class="r num">14 из 121</td><td class="r num">14 с</td><td class="r num">37 из 110<span class="sub">33,6%. Открыли до отмены. Это 110 из 117, кто открыл главную до среза. Ещё 7 только после отмены, все 7 — в первый час, они уже внутри 117. Закрытая неделя, за 8 дней: 20 из 52 (38,5%).</span></td><td class="r num">2 из 91<span class="sub">2,2%</span></td><td><span class="chip ok">Оставить</span> после пересчёта на 208. Среди открывших до отмены первый час — 37 из 110 (33,6%) против 2 из 91 (2,2%) у не открывших. Доля выше. Это связь, не причина: главная часто шаг к отмене.</td></tr>
+<tr><td><b>Сертификат</b><span class="sub">/iq-certificate</span></td><td class="r num">83 из 208<span class="sub">40%</span></td><td class="r num">2 из 83</td><td class="r num">0 с</td><td class="r num">15 из 80<span class="sub">18,8% — открыли до отмены. Среди всех, кто открыл до среза: 17 из 82 (20,7%). Ещё 2 только после отмены. Закрытая неделя, за 8 дней: 10 из 49 (20,4%).</span></td><td class="r num">29 из 126<span class="sub">23,0%</span></td><td><span class="chip ok">Оставить</span> после пересчёта на 208. До отмены — 15 из 80 (18,8%), среди всех открывших до среза — 17 из 82 (20,7%), среди не открывших — 29 из 126 (23,0%). Доля ниже (с поправкой на смещение вывода нет), чем у не открывших. Это не причина отмены. После него в T1 стоит экран «Want to improve your score?».</td></tr>
+<tr><td><b>Профиль</b><span class="sub">/profile</span></td><td class="r num">74 из 208<span class="sub">36%</span></td><td class="r num">6 из 74</td><td class="r num">10 с</td><td class="r num">37 из 71<span class="sub">52,1%. Открыли до отмены. До среза открыли 73. Ещё 2 только после отмены. Закрытая неделя, за 8 дней: 17 из 31 (54,8%).</span></td><td class="r num">7 из 135<span class="sub">5,2%</span></td><td><span class="chip plain">Путь к отмене</span> после пересчёта на 208, вывода по функции нет. Отмена идёт через профиль: 37 из 71 (52,1%) против 7 из 135 (5,2%). Из этой разницы действие по профилю не ставится.</td></tr>
+<tr><td><b>Страница подписки</b><span class="sub">/settings/subscription. Настройки целиком, вместе с этой страницей, открыли 54 из 208, во второй день 3 из 54</span></td><td class="r num">49 из 208<span class="sub">24%</span></td><td class="r num">0 из 49</td><td class="r num">18 с</td><td class="r num">36 из 48<span class="sub">75,0%. Все 48 открыли страницу до отмены. Закрытая неделя, за 8 дней: 11 из 14 (78,6%).</span></td><td class="r num">10 из 160<span class="sub">6,3%</span></td><td><span class="chip plain">Путь к отмене</span> после пересчёта на 208, вывода по функции нет. Отмена идёт через эту страницу: 36 из 48 (75,0%) против 10 из 160 (6,3%). Предложения в воронке по-прежнему тест T2. Это не вывод из доли.</td></tr>
+<tr><td><b>Трек уроков</b><span class="sub">/track и /lessons</span></td><td class="r num">33 из 208<span class="sub">16%</span></td><td class="r num">3 из 33</td><td class="r num">18 с</td><td class="r num">7 из 27<span class="sub">25,9%. Открыли до отмены. До среза открыли 32. Ещё 5 только после отмены. Закрытая неделя, за 8 дней: 1 из 10 (10,0%).</span></td><td class="r num">34 из 176<span class="sub">19,3%</span></td><td><span class="chip plain">Оставить, не развивать</span> после пересчёта на 208. Среди открывших до отмены первый час — 7 из 27 (25,9%) против 34 из 176 (19,3%) у не открывших. Разница небольшая. Вывода, что трек влияет на отмену, нет.</td></tr>
+<tr><td><b>Игры</b><span class="sub">/games/ или game_started</span></td><td class="r num">41 из 208<span class="sub">20%</span></td><td class="r num">4 из 41</td><td class="r num">5 мин</td><td class="r num">3 из 33<span class="sub">9,1%. Открыли до отмены. До среза открыли 39. Ещё 6 только после отмены, из них 4 — в первый час. Закрытая неделя, за 8 дней: 4 из 21 (19,0%).</span></td><td class="r num">39 из 169<span class="sub">23,1%</span></td><td><span class="chip ok">Усилить</span> игра должна стартовать с результата, тест T1. Среди открывших до отмены первый час — 3 из 33 (9,1%) против 39 из 169 (23,1%) у не открывших. Доля ниже (с поправкой на смещение вывода нет). Это связь, не причина. Медиана стоит на потолке 5 минут.</td></tr>
+<tr><td><b>Explore</b><span class="sub">/explore</span></td><td class="r num">27 из 208<span class="sub">13%</span></td><td class="r num">2 из 27</td><td class="r num">18 с</td><td class="r num">3 из 22<span class="sub">13,6%. Открыли до отмены. До среза открыли 27. Ещё 5 только после отмены. Закрытая неделя, за 8 дней: 1 из 11 (9,1%).</span></td><td class="r num">38 из 181<span class="sub">21,0%</span></td><td><span class="chip ok">Оставить</span> после пересчёта на 208. Среди открывших до отмены первый час — 3 из 22 (13,6%) против 38 из 181 (21,0%) у не открывших. Доля ниже (с поправкой на смещение вывода нет). Это не причина отмены и не повод убирать раздел.</td></tr>
+<tr><td><b>Тесты личности</b><span class="sub">/tests</span></td><td class="r num">22 из 208<span class="sub">11%</span></td><td class="r num">2 из 22</td><td class="r num">4 мин 40 с</td><td class="r num">2 из 16<span class="sub">12,5%. Открыли до отмены. До среза открыли 20. Ещё 4 только после отмены. Закрытая неделя, за 8 дней: 2 из 12 (16,7%).</span></td><td class="r num">40 из 188<span class="sub">21,3%</span></td><td><span class="chip warn">Проверить</span> позже, после пересчёта на 208. Среди открывших до отмены первый час — 2 из 16 (12,5%) против 40 из 188 (21,3%) у не открывших. Доля ниже (с поправкой на смещение вывода нет). Это не причина отмены и не повод убирать тесты. До итогов T1 не вкладываться. Оплата месяца по функции — нет данных, нужна выгрузка Primer.</td></tr>
+</tbody></table></div>
+<p class="small">Сравнение смещено: чтобы открыть функцию до отмены, человеку надо было дожить до этого момента, поэтому доля среди открывших занижена, особенно у игр, Explore, тестов и сертификата. Это связь, не причина.</p>
+<p class="small">Та же отмена в первый час среди тех, кто не отменил раньше медианы до первого открытия. Медиана округлена до секунды. Результат, 6 с: 44 из 206 против 2 из 2, мало данных. Главная, 2 мин: 26 из 99 (26,3%) против 8 из 97 (8,2%). Сертификат, 57 с: 15 из 80 (18,8%) против 28 из 125 (22,4%). Профиль, 3 мин 2 с: 14 из 48 (29,2%) против 9 из 137 (6,6%), путь к отмене. Подписка, 2 мин 40 с: 19 из 31 (61,3%) против 10 из 160 (6,3%), путь к отмене. Трек, 8 мин 6 с: 2 из 22 (9,1%) против 13 из 155 (8,4%). Игры, 4 мин 10 с: 3 из 33 (9,1%) против 17 из 149 (11,4%). Explore, 17 мин 9 с: 1 из 20 (5,0%) против 8 из 151 (5,3%). Тесты, 8 мин 47 с: 1 из 15 (6,7%) против 13 из 161 (8,1%).</p>
+<p class="small">Урок завершили 18 человек (<code>lesson_completed</code>), из них 1 заходил на урок во второй день. Медиана сертификата 0 с: у 47 из 83 это последний экран сессии, пауза до следующего события не из чего считать. У 36 пауза есть, 75-й перцентиль 84 с. Медиана игр стоит на потолке правила в 5 минут на одну паузу.</p>
+<p class="small">Отмена в первый час — <code>subscription_cancelled</code> с <code>reason = user_initiated</code> в течение часа после покупки. По функциям 44 + 1 + 1, 37 + 7 + 2, 15 + 2 + 29, 37 + 2 + 7, 36 + 10, 7 + 5 + 34, 3 + 4 + 39, 3 + 5 + 38 и 2 + 4 + 40 дают 46. «Открыли до отмены» не включает тех, кто открыл функцию только после <code>subscription_cancelled</code>. До среза 11.11 14:00 открыли: результат 207, главная 117, сертификат 82, профиль 73, подписка 48, трек 32, игры 39, Explore 27, тесты 20. Главная: до среза 117, ещё 3 открыли её после 11.11 14:00 и до 16.11, вместе с ними 120. Ещё один купил 10.11 и открыл главную 16.11, вместе 121. В столбце теперь 121. Закрытая неделя по правилу 2 минут — 26 человек. В таблице типов столбец «самостоятельная отмена» — 25: у одного из 26 есть и событие продления, он открыл результат и главную и стоит в столбце продления. Поэтому 25 из 99 и 20 из 52 включают этого человека.</p>
+</section>
+
+
+<section id="us">
+<h2>Сравнение с Azora в США</h2>
+<p>Те же даты покупки, 07.10 00:00 – 11.11 14:00 МСК, тот же почтовый фильтр, события не позже 11.11 14:00. Страна — текущее <code>$geoip_country_code</code> персоны. У покупки этого поля нет.</p>
+<div class="tbl"><table>
+<thead><tr><th>Покупатели из США</th><th class="r">FoxIQ</th><th class="r">Azora</th></tr></thead>
+<tbody>
+<tr><td>Покупатели</td><td class="r num">202 из 208</td><td class="r num">600 из 1 831</td></tr>
+<tr><td>Страна не определена</td><td class="r num">0 из 208</td><td class="r num">0 из 1 831</td></tr>
+<tr><td>Два дня в приложении</td><td class="r num">11 из 202</td><td class="r num">144 из 600</td></tr>
+<tr><td>Сами отменили в первый час</td><td class="r num">44 из 202</td><td class="r num">136 из 600</td></tr>
+<tr><td>Правило 2 минут в первый час</td><td class="r num">44 из 202</td><td class="r num">не проверено</td></tr>
+</tbody></table></div>
+<p class="small">FoxIQ не из США: 6 из 208 (CA 4, AM 1, PL 1). Отмена в первый час у них 2 из 6: 44 + 2 = 46.</p><details class="m2"><summary>Подробнее</summary><p class="small">Два дня у них 1 из 6: 11 + 1 = 12, это все 12 из 208. У FoxIQ среди всех 46 отмен в первый час пары с <code>subscription_expired</code> ближе 2 минут нет, поэтому для США правило 2 минут в первый час совпадает с 44 из 202. Для Azora правило 2 минут в этой строке отдельно не проверялось: 136 из 600 — это <code>reason = user_initiated</code>. Самостоятельная отмена за 8 дней по правилу 2 минут для США не посчитана.</p></details>
+<p class="small">Azora — <code>project = web</code>. Экран для «двух дней» — хост, в имени которого есть azora, без <code>/auto-login</code>, <code>/auth</code> и <code>/cancel.html</code>. В таблице всех стран база «два дня» — 1 822 первых покупок, а здесь знаменатель США — 600 из 1 831 человек с <code>subscription_started</code>. Это разные знаменатели.</p>
+<p class="small">Справка, версия 3, не пересчитано. Покупатели США, 13.10 17:00 – 27.10 21:00 UTC: FoxIQ 51, Azora 203. Два дня 3 из 51 и 66 из 203. Отмена в первый час 7 из 51 и 47 из 203. Оплата месяца 17 из 51 и 39 из 203. Оплата месяца на новом срезе из Primer не пересчитывалась.</p>
+</section>
+
+<section id="ads">
+<h2>Источники</h2>
+<p>Первое свойство <code>$initial_utm_source</code>. На самом событии покупки источника нет: пусто у 208 из 208. Расшифровка из версии 3: 4, 19 и 22 — Meta, <code>google</code> — Google. Остальные значения не расшифрованы. Отмена — первый час, <code>user_initiated</code>. Тренировка — игра, тест или урок в первый час.</p>
+<div class="tbl"><table>
+<thead><tr><th>Источник</th><th class="r">Люди</th><th class="r">До 08.11</th><th class="r">С 08.11</th><th class="r">До 27.10</th><th class="r">Тренировка в час</th><th class="r">Отмена в час</th></tr></thead>
+<tbody>
+<tr><td>Meta 4</td><td class="r num">94 из 208</td><td class="r num">31 из 127</td><td class="r num">63 из 81</td><td class="r num">5 из 58</td><td class="r num">12 из 94</td><td class="r num">27 из 94</td></tr>
+<tr><td>Meta 22</td><td class="r num">40 из 208</td><td class="r num">32 из 127</td><td class="r num">8 из 81</td><td class="r num">16 из 58</td><td class="r num">9 из 40</td><td class="r num">7 из 40</td></tr>
+<tr><td>Meta 19</td><td class="r num">28 из 208</td><td class="r num">28 из 127</td><td class="r num">0 из 81</td><td class="r num">14 из 58</td><td class="r num">5 из 28</td><td class="r num">6 из 28</td></tr>
+<tr><td>нет источника</td><td class="r num">26 из 208</td><td class="r num">23 из 127</td><td class="r num">3 из 81</td><td class="r num">21 из 58</td><td class="r num">3 из 26</td><td class="r num">4 из 26</td></tr>
+<tr><td>int3</td><td class="r num">11 из 208</td><td class="r num">4 из 127</td><td class="r num">7 из 81</td><td class="r num">0 из 58</td><td class="r num">3 из 11</td><td class="r num">2 из 11</td></tr>
+<tr><td>googlemail</td><td class="r num">7 из 208</td><td class="r num">7 из 127</td><td class="r num">0 из 81</td><td class="r num">0 из 58</td><td class="r num">1 из 7</td><td class="r num">0 из 7</td></tr>
+<tr><td>Google, значение google</td><td class="r num">2 из 208</td><td class="r num">2 из 127</td><td class="r num">0 из 81</td><td class="r num">2 из 58</td><td class="r num">1 из 2</td><td class="r num">0 из 2</td></tr>
+</tbody></table></div>
+<p class="small">94 + 40 + 28 + 26 + 11 + 7 + 2 = 208. Тренировка 12 + 9 + 5 + 3 + 3 + 1 + 1 = 34. Отмена 27 + 7 + 6 + 4 + 2 + 0 + 0 = 46. До 08.11 31 + 32 + 28 + 23 + 4 + 7 + 2 = 127. С 08.11 63 + 8 + 0 + 3 + 7 + 0 + 0 = 81.</p>
+<p class="small">Строка про кабинет 4. По первому источнику: 5 из 58 до 27.10 и 63 из 81 с 08.11. По текущему <code>utm_source</code> персоны: 9 из 58 и 64 из 81. Блок «Динамика отмены в первый час» приведён к основанию «первый источник». Отмены внутри кабинета 4 в первый час: 2 из 31 до 08.11 и 25 из 63 с 08.11.</p>
+<p class="small">Версия 3, не пересчитано. Среди решивших до 06.11: Meta 19 — 28, Meta 22 — 19, Meta 4 — 11, Google — 1. Там доли оплат и отказов банка, здесь их нет: Primer по источнику не сверялся.</p>
+</section>
+
+<section id="clicks">
+<h2>Нажатия</h2>
+<p class="small">239 из 312 сессий этих покупателей за первые 7 дней разобраны по записи (312 — разные сессии на web.foxiq.app, события не позже 11.11 14:00).</p><details class="m2"><summary>Подробнее</summary><p class="small">Сессия считается один раз. Разбивка «33 без записи и 43 не разобрались» в сумме с 239 даёт 315, то есть на 3 больше 312: какой из счётчиков завышен, по записям заново не разбирали. Список снят с записей, не с автозахвата.</p></details>
+<div class="tbl"><table>
+<thead><tr><th>Элемент</th><th class="r">Сессий</th></tr></thead>
+<tbody>
+<tr><td>button «Get a certificate»</td><td class="r num">124</td></tr>
+<tr><td>button «Get my certificate»</td><td class="r num">90</td></tr>
+<tr><td>input «Enter your name»</td><td class="r num">85</td></tr>
+<tr><td>span «137»</td><td class="r num">75</td></tr>
+<tr><td>span «132»</td><td class="r num">73</td></tr>
+<tr><td>span «81%»</td><td class="r num">67</td></tr>
+<tr><td>a «Download PDF»</td><td class="r num">66</td></tr>
+<tr><td>a «Profile»</td><td class="r num">65</td></tr>
+<tr><td>span «140»</td><td class="r num">64</td></tr>
+<tr><td>button «View certificate»</td><td class="r num">61</td></tr>
+<tr><td>button «Start training →»</td><td class="r num">56</td></tr>
+<tr><td>h1 «You're almost there!»</td><td class="r num">44</td></tr>
+<tr><td>button «Take test»</td><td class="r num">43</td></tr>
+<tr><td>button «Cancel subscription»</td><td class="r num">31</td></tr>
+<tr><td>button «Yes, cancel»</td><td class="r num">31</td></tr>
+<tr><td>p «What this means»</td><td class="r num">27</td></tr>
+<tr><td>span «Genius»</td><td class="r num">27</td></tr>
+<tr><td>div «Settings»</td><td class="r num">25</td></tr>
+<tr><td>button «See all ›»</td><td class="r num">24</td></tr>
+<tr><td>p «0/5 done»</td><td class="r num">20</td></tr>
+<tr><td>button «Share»</td><td class="r num">19</td></tr>
+<tr><td>p «Performance curve»</td><td class="r num">16</td></tr>
+<tr><td>p «Subscription»</td><td class="r num">15</td></tr>
+<tr><td>a «Track»</td><td class="r num">14</td></tr>
+</tbody></table></div>
+<p class="small">Числа 132, 137, 140, 81% и Genius стоят на экране результата. Кнопок Keep subscription и Redeem your discount нет среди элементов, которые нажали хотя бы в 14 сессиях.</p>
+</section>
+
+<section id="rec">
+<h2>Что видно в записях сессий</h2>
+<p class="small">Выводы ниже — разбор до 03.11: 88 записей 62 покупателей. На 11.11 14:00 этот разбор не повторялся. Список нажатий 208 человек и 20 сессий со злым тапом из 239 — в разделах «Нажатия» и «Воронка и Azora», их не менял.</p>
+<div class="facts">
+<div class="fact"><span class="v">22</span><span class="l">автовход дольше 3 с, из 62</span></div>
+<div class="fact"><span class="v">61</span><span class="l">видели балл 137</span></div>
+<div class="fact"><span class="v">39</span><span class="l">нажали Get a certificate</span></div>
+<div class="fact"><span class="v">18 из 61</span><span class="l">нажали Start training</span></div>
+<div class="fact"><span class="v">34</span><span class="l">дошли до главной 0/5</span></div>
+<div class="fact"><span class="v">2</span><span class="l">человека с ошибкой консоли</span></div>
+</div>
+<div class="card"><h3>После отмены</h3>
+<p>Из 18 самостоятельных отмен (покупки 12.10–02.11) 8 человек ещё что-то сделали в приложении: 2 только открыли главную, 3 сразу сыграли или прошли тест, 3 вернулись позже. Вывод того разбора: отмена не всегда значит, что продукт не нужен. На 208 человек это не пересчитано — нет данных, нужен новый разбор записей.</p></div>
+<div class="cols2">
+<div class="card"><h3>Кто ещё заходил, до 03.11</h3>
+<ul class="list">
+<li>28 человек без оплаты попали в приложение. Результат видели все 28, потом оплатили 0. За 16.10–11.11 тот же обход шире: 315 видели пропуск пейволла или ошибку оплаты, 268 без подписки. Это уже в разделе тестов.</li>
+<li>72 анонима открыли страницу входа и не вошли. 45 начали с /auth, 17 со ссылки из письма, 6 с главной. Всплеск 16.10 — 31 из 72. В метрики покупателей они не входят.</li>
+</ul></div>
+<div class="card"><h3>Нажатия без отклика, до 03.11</h3>
+<p>23 из 62 нажимали туда, где экран не менялся. Злой тап в том разборе — 4 из 62. За окно 07.10–11.11 доля «нажатие без отклика» не пересчитана: нет данных, в записях 4.18 есть координата тапа, но нет проверки, изменился ли экран.</p></div>
+</div>
+</section>
+
+
+<section id="rage">
+<h2>Злые тапы: где они и что исправить</h2>
+<div class="facts">
+<div class="fact"><span class="v">20 из 239</span><span class="l">сессий со злым тапом, окно 07.10–11.11</span></div>
+<div class="fact"><span class="v">23 из 62</span><span class="l">нажимали туда, где ничего не происходит, до 03.11, на 208 не пересчитано</span></div>
+</div>
+<div class="tbl"><table>
+<thead><tr><th>Где</th><th>Что происходит</th><th>Исправить</th></tr></thead>
+<tbody>
+<tr><td>Результат, «What this means»</td><td>Злой тап в 4 сессиях из 239</td><td>Сделать интерактивным или убрать вид кнопки</td></tr>
+<tr><td>Кнопка Take test</td><td>Злой тап в 2 сессиях</td><td>Дать отклик или убрать вид кнопки, если нажатие ничего не делает</td></tr>
+<tr><td>Балл 132 и балл 137</td><td>По 2 сессии</td><td>Сделать интерактивным или убрать вид кнопки</td></tr>
+<tr><td>Остальные места</td><td>По одной сессии, среди них Start training и Enter your name</td><td>То же правило: либо открывается, либо не похоже на кнопку</td></tr>
+<tr><td>Превью сертификата</td><td>Версия 3: тапают по превью и «top 2%». На 208 по местам не пересчитано</td><td>Превью открывает сертификат</td></tr>
+<tr><td>Автовход</td><td>Дольше 3 секунд у 22 из 62, разбор до 03.11, на 208 не пересчитано</td><td>Ускорить, показать прогресс</td></tr>
+</tbody></table></div>
+<p class="small">Злой тап в 4.19: 3 нажатия в одну точку за 1,5 секунды, тот же элемент или не дальше 30 пикселей. 20 — это сессии, не люди. В версии 3 злой тап был у 4 из 62 человек, из них 2 просто в играх. Это другой разбор, до 03.11.</p>
+<div class="card"><h3>Общие правила для разработки</h3><ul class="list">
+<li>Всё, что выглядит как кнопка или карточка (знаменитости, графики, превью сертификата), либо открывается по нажатию, либо не похоже на кнопку.</li>
+<li>Любое нажатие даёт отклик за 0,3 с: подсветка, переход или индикатор загрузки.</li>
+<li>Ожидание дольше секунды — с прогрессом и текстом, что происходит («Signing you in…» с полосой).</li>
+<li>Ссылки из писем не устаревают за минуты; если устарела — сразу кнопка «Get a new link».</li>
+</ul>
+<p class="small"><b>Цель:</b> нажимали туда, где ничего не происходит, — сейчас 23 из 62 (37%) до 03.11, на 208 не пересчитано, цель — меньше 10%. Цель — ориентир, а не норма рынка: проверяем на записях через 2 недели после исправлений.</p></div>
+<details class="howto small"><summary>Как считали</summary><div class="pad"><ul class="list">
+<li><b>20 из 239</b> — разбор записей в 4.19. Список мест взят оттуда.</li>
+<li><b>23 из 62</b> — версия 3: после нажатия экран не изменился за 1 секунду. Без полей ввода, скачивания PDF и «Поделиться». На 208 не пересчитано.</li>
+<li><b>22 из 62</b> — версия 3: сетевой запрос /auto-login в записях дольше 3 секунд. На 208 не пересчитано.</li>
+</ul></div></details>
+<div class="card"><h3>Отмена и онбординг, версия 3</h3>
+<p class="small">Текст версии 3, покупки до 03.11 и отмены до 06.11. На 208 не пересчитано, кроме того, что уже стоит в разделах «Отмены» и «Что изменилось 11.11».</p>
+<ul class="list">
+<li>Отмена в версии 3: «Cancel subscription?» → «Are you sure?» → причина из 5 → скидка 50% → отмена. «Yes, cancel» нажали 8, «Keep subscription» — 0. Все 8 в итоге отменили, скидку не взял никто. Это 12.10–06.11.</li>
+<li>Онбординг покупателям с воронки не показывался: 0 из 64, баг не подтвердился. На 208 не пересчитано.</li>
+<li>С 09.11 причины пишутся. На срезе 11.11 их 25 из 65, это уже в разделе «Почему отменяют».</li>
+</ul>
+</div>
+</section>
+
+<section id="cancel">
+<h2>Отмены</h2>
+<p class="small">Срез 11.11.2026 14:00 МСК. Неделя закрыта, если покупка плюс 7 дней не позже этого часа: таких 100 из 208. События после 11.11 14:00 не считаются. Почта и карты сюда не входят. <code>subscription_renewed</code> — событие PostHog, не списание в Primer.</p>
+<p class="small">Самостоятельная отмена: <code>subscription_cancelled</code> в первые 8 дней и либо нет <code>subscription_expired</code>, либо окончание подписки больше чем через 2 минуты после отмены.</p><details class="m2"><summary>Подробнее</summary><p class="small">Пара в пределах 2 минут — запись отказа банка. В закрытой неделе человек попадает в один столбец: сначала событие продления, затем самостоятельная отмена, иначе «нет события». Один человек на пути «результат» имеет оба события и стоит в столбце продления.</p></details>
+<div class="tbl"><table>
+<thead><tr><th>Тип</th><th class="r">Людей</th><th class="r">Неделя закрыта</th><th class="r">subscription_renewed</th><th class="r">Самостоятельная отмена</th><th class="r">Нет события</th></tr></thead>
+<tbody>
+<tr><td>Результат и ушёл</td><td class="r num">99</td><td class="r num">35</td><td class="r num">9</td><td class="r num">10</td><td class="r num">16</td></tr>
+<tr><td>Сертификат и ушёл</td><td class="r num">65</td><td class="r num">39</td><td class="r num">8</td><td class="r num">7</td><td class="r num">24</td></tr>
+<tr><td>Игра в первый день</td><td class="r num">31</td><td class="r num">18</td><td class="r num">3</td><td class="r num">3</td><td class="r num">12</td></tr>
+<tr><td>Возвращается</td><td class="r num">12</td><td class="r num">7</td><td class="r num">0</td><td class="r num">4</td><td class="r num">3</td></tr>
+<tr><td>Не открыл контент</td><td class="r num">1</td><td class="r num">1</td><td class="r num">0</td><td class="r num">1</td><td class="r num">0</td></tr>
+<tr class="tot"><td>Всего</td><td class="r num">208</td><td class="r num">100</td><td class="r num">20</td><td class="r num">25</td><td class="r num">55</td></tr>
+</tbody></table></div>
+<p class="small">Число людей в строке — тип строго до 11.11 14:00: 99 + 65 + 31 + 12 + 1 = 208.</p><details class="m2"><summary>Подробнее</summary><p class="small">Как было, события до даты сборки 16.11: 92, 64, 30, 21, 1. Столбцы закрытой недели не сменились: у всех 100 тип тот же. Сумма этих столбцов: 20 + 25 + 55 = 100. По строкам: 9+10+16 = 35, 8+7+24 = 39, 3+3+12 = 18, 0+4+3 = 7, 0+1+0 = 1. У вернувшихся с закрытой неделей события продления нет: 0 из 7, самостоятельная отмена у 4. У игравших в первый день событие продления есть у 3 из 18. Людей мало, долю оплат из этого не ставим.</p></details>
+<h3>Сроки отмены</h3>
+<p>Самостоятельных отмен за 8 дней, видимых к 11.11 14:00, — 65.</p><details class="m2"><summary>Подробнее</summary><p class="small">Медиана от покупки до <code>subscription_cancelled</code> — 9 мин 31 с. В первый час — 46 из 65. До 5 минут — 26, 5–15 минут — 10, 15–60 минут — 10, 1–24 часа — 9, позже суток — 10. Сумма корзин 26+10+10+9+10 = 65. Пара отмены и окончания подписки в пределах 2 минут есть у 1 человека. Ещё у 40 отмена есть, а <code>subscription_expired</code> за 8 дней нет. У 25 окончание подписки пришло позже чем через 2 минуты. 40 + 25 + 1 = 66 человек с <code>subscription_cancelled</code> за 8 дней.</p></details>
+<p>Защитная метрика считается отдельно: <code>subscription_cancelled</code> с <code>reason = user_initiated</code> в течение часа после <code>subscription_started</code>.</p><details class="m2"><summary>Подробнее</summary><p class="small">Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Позже 11.11 13:00 МСК покупок нет, последняя — в 11:58. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). Среди этих 46 нет пары отмены и окончания подписки в пределах 2 минут, поэтому FoxIQ по правилу 2 минут — те же 46 из 208. Цель — не выше 22,1%. База считается по всем 208 и по тем, у кого час закрыт.</p></details>
+<h3>Динамика отмены в первый час</h3>
+<p>22,1% — среднее по всему окну. До 08.11 было 12,6%, с 08.11 — 37,0%. При старте теста сравнивать с контрольной группой A в тот же период.</p>
+<ul class="list">
+<li>До 08.11: 16 из 127 (12,6%, интервал 7,9–19,5%).</li>
+<li>С 08.11 по 11.11 14:00: 30 из 81 (37,0%, интервал 27,3–47,9%).</li>
+<li>Внутри: 28.10–07.11 — 8 из 69 (11,6%). По дням с 08.11: 5 из 12, 8 из 20, 8 из 30, 9 из 19.</li>
+<li>16 + 30 = 46. 127 + 81 = 208. Интервалы до и после 08.11 не пересекаются. Рост реальный, начинается с 08.11, не с 28.10.</li>
+<li>Что изменилось в данных с 08.11, без установленной причины: кабинет 4 (по первому источнику) вырос с 5 из 58 до 27.10 до 63 из 81 с 08.11, а отмены в первый час внутри него — с 2 из 31 до 08.11 до 25 из 63 с 08.11. Рост отмен внутри самого кабинета, а не только его доли. Android — 24 из 81 и отменяет так же, как iOS: 9 из 24 и 21 из 57. 20 из 30 отмен короче 5 минут.</li>
+<li>Чего не хватает: что изменилось 08.11 у источника <code>utm_source = 4</code>; сверка 46 отмен с Primer.</li>
+</ul>
+<div class="tbl"><table>
+<thead><tr><th>Неделя покупки, МСК</th><th class="r">Отменили в час</th><th class="r">Доля</th><th class="r">Интервал 95%</th></tr></thead>
+<tbody>
+<tr><td>07–12.10</td><td class="r num">1 из 4</td><td class="r num">25%</td><td class="r num">4,6–69,9%</td></tr>
+<tr><td>13–19.10</td><td class="r num">5 из 36</td><td class="r num">13,9%</td><td class="r num">6,1–28,7%</td></tr>
+<tr><td>20–27.10</td><td class="r num">2 из 18</td><td class="r num">11,1%</td><td class="r num">3,1–32,8%</td></tr>
+<tr><td>28.10–03.11</td><td class="r num">4 из 37</td><td class="r num">10,8%</td><td class="r num">4,3–24,7%</td></tr>
+<tr><td>04–11.11</td><td class="r num">34 из 113</td><td class="r num">30,1%</td><td class="r num">22,4–39,1%</td></tr>
+</tbody></table></div>
+<p class="small">Дни без покупок: 07–09.10, 11–12.10, 24–26.10. 11.11 — до 14:00. Сумма дней — 208 покупателей и 46 отмен.</p>
+<div class="tbl"><table>
+<thead><tr><th>День покупки, МСК</th><th class="r">Покупателей</th><th class="r">Отменили в час</th></tr></thead>
+<tbody>
+<tr><td>10.10</td><td class="r num">4</td><td class="r num">1 из 4</td></tr>
+<tr><td>13.10</td><td class="r num">1</td><td class="r num">0 из 1</td></tr>
+<tr><td>14.10</td><td class="r num">9</td><td class="r num">1 из 9</td></tr>
+<tr><td>15.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>16.10</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>17.10</td><td class="r num">7</td><td class="r num">2 из 7</td></tr>
+<tr><td>18.10</td><td class="r num">8</td><td class="r num">1 из 8</td></tr>
+<tr><td>19.10</td><td class="r num">3</td><td class="r num">0 из 3</td></tr>
+<tr><td>20.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>21.10</td><td class="r num">7</td><td class="r num">2 из 7</td></tr>
+<tr><td>22.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>23.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>27.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>28.10</td><td class="r num">10</td><td class="r num">1 из 10</td></tr>
+<tr><td>29.10</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>30.10</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>31.10</td><td class="r num">2</td><td class="r num">0 из 2</td></tr>
+<tr><td>01.11</td><td class="r num">3</td><td class="r num">1 из 3</td></tr>
+<tr><td>02.11</td><td class="r num">4</td><td class="r num">0 из 4</td></tr>
+<tr><td>03.11</td><td class="r num">10</td><td class="r num">1 из 10</td></tr>
+<tr><td>04.11</td><td class="r num">5</td><td class="r num">0 из 5</td></tr>
+<tr><td>05.11</td><td class="r num">7</td><td class="r num">1 из 7</td></tr>
+<tr><td>06.11</td><td class="r num">16</td><td class="r num">2 из 16</td></tr>
+<tr><td>07.11</td><td class="r num">4</td><td class="r num">1 из 4</td></tr>
+<tr><td>08.11</td><td class="r num">12</td><td class="r num">5 из 12</td></tr>
+<tr><td>09.11</td><td class="r num">20</td><td class="r num">8 из 20</td></tr>
+<tr><td>10.11</td><td class="r num">30</td><td class="r num">8 из 30</td></tr>
+<tr><td>11.11 до 14:00</td><td class="r num">19</td><td class="r num">9 из 19</td></tr>
+</tbody></table></div>
+<h3>Подтвердили отмену</h3>
+<p>События экрана скидки в PostHog нет. <code>subscription_cancel_confirm</code> за 8 дней есть у 42, и у всех 42 есть <code>subscription_cancelled</code>. События продления в те же 8 дней среди них нет. Что именно предложила скидка на год, по событиям не видно.</p>
+</section>
+
+<section id="why">
+<h2>Почему отменяют</h2>
+<p class="small">Причины с числами на срез 11.11 14:00 МСК — событие <code>cancellation_survey_completed</code> у этих 208. События идут с 09.11 07:45 UTC, раньше причины в PostHog нет.</p>
+<div class="tbl"><table>
+<thead><tr><th>Причина</th><th class="r">Человек</th></tr></thead>
+<tbody>
+<tr><td>something-else</td><td class="r num">13</td></tr>
+<tr><td>too-expensive</td><td class="r num">9</td></tr>
+<tr><td>dont-use</td><td class="r num">2</td></tr>
+<tr><td>причина пустая</td><td class="r num">1</td></tr>
+<tr class="tot"><td>Всего с событием причины</td><td class="r num">25</td></tr>
+</tbody></table></div>
+<p>13 + 9 + 2 + 1 = 25. Это не все 65 самостоятельных отмен: у отмен до 09.11 07:45 UTC поля причины нет.</p>
+
+<h3>Четыре гипотезы на этих 208</h3>
+<div class="card"><h3>1. Продукт не пробуют и в нём не остаются <span class="chip warn">связь есть, причина не доказана</span></h3>
+<p>На результате остановились 99 из 208 (<a href="#arch">типы пути</a>). В другой день вернулись 12 из 208. Тренировку в первый час начали 34 из 208 (<a href="#first">первый заход</a>). Кто дошёл до игры, держится дольше: медиана первого захода у типа «игра» 665 с против 154 с у тех, кто остался на результате. Это связь, не причина.</p></div>
+<div class="card"><h3>2. Пришли за результатом, а не за подпиской <span class="chip warn">по 46 записям, не по 208</span></h3>
+<p>Результат открыли 207 из 208 (<a href="#features">чем пользуются</a>). Из 20 отмен короче 5 минут с 08.11 результат открыли 19 из 20, не позже 6 секунд после покупки. Это разбор записей тех 46, не все 208. Оплата месяца без использования на этом срезе из Primer не пересчитана, поэтому «платят и без продукта» здесь не повторяется.</p></div>
+<div class="card"><h3>3. Воронка отмены не предлагает подходящего <span class="chip warn">выборка около 25 человек</span></h3>
+<p>Причина есть у 25 из 65 самостоятельных отмен (<a href="#why">таблица причин</a>). Из вошедших в воронку остались 5 из около 25, окно 09.11–11.11, до кнопки отмены на каждом экране. Это не все 65: до 09.11 07:45 UTC причины нет. Проверяет T2.</p></div>
+<div class="card"><h3>4. Высокий балл снимает мотивацию развиваться <span class="chip plain">гипотеза</span></h3>
+<p><code>iq_score</code> равен 137 у 207 из 207, кто увидел результат. Сравнить высокий и низкий балл нельзя: различий по баллу нет. Проверяет T3. Пометку «сильные доказательства» ставить не из чего.</p></div>
+<h3>Что делали отменившие и оставшиеся</h3>
+<p>65 — самостоятельная отмена за 8 дней по правилу 2 минут. 143 — остальные. 65 + 143 = 208. Окно действий — первые 7 дней и не позже 11.11 14:00.</p>
+<div class="tbl"><table>
+<thead><tr><th></th><th class="r">Отменили, 65</th><th class="r">Остальные, 143</th></tr></thead>
+<tbody>
+<tr><td>Открыли сертификат</td><td class="r num">26 из 65</td><td class="r num">56 из 143</td></tr>
+<tr><td>Скачали PDF, событие certificate_downloaded</td><td class="r num">26 из 65</td><td class="r num">50 из 143</td></tr>
+<tr><td>Начали игру или тест</td><td class="r num">12 из 65</td><td class="r num">29 из 143</td></tr>
+<tr><td>Запросили ссылку на почту, magic_link_requested</td><td class="r num">0 из 65</td><td class="r num">1 из 143</td></tr>
+<tr><td>Второй день, контентный экран</td><td class="r num">6 из 65</td><td class="r num">6 из 143</td></tr>
+</tbody></table></div>
+<p class="small">Сертификат 26 + 56 = 82. В таблице «Чем пользуются» сертификат 83 из 208.</p><details class="m2"><summary>Подробнее</summary><p class="small">Один человек в эту пару не попал, причина расхождения в один человек не установлена. Игра или тест 12 + 29 = 41. Второй день 6 + 6 = 12, это все, кто вернулся. «Вход по почте» версии 3 — смена браузера в записи. По событиям это не воспроизводится. Ближайшее событие — <code>magic_link_requested</code>: 1 из 208.</p></details>
+<p class="small">Из разбора записей 46 отмен в первый час: запись есть у 45 из 46. Путь «результат, затем профиль или подписка» — 25 из 46. Сертификат или игра, затем отмена — 17 из 46. Кадры записей в том разборе не смотрели.</p>
+<p class="small">Версия 3, не пересчитано: из 14 отменивших и 44 оставшихся (покупки 12–27.10) сравнивались скачанный PDF, игры и вход по почте. Те доли здесь не повторяются.</p>
+
+<div class="card"><h3>Итог триала из версии 4.14, другая дата</h3>
+<p>Покупки 12–27.10, 58 человек, итог на 06.11: оплатили 17, сами отменили 14, отказ банка 27. Покупки 12.10–02.11, 86 человек: оплатили 22, отменили 17, отказ банка 40, ещё в триале 7. Срок 15 отмен (12–27.10 и 03.11): медиана 31 минута, корзины 4 / 2 / 3 / 3 / 3. На 11.11 14:00 эти доли из Primer заново не считались.</p>
+<p class="small">Что делали 14 отменивших и 44 оставшихся из тех 58 (скачали PDF, играли, вошли по почте) — данные до 06.11. На 208 человек такого сравнения нет.</p></div>
+</section>
+
+<section id="money">
+<h2>Деньги</h2>
+<p class="small">Окно отчёта 07.10 00:00 – 11.11 14:00 МСК. Деньги — Primer. Эти числа уже стояли в шапке версии 4.18 и здесь не пересчитывались заново.</p>
+<div class="facts">
+<div class="fact"><span class="v">226</span><span class="l">покупателей триала $1</span></div>
+<div class="fact"><span class="v">29 из 118</span><span class="l">продлили, 25%. Триал закончился к 11.11 14:00</span></div>
+<div class="fact"><span class="v">62</span><span class="l">отказ банка</span></div>
+<div class="fact"><span class="v">27</span><span class="l">без попытки списания</span></div>
+<div class="fact"><span class="v">0 из 22</span><span class="l">предоплаченные карты, продлений нет</span></div>
+</div>
+<p>29 + 62 + 27 = 118. Возвраты и споры за весь этот период — нет данных: нужна выгрузка Primer по 11.11 14:00. В таблице плана остаётся прежняя цифра другого окна: 2 из 22 оплативших, покупки 12.10–02.11, окно 30 дней после списания.</p>
+<p class="small">Деньги по типам пути для этих 208 — нет данных: выгрузка Primer к человеку не присоединена. В версии 4.14 суммы $11,59 / $8,80 / $3,50 / $1,00 — это 65 покупателей 12.10–03.11 на 06.11, не этот список.</p>
+</section>
+
+<section id="funnel">
+<h2>Воронка и Azora</h2>
+<h3>Воронка до пейволла, 07.10–11.11</h3>
+<p class="small">Люди, <code>foxiq_ff</code> и <code>azora_ff</code>, тот же почтовый фильтр. Старт — первый вопрос. Пейволл — экран с id ровно paywall или Paywall. Отказные экраны в пейволл не входят.</p>
+<div class="tbl"><table>
+<thead><tr><th></th><th class="r">Первый вопрос</th><th class="r">Пейволл</th><th class="r">Оплатили</th><th class="r">До пейволла</th><th class="r">Оплата с пейволла</th><th class="r">Сквозная</th></tr></thead>
+<tbody>
+<tr><td>FoxIQ</td><td class="r num">5 160</td><td class="r num">1 955</td><td class="r num">186</td><td class="r num">37,9%</td><td class="r num">9,5%</td><td class="r num">3,6%</td></tr>
+<tr><td>Azora</td><td class="r num">32 399</td><td class="r num">15 444</td><td class="r num">1 337</td><td class="r num">47,7%</td><td class="r num">8,7%</td><td class="r num">4,1%</td></tr>
+</tbody></table></div>
+<p class="small">Причина разницы 186 и 208 не установлена; расхождение 22 человека.</p>
+<p class="small">FoxIQ до пейволла доходит реже: 37,9% против 47,7%. Оплата с пейволла 9,5% против 8,7%, сквозная 3,6% против 4,1%.</p>
+<h3>Поведение покупателей</h3>
+<p>Те же дни покупки и тот же почтовый фильтр. Azora — <code>project = web</code>: свойства <code>project = azora</code> у покупок в этом окне нет.</p><details class="m2"><summary>Подробнее</summary><p class="small">Экран — web.azora-astro.com и соседние хосты, без страниц входа. Возврат — контентный экран в двух днях по Москве, от покупки и не позже 7 дней, события не позже 11.11 14:00. События Azora после 11.11 14:00 в выгрузке есть и в эту цифру не входят. У FoxIQ в этой таблице оба столбца строго до 11.11 14:00. У Azora срез 11.11 14:00 применён только к столбцу «Два дня в приложении» (415 из 1 822 первых покупок) и к строке «Закрытая неделя»; число покупателей (1 831) и «Сами отменили в первый час» (447) остались по прежнему срезу, и покупки Azora на iOS в таблицу не входят (только <code>project = web</code>). Поэтому сравнение по отменам с FoxIQ приближённое. Все страны.</p></details>
+<div class="tbl"><table>
+<thead><tr><th></th><th class="r">Покупатели</th><th class="r">Два дня в приложении</th><th class="r">Сами отменили в первый час</th></tr></thead>
+<tbody>
+<tr><td>FoxIQ</td><td class="r num">208</td><td class="r num">12<span class="sub">5,8%, срез. Как было, события до даты сборки 16.11: 21</span></td><td class="r num">46<span class="sub">22,1%, правило 2 минут</span></td></tr>
+<tr><td>Azora</td><td class="r num">1 831</td><td class="r num">415<span class="sub">22,8% из 1 822 первых покупок, события не позже 11.11 14:00. Прежние 484 из 1 831 (26,4%) воспроизвести не удалось: без среза 11.11 по тем же правилам получается 473, со срезом 415.</span></td><td class="r num">447<span class="sub">24,4%, правило 2 минут. Не пересчитано на срез 11.11 14:00, 1 831 покупатель</span></td></tr>
+<tr><td>Закрытая неделя (покупка не позже 04.11 14:00)</td><td class="r num">100 и 1 311<span class="sub">FoxIQ и Azora, первые покупки</span></td><td class="r num">7 из 100<span class="sub">7,0%. Azora: 332 из 1 311 (25,3%), события до 11.11 14:00</span></td><td class="r num">—<span class="sub">в этой строке не считалась</span></td></tr>
+</tbody></table></div>
+<p class="small">FoxIQ по правилу 2 минут — 46 из 208 (22,1%): в первый час нет пары отмены и окончания подписки ближе 2 минут, и это совпадает с <code>reason = user_initiated</code>.</p><details class="m2"><summary>Подробнее</summary><p class="small">У Azora 24,4% (447 из 1 831) — то же правило 2 минут, другая выборка. Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). Цель у FoxIQ — не выше 22,1%. База считается по всем 208 и по тем, у кого час закрыт. Два дня у FoxIQ здесь — 12 из 208. Оплату первого месяца за это окно без Primer не считал.</p></details>
+<h3>Злые тапы</h3>
+<p>В 239 разобранных записях 3 800 нажатий, у всех есть координата.</p><details class="m2"><summary>Подробнее</summary><p class="small">Злой тап — 3 нажатия в одну точку за 1,5 секунды: тот же элемент или не дальше 30 пикселей. Такой залп есть в 20 сессиях. Чаще всего: «What this means» в 4 сессиях, кнопка Take test, балл 132 и балл 137 по 2. Остальные места по одной сессии, среди них Start training и Enter your name. Это сессии, не люди.</p></details>
+</section>
+
+<section id="samples">
+<h2>Выборки и периоды</h2>
+<div class="tbl"><table>
+<thead><tr><th>Выборка</th><th>Период</th><th>Сколько</th><th>Где в отчёте</th></tr></thead>
+<tbody>
+<tr><td>Покупатели триала $1, Primer, после фильтра тестов</td><td>07.10–11.11 14:00 МСК</td><td class="r num">226</td><td>Деньги</td></tr>
+<tr><td>Из них закончили триал (7+ дней)</td><td>покупки до 04.11</td><td class="r num">118</td><td>Продления: 29 продлили, 62 отказ банка, 27 без попытки; предоплаченные 0 из 22</td></tr>
+<tr><td>Покупатели с <code>subscription_started</code>, PostHog</td><td>07.10 00:00 – 11.11 14:00 МСК</td><td class="r num">208</td><td>Типы пути, экраны, отмены, нажатия, сравнение с Azora</td></tr>
+<tr><td>Начали тренировку в первый час</td><td>те же 208</td><td class="r num">34<span class="sub">16%</span></td><td>Тест считает базу по 203: без пяти ранних покупок. База объёма T1 и T3 — 34 из 203, события с 13.10 17:00 UTC</td></tr>
+<tr><td>Вошедшие в воронку отмены, без тестовых</td><td>09.11–11.11</td><td class="r num">около 25, остались 5</td><td>База T2, измерена до кнопки отмены на каждом экране</td></tr>
+<tr><td>Видели экран пропуска или неуспешной оплаты</td><td>16.10–11.11</td><td class="r num">315<span class="sub">из них 268 без подписки</span></td><td>Вход без оплаты</td></tr>
+<tr><td>Воронка FoxIQ и Azora, люди</td><td>07.10–11.11</td><td class="r num">5 160 / 32 399<span class="sub">первый вопрос</span></td><td>Сравнение воронок</td></tr>
+<tr><td>Отмена в первый час</td><td>покупки 13–27.10</td><td class="r num">7 из 54<span class="sub">13%</span></td><td>Отмена в первый час, покупки 13–27.10: 7 из 54 (13%). На всех 208 — 22,1% (46 из 208). Цель плана — не выше 22,1%.</td></tr>
+</tbody></table></div>
+<p class="small muted">226 — покупатели в Primer. 208 — люди с subscription_started после почтового фильтра, каждый один раз. Типы пути, экраны, отмены и нажатия в этом файле считаются по этим 208.</p>
+<p class="small">В 4.20 на этих 208 пересчитаны первый заход, источники, США против Azora и действия 65 против 143.</p><details class="m2"><summary>Подробнее</summary><p class="small">На данных версии 3, до 03.11, оставлены нажатия без отклика (23 из 62), автовход дольше 3 с (22 из 62) и справка по США 13–27.10. Календарные окна 12.10–27.10, 27.10–02.11 и 02.11–06.11 дали 54, 29 и 42 покупателя; метрики первого захода по ним не считались.</p></details>
+</section>
+
+<section id="changes">
+<h2>Что изменилось в продукте 11.11 и как это влияет на тесты</h2>
+<ul class="list">
+<li><b>Кнопка «Cancel subscription» на каждом экране воронки отмены</b> (Даня, на проде 11.11 вечером). Отменить теперь можно сразу, без причины и предложения. База T2 — 20% остались (5 из 25) — измерена 09–11.11, <b>до кнопки</b>. С кнопкой оставшихся может стать меньше. Вариант A теперь «как сейчас, с кнопкой»; кнопка есть и в A, и в B, поэтому T2 проверяет только предложения под причину. Перед стартом T2 замерить базу заново за неделю с кнопкой и пересчитать объём.</li>
+<li><b>Сердечки и лимит ошибок</b> (Даня, 11.11). У Premium 5 ошибок в день в уроках и дворцах памяти, дальше — купленные сердечки (5 / 15 / 40 за $1,99 / $4,99 / $9,99). Игры у Premium без лимита. На T1 не влияет: в T1 первая игра без траты энергии. Это новый источник денег, в разделе «Деньги» его ещё нет — добавить отдельной строкой, когда будут первые покупки.</li>
+<li><b>Раздел памяти</b> открыт для всех пользователей с 11.11 14:06 UTC (17:06 МСК), то есть после среза 11.11 14:00 МСК: вкладки Lessons и Palaces и раздел Memory skills в Explore, без флагов и без ограничения по тестерам. На данные этого отчёта он не влияет. Но он меняет путь в приложении, поэтому дату открытия (11.11 14:06 UTC) нужно учитывать в T1 и T3: люди, купившие после неё, видят приложение уже с разделом памяти.</li>
+<li><b>Вход без подписки</b> (решение 11.11): всё платное, включая результат IQ, — за пейволлом. Задача <a href="https://app.clickup.com/t/1249d35ptgn">вход в приложение без оплаты</a> — статус в ClickUp «запущено». В тесты T1–T3 эти люди не входят.</li>
+</ul>
+</section>
+
+<section id="tests">
+<h2>Тесты</h2>
+<p>В тесты входят только покупатели с подпиской при первом открытии результата (в том числе оплатившие на пейволле в приложении). 268 человек без <code>subscription_started</code> в тесты не входят.</p><p class="small">Задача <a href="https://app.clickup.com/t/1249d35ptgn">вход в приложение без оплаты</a> — статус в ClickUp «запущено». Объём посчитан для сравнения долей при вероятности ошибки 5% и мощности 80%. Поток для T1 и T3 — 15 покупок в день (5–10.11: 7, 16, 4, 12, 20, 30). Если поток вернётся к ~7 в день, срок набора показан вторым числом. Промежуточная проверка — через неделю после старта.</p>
+<div class="tbl"><table class="tests-t"><colgroup><col style="width:5%"><col style="width:16%"><col style="width:27%"><col style="width:15%"><col style="width:20%"><col style="width:17%"></colgroup>
+<thead><tr><th></th><th>Тест и гипотеза</th><th>Что на что меняем</th><th>Где</th><th>Главная и защитная метрика</th><th>Объём и срок</th></tr></thead>
+<tbody>
+<tr><td class="num"><b>T1</b></td><td><b>Первая тренировка прямо с результата</b><span class="sub">В первый час тренировку начинают 34 человека: 16% из всех 208 покупателей и 17% из 203, у кого эти события уже были. Если с результата сразу провести в одну короткую игру, человек получит ценность в первую сессию.</span></td>
+<td>A: сейчас — результат (балл, кривая, «Get a certificate», «Start with a 5-minute workout»); после сертификата — главная «0/5 done».<br><br>B, по шагам: (1) под баллом блок «Your brain profile»: сильный навык «Visual Perception» одинаков у всех — в воронке навык не считается, это постоянный текст (решение 12.11); навык для роста — Memory. (2) Сразу после результата открывается игра Fox Memory, уровень 1, одна партия, около 1 минуты (на экране «1 minute»), без главной и без траты энергии; на игре кнопка «Skip — get my certificate». (3) После игры — «Day 1 done: Memory 72%», план «3 минуты в день, 7 дней» и выбор времени письма. (4) После сертификата один экран «Want to improve your score?» с кнопкой «Now train the skill behind your score». Кто игру уже прошёл, попадает в Daily Brain Training; кто нажал «Skip», в ту же игру. (5) На главную человек попадает уже с «1/5 done».</td>
+<td>Приложение: экран результата, сертификат, экран после игры. Группы 50/50 делятся на бэке приложения, вариант пишется в профиль PostHog (<code>t1_variant</code>) и в каждое событие. В тест входят пришедшие с веб-воронки, у кого есть подписка при первом открытии результата, включая оплативших на пейволле в приложении.</td>
+<td>Главная: начали тренировку (игра, тест или урок) в первый час, <b>17% → 35%</b> (34 из 208, 16%; база объёма — 34 из 203, 17%). По неделям покупки, начали тренировку в первый час: 13–19.10 — 7 из 36, 20–26.10 — 1 из 16, 27.10–02.11 — 7 из 29, 03–09.11 — 14 из 74, 10–11.11 — 5 из 49. До 13.10 — 0 из 4. Сумма начавших по этим неделям — 34. Если на старте теста база окажется ниже 17%, объём на вариант пересчитывается.<span class="sub">Защитные: отмена в первый час не выше 22,1% (46 из 208) и не выше группы A в тот же период. Ввели имя для сертификата не ниже 45% (на разборе до 03.11 — 52%). Дополнительно смотрим оплату месяца. Метрики возврата в другой день у этого теста нет.</span></td>
+<td>90 на вариант, 180 оплативших триал. Расчёт: две доли, α = 5% (z = 1,96), мощность 80% (z = 0,84), 17% против 35%. n ≈ (1,96 + 0,84)² × (0,17×0,83 + 0,35×0,65) / 0,18² ≈ 90 на вариант. При 15 покупках в день набор ≈ 12 дней плюс неделя на итог триала (≈ 19 дней). При 7 в день ≈ 26 дней набора плюс неделя. Промежуточная проверка через неделю.<br><a href="https://app.clickup.com/t/1249d35ptk6">Задача теста</a><br><a href="https://app.clickup.com/t/1249d35ptkt">Задача разработчику</a></td></tr>
+<tr><td class="num"><b>T2</b></td><td><b>Воронка отмены по причине</b><span class="sub">С 09.11, без тестовых, вошли около 25 человек за три дня, остались 5 (20%). Прежняя база «0 из 10» больше не используется. Скидка на экране — $49,99 за первый год.</span></td>
+<td>A: сейчас — «Are you sure?» → причина (5 вариантов) → скидка 50% на первый год за $49,99 → отмена.<br><br>B, по шагам: отличие — после выбора причины показывается предложение под неё (пять вариантов). «Дорого» → следующий месяц за $9,99 вместо $29,99. «Нет времени / не пользуюсь» → пауза на 30 дней без списания и план «3 минуты в день». «Получил, что хотел» → доступ до конца пробной недели без продления. «Технические проблемы» → поддержка и +3 дня триала. «Другое» → та же скидка $49,99 на первый год. Дима 12.11 одобрил цену $9,99 в месяц. Пауза на 30 дней и +3 дня триала ждут ответа. Кнопка «Cancel subscription» с 11.11 есть на всех экранах воронки отмены, в A и в B, поэтому отличие B только в предложениях под причину.</td>
+<td>Воронка отмены FunnelFox, сплит FunnelFox. Только оплатившие триал.</td>
+<td>Главная: остались среди вошедших в отмену, <b>20% (5 из 25) → 35%</b>.<span class="sub">35% — это примерно на 4 человека больше с каждых 25 входов. Для денег этого мало: защитная метрика — продление не ниже 25% (29 из 118 закончивших триал). Если продление просядет, тест останавливаем, даже если в воронке остаются чаще. Кроме того: возвраты, жалобы и повторный вход в отмену за 14 дней.</span></td>
+<td>Расчёт: две доли, α = 5% (z = 1,96), мощность 80% (z = 0,84), 20% против 35%. n ≈ (1,96 + 0,84)² × (0,20×0,80 + 0,35×0,65) / 0,15² ≈ 135 на вариант, около 270 вошедших в отмену. При ~9 входах в день (25 за 09.11–11.11, день 11.11 до 14:00) это около 30 дней. При 7 входах в день — около 39 дней. Промежуточная проверка через неделю. Перед стартом — неделя замера базы с кнопкой (база измерена до кнопки отмены, 11.11), затем пересчёт объёма.<br><a href="https://app.clickup.com/t/1249d35ptk7">Задача теста</a><br><a href="https://app.clickup.com/t/1249d35ptkr">Задача разработчику</a></td></tr>
+<tr><td class="num"><b>T3</b></td><td><b>Разные уровни балла</b><span class="sub">Проверяем уровни 137, 120 и 104. Посчитать балл по ответам нельзя. За 07.10–11.11 <code>iq_score</code> равен 137 у всех 207, кто увидел результат.</span></td>
+<td>A: 137 — как сейчас.<br>B: 120.<br>C: 104.<br><br>Балл закрепляется за человеком, сертификат — с тем же баллом. Группы 1:1:1.</td>
+<td>Приложение: экран результата и сертификат. Флаг по профилю. Только оплатившие триал. Запускать после T1: главная метрика одна.</td>
+<td>Главная: начали тренировку в первый час, <b>17% → 35%</b> в B или C против A (34 из 208, 16%; объём теста считается от 34 из 203).<span class="sub">Защитные: отмена в первый час не выше 22,1% (46 из 208) и не выше группы A в тот же период. Возвраты и жалобы на балл — остановить вариант, если их вдвое больше, чем в A; ввели имя для сертификата; продление не ниже 25% (29 из 118).</span></td>
+<td>90 на вариант, 270 оплативших триал, группы 1:1:1. Сравнений два (B с A и C с A). Объём 90 на вариант посчитан для одного сравнения; при поправке на два сравнения нужно примерно +20% (около 110 на вариант, 330 всего). Решение о поправке — за Наташей и Катей. При 15 покупках в день набор ≈ 18 дней плюс неделя на итог триала (≈ 25 дней). При 7 в день ≈ 39 дней набора. Промежуточная проверка через неделю.<br><a href="https://app.clickup.com/t/1249d35ptk8">Задача теста</a><br><a href="https://app.clickup.com/t/1249d35ptku">Задача разработчику</a></td></tr>
+</tbody></table></div>
+<div class="card"><h3>🔧 Исправить без теста</h3>
+<ol class="list">
+<li><b>События воронки отмены идут с 09.11 07:45 UTC.</b> <a href="https://app.clickup.com/t/1249d35nfwy">Задача Дани</a>. Экраны: discount, cancel-done, cancel-error, discount-done. Итог с причиной — <code>cancellation_survey_completed</code>. Без тестовых за 09.11–11.11 остались 5 из примерно 25 вошедших.</li>
+<li id="fix-charge"><b>Отмена не остановила списание — 2 случая, оба на $49,99. Проблема уже решена.</b> Оба после «Yes, cancel» нажали «Redeem your discount»: месячная подписка сменилась на годовую, а приложение показало «отменено», поэтому через неделю годовая попыталась списать. На проде исправлено: при выборе скидки «отменено» больше не пишется, на экране цена $49,99 за первый год. Даня сверил отмены с 14.10, лишних списаний больше не будет. Задача <a href="https://app.clickup.com/t/1249d35nuam">закрыта</a>.</li>
+<li><b>Вход в приложение без оплаты.</b> За 16.10–11.11 экран <code>cta_skip_paywall</code> или <code>failed_payment_message</code> видели 315 человек, из них 268 так и не получили <code>subscription_started</code>. Из этих 268 приложение открыли минимум 50. <a href="https://app.clickup.com/t/1249d35ptgn">Задача</a> в статусе «запущено».</li>
+<li><b>Вход по ссылке.</b> Автовход дольше 3 секунд у 22 из 62 — это разбор записей до 03.11. За 07.10–11.11 длительность запроса /auto-login по 530 записям не пересчитывалась: в таблице записей есть активное время и число кликов, но нет длительности этого запроса.</li>
+</ol></div>
+<div class="card"><h3>🗓️ Порядок</h3>
+<ol class="list">
+<li><b>Сразу, без теста</b> — вход без оплаты, задача в статусе «запущено». Списание после отмены уже исправлено.</li>
+<li><b>T1</b> — первая тренировка с результата. 180 оплативших: при 15 покупках в день набор ≈ 12 дней плюс неделя на итог. При 7 в день ≈ 26 дней плюс неделя. Промежуточная проверка через неделю.</li>
+<li><b>T2</b> — параллельно с T1: другие экраны. Набор около 30 дней при ~9 входах в день и около 39 дней при 7. Промежуточная проверка через неделю.</li>
+<li><b>T3</b> — после итогов T1, на победившем варианте.</li>
+<li><b>Бэклог</b> — серия тестов-результатов, если T1 не даст 35% тренировки в первый час.</li>
+</ol>
+<p class="small muted">Отказы банка (62 из 118 закончивших триал) и предоплаченные карты (0 продлений из 22) — тема платёжки, здесь не тест.</p></div>
+</section>
+
+<section id="plan">
+<h2>📈 Метрики плана</h2>
+<p>По этой таблице следим, работает ли план. Значения обновляются в <a href="https://ph.app-inkfolio-reader.pro/project/1/dashboard/20">дашборде PostHog «FoxIQ — метрики плана»</a>: <a href="https://ph.app-inkfolio-reader.pro/project/1/insights/ih0exZ9g">недельные метрики по покупателям</a> , <a href="https://ph.app-inkfolio-reader.pro/project/1/insights/JVXrZqWF">удержание в отмене</a> и <a href="https://ph.app-inkfolio-reader.pro/project/1/insights/EzGMlmyw">воронка отмены по шагам</a> (с 09.11). Когда запустим тесты, в те же графики добавим разбивку по флагу теста.</p>
+<div class="tbl"><table>
+<colgroup><col style="width:20%"><col style="width:16%"><col style="width:12%"><col style="width:14%"><col style="width:38%"></colgroup>
+<thead><tr><th>Метрика</th><th>Сейчас</th><th>Цель</th><th>Пункт плана</th><th>Источник и период</th></tr></thead>
+<tbody>
+<tr><td><b>Начали тренировку в первый час</b><span class="sub">игра, тест или урок, люди</span></td><td class="num">16%<span class="sub">34 из 208, 07.10–11.11. Из 203 (без пяти ранних покупок) это 17%: пять покупок раньше 13.10 17:00 UTC, событий тренировки тогда ещё не было.</span></td><td class="num">35%</td><td>T1, T3</td><td>PostHog: <code>game_started</code>, <code>test_started</code> или <code>lesson_completed</code> после <code>subscription_started</code>. Окно — 1 час</td></tr>
+<tr><td><b>Отмена в первый час</b><span class="sub">защитная</span></td><td class="num">22,1%<span class="sub">Все 208: 46 из 208 (22,1%); у 0 человек час на срез не закрыт. Только те, у кого час закрыт к срезу: 46 из 208 (22,1%). База считается обоими способами.</span><span class="sub">База на покупках 13–27.10: 13% (7 из 54), по правилам этого отчёта.</span><span class="sub">До 08.11: 12,6% (16 из 127). С 08.11: 37,0% (30 из 81).</span></td><td class="num">не выше 22,1%</td><td>T1, T3</td><td>PostHog: <code>subscription_cancelled</code> с <code>reason = user_initiated</code>. Окно — 1 час после оплаты</td></tr>
+<tr><td><b>Активность в 2+ дня за первые 7 дней</b></td><td class="num">5,8%<span class="sub">12 из 208, контентный экран в два дня, события не позже 11.11 14:00. Как было, события до даты сборки 16.11: 21 из 208. Закрытая неделя: 7 из 100. Покупки 13–27.10: контентный экран в два дня — 3 из 54, события приложения — 4 из 54.</span></td><td class="num">25%</td><td>T1, письма-возвраты</td><td>PostHog: события приложения в двух и более днях. Окно — 7 дней после покупки</td></tr>
+<tr><td><b>Сами отменили в триале</b></td><td class="num">24%<span class="sub">14 из 58, покупки 12–27.10; 11% (3 из 28) — 27.10–02.11. Старая выборка.</span><span class="sub">На 208, срез 11.11: 65 из 208 (31,3%) самостоятельных отмен за 8 дней; закрытая неделя: 25 из 100 (25,0%).</span></td><td class="num">18%</td><td>T1, T3</td><td>Primer и <code>primer_payment</code>. Отмена — <code>subscription_cancelled</code> с <code>reason = user_initiated</code> до списания. Окно — 7 дней триала</td></tr>
+<tr><td><b>Остались после входа в отмену</b></td><td class="num">20%<span class="sub">5 из около 25, 09.11–11.11, без тестовых</span></td><td class="num">35%</td><td>T2</td><td>PostHog: <code>funnel_screen_open</code> и <code>cancellation_survey_completed</code>. Окно — сессия отмены</td></tr>
+<tr><td><b>Оплатили первый месяц</b><span class="sub">из закончивших триал</span></td><td class="num">25%<span class="sub">29 из 118 закончивших триал к 11.11 14:00 МСК</span></td><td class="num">35%</td><td>Итог плана: T1, T2, T3</td><td>Primer и <code>primer_payment</code>. Окно — 14 дней после покупки: списание на 7-й день, повторы на 9-й и 14-й</td></tr>
+<tr><td><b>Возвраты и споры на 100 списаний</b></td><td class="num">9<span class="sub">2 из 22 оплативших, покупки 12.10–02.11. Старая выборка (12.10–02.11). На 208 не пересчитано.</span></td><td class="num">вдвое меньше</td><td>Исправление 2, до/после</td><td>Primer и <code>primer_payment</code>, возвраты и споры. Окно — 30 дней после списания</td></tr>
+<tr><td><b>Нажатия без отклика</b><span class="sub">из записей сессий</span></td><td class="num">37%<span class="sub">23 из 62, 12.10–03.11. Старая выборка (12.10–03.11). На 208 не пересчитано.</span></td><td class="num">меньше 10%</td><td>Злые тапы</td><td>Записи сессий PostHog. Окно — 14 дней</td></tr>
+<tr><td><b>Шаги воронки отмены в PostHog</b><span class="sub">у скольких отмен в приложении видны экраны и причина</span></td><td class="num">с 09.11<span class="sub">до 09.11 — 0; с 09.11 07:45 UTC приходят, первая реальная отмена — 09.11 09:19 UTC, шаги и причина есть</span></td><td>у каждой отмены; экран ошибки — 0</td><td>Исправление 1 (Даня, приёмка — Максим)</td><td>PostHog: <code>funnel_screen_open</code> (проект foxiq_ff) и <code>cancellation_survey_completed</code> (проект foxiq). Каждая отмена</td></tr>
+<tr><td><b>Попытки списания после самостоятельной отмены</b></td><td class="num">2<span class="sub">28.10 и 04.11 (прошло, возврат 05.11), обе по $49,99. 07.11 не считается: отказ банка, не повтор после отмены</span></td><td class="num">0</td><td>Исправление 2</td><td><code>primer_payment</code>. Окно — 14 дней после отмены</td></tr>
+<tr><td><b>Оплатили из вошедших без оплаты</b></td><td class="num">не в тесте<span class="sub">268 без subscription_started из 315, кто видел пропуск пейволла или ошибку оплаты, 16.10–11.11</span></td><td class="num">15%</td><td>Исправления 3 и 7, до/после</td><td>Primer: оплата $1 со статусом DECLINED и без SETTLED. PostHog: вход без <code>subscription_started</code>. Окно — 7 дней после входа</td></tr>
+</tbody></table></div>
+<p class="small muted">Доли — люди, покупки по МСК, тестовые и свой аккаунт исключены.</p>
+</section>
+
+
+
+<section id="ideal">
+<h2>Идеальные пути</h2>
+<p>Три пути из версии 4.14. Деньги в них — допущение калькулятора, не факт по 208. «Сейчас» в калькуляторе: отмена 24,1%, отказ банка 46,6%, цена месяца $23,82. Это 58 покупателей 12–27.10 на 06.11, не срез 11.11. Второго списания в данных нет. LTV пути A $20,53, B $18,24, C $16,92 — от подставленных продлений, не от наблюдения.</p>
+<div class="paths">
+<div class="card"><h3>A. Первая тренировка с результата</h3>
+<p class="small">В 4.14 это адресовано 47 из 65, кто остановился на результате или сертификате. По текущим 208, строго до 11.11 14:00, таких 164 (99 + 65). Как было, события до даты сборки 16.11: 156 (92 + 64).</p>
+<ol class="days">
+<li><b>День 0</b><span>Сразу после балла — одна короткая игра, кнопка пропустить и забрать сертификат.</span></li>
+<li><b>+1 мин</b><span>Итог дня, сертификат, один экран с предложением тренировать навык.</span></li>
+<li><b>Дни 1–6</b><span>Письмо и игра дня. Письма сейчас выключены до теста.</span></li>
+<li><b>День 6</b><span>За сутки до списания: сумма, что сделано за неделю, кнопка отмены.</span></li>
+</ol>
+<p class="small">Проверка — тест T1. Если второе продление оставить 30%, калькулятор даёт $16,71, не $20,53.</p></div>
+<div class="card"><h3>B. Игрок</h3>
+<p class="small">В 4.14 — 13 из 65, кто играл в первый день. Сейчас таких 31 из 208. Как было, события до даты сборки 16.11: 30. Это не вариант B теста T1.</p>
+<ol class="days">
+<li><b>День 0</b><span>После первой игры сразу вторая, на другой навык, без выхода на пустую главную.</span></li>
+<li><b>Итог</b><span>Сколько навыков за сессию, третья игра по желанию.</span></li>
+</ol></div>
+<div class="card"><h3>C. Серия результатов</h3>
+<p class="small">Для тех, кто пришёл за результатом. В 4.14 тесты личности открыли 6 из 64. Сейчас — 22 из 208. Бэклог, если T1 не даст 35% тренировки в первый час.</p>
+<ol class="days">
+<li><b>День 0</b><span>После IQ — короткий тест и общий портрет.</span></li>
+<li><b>Дни 1–4</b><span>По одному тесту в день.</span></li>
+</ol></div>
+</div>
+</section>
+<section id="calc">
+<h2>Калькулятор LTV</h2>
+<p class="small">Шесть месяцев. Кнопка «Сейчас» ставит факты 58 покупателей 12–27.10 на 06.11. Продления после первого месяца — допущение. На 208 и на Primer к 11.11 14:00 калькулятор не пересчитан: нет второго списания и нет присоединения оплаты к человеку.</p>
+<div class="btns" role="group" aria-label="Пути">
+<button class="b" type="button" data-preset="now">Сейчас</button>
+<button class="b" type="button" data-preset="A">A. Первая тренировка с результата</button>
+<button class="b" type="button" data-preset="B">B. Игрок</button>
+<button class="b" type="button" data-preset="C">C. Серия результатов</button>
+</div>
+<div class="calc2">
+<div class="card"><div class="inputs">
+<label for="i-p0">Цена триала, $</label><input id="i-p0" inputmode="decimal" value="1">
+<label for="i-up">Апселлы, $</label><input id="i-up" inputmode="decimal" value="0">
+<label for="i-iap">Покупки в приложении, $</label><input id="i-iap" inputmode="decimal" value="0">
+<label for="i-c">Отменяют в триале, %</label><input id="i-c" inputmode="decimal" value="24.1">
+<label for="i-d">Отказ банка, %</label><input id="i-d" inputmode="decimal" value="46.6">
+<label for="i-M">Цена месяца, $</label><input id="i-M" inputmode="decimal" value="23.82">
+<label for="i-r2">Второй месяц, %</label><input id="i-r2" inputmode="decimal" value="30">
+<label for="i-r">Каждый следующий месяц, %</label><input id="i-r" inputmode="decimal" value="75">
+<label for="i-X">Доплаты в месяц, $</label><input id="i-X" inputmode="decimal" value="0">
+<label for="i-f">Возвраты, % от подписки</label><input id="i-f" inputmode="decimal" value="3">
+<label for="i-fee">Комиссия, %</label><input id="i-fee" inputmode="decimal" value="5">
+<label for="i-cac">Стоимость покупателя, $</label><input id="i-cac" inputmode="decimal" value="0">
+</div></div>
+<div class="out">
+<div class="facts">
+<div class="fact"><span class="v" id="o-ltv">—</span><span class="l">LTV за 6 месяцев</span></div>
+<div class="fact"><span class="big" id="o-cac">—</span><span class="l">Стоимость покупателя, до которой путь окупается</span></div>
+</div>
+<p class="small" id="o-pay"></p>
+<div class="tbl"><table style="min-width:0"><thead><tr><th>Период</th><th class="r">Подписчиков из 100</th><th class="r">Накоплено</th></tr></thead><tbody id="o-rows"></tbody></table></div>
+</div>
+</div>
+</section>
+
+<section id="gloss">
+<h2>Словарь</h2>
+<dl class="gloss">
+<dt>LTV</dt><dd>Сколько денег приносит один покупатель за выбранный срок. В калькуляторе — 6 месяцев, после комиссий и возвратов.</dd>
+<dt>CAC</dt><dd>Стоимость одного покупателя триала в рекламе. В данных этого отчёта её нет.</dd>
+<dt>Триал</dt><dd>Пробная неделя за $1. На 7-й день списывается месяц.</dd>
+<dt>Отказ банка</dt><dd>Списание месяца не прошло. В отменах этого файла пара отмены и окончания подписки в пределах 2 минут.</dd>
+<dt>Предоплаченная карта</dt><dd>Карта, на которую заранее кладут деньги. В Primer к 11.11 продлили 0 из 22.</dd>
+<dt>Пейволл</dt><dd>Экран с ценой и кнопкой оплаты. В воронке — экран с id paywall или Paywall.</dd>
+<dt>Автовход</dt><dd>Переход из воронки в приложение по ссылке, без ввода почты.</dd>
+<dt>Злые тапы</dt><dd>Три нажатия в одну точку за 1,5 секунды: тот же элемент или не дальше 30 пикселей.</dd>
+<dt>Возвращается</dt><dd>Контентный экран в двух разных днях по Москве за 7 дней после покупки.</dd>
+<dt>Неделя закрыта</dt><dd>Покупка плюс 7 дней не позже часа среза. Здесь срез — 11.11.2026 14:00 МСК.</dd>
+<dt>A/B-тест</dt><dd>Покупателей делят на группы и сравнивают варианты.</dd>
+<dt>Мощность 80%, ошибка 5%</dt><dd>Если разница есть, тест заметит её в 8 случаях из 10. Если разницы нет, ложно найдёт её в 1 случае из 20.</dd>
+<dt>Защитная метрика</dt><dd>Метрика, которая не должна ухудшиться, пока растёт главная.</dd>
+<dt>п. п.</dt><dd>Процентные пункты: разница двух процентов.</dd>
+<dt>МСК</dt><dd>Московское время, UTC+3.</dd>
+<dt>Primer, FunnelFox, PostHog</dt><dd>Оплата, воронка, события и записи сессий. Деньги — только Primer. <code>subscription_renewed</code> — не списание.</dd>
+</dl>
+</section>
+
+<section id="limits">
+<h2>Ограничения</h2>
+<ul class="list">
+<li>На срез 11.11 14:00 МСК неделя закрыта у 100 из 208: покупка не позже 04.11 14:00. У 108 человек семь дней к этому часу не кончились. Типы пути и «2+ дня» посчитаны только по событиям не позже этого часа. Возвращается 12 из 208. На закрытой неделе — 7 из 100.</li>
+<li>Оплата месяца по типам пути из Primer не посчитана. В таблице типов стоит событие subscription_renewed, это не списание.</li>
+<li>Экрана скидки на год в событиях PostHog нет. Кнопок Keep subscription и Redeem your discount нет среди частых нажатий.</li>
+<li>Медиана времени на сертификате — 0 с, потому что у 47 из 83 это последний экран сессии.</li>
+<li>Сравнение с Azora — все страны, те же даты покупки. Старый срез только по США за 13–27.10 не пересобирался.</li>
+<li>Злой тап посчитан по сессиям, 20 из 239. Нажатия без отклика за это окно не пересчитывались.</li>
+<li>Автовход дольше 3 секунд — по-прежнему 22 из 62, разбор записей до 03.11. Длительность запроса /auto-login за весь период не пересчитывалась.</li>
+
+<li>Первый заход, источники, сравнение с Azora в США и действия 65 против 143 пересчитаны на этих 208, события не позже 11.11 14:00. Каталог метрик не использовался: доли посчитаны запросом к событиям.</li>
+<li>Не пересчитано на 208: нажатия без отклика 23 из 62, автовход дольше 3 с — 22 из 62, оплата месяца по США из версии 3, деньги Primer по типам пути, «вход по почте» как смена браузера.</li>
+<li>Столбец отмены за 8 дней по типам суммируется в 66, а не в 65: один человек с парой короче 2 минут по типам не разложен.</li>
+
+</ul>
+</section>
+
+
+<section id="datasources">
+<h2>Источники данных</h2>
+<ul class="list">
+<li>PostHog, проект Azora, id 1. Поведение FoxIQ — <code>project = foxiq</code>, воронка — <code>foxiq_ff</code>, Azora-приложение — <code>project = web</code>. Срез событий 11.11 14:00 МСК. Почтовый фильтр — <code>playbook/posthog.md</code>.</li>
+<li>Primer: деньги отчёта, 226 покупателей. В эту версию заново не выгружался. Выгрузка версии 3 — payments-29.csv, 12.10–30.10, в репозиторий не клалась.</li>
+<li>FunnelFox: шаги воронки <code>foxiq_ff</code> и <code>azora_ff</code>, экран paywall. Оплатили в воронке FoxIQ — 186. Почему не 208, не установлено.</li>
+<li>Записи сессий: разбор до 03.11 — 88 записей 62 покупателей, версия 3. Злые тапы 20 из 239 — разбор 4.19. Записи 45 из 46 отмен в первый час — файл <code>foxiq-first-hour-cancel-recordings-2026-11-16.html</code>.</li>
+<li>Версии файла: 4.22 — поправка на смещение в «Чем пользуются» и главная 121. Файл 4.21 не перезаписывался. 4.21 — доля отмены, основа v4.20-final. Файл 4.20 не перезаписывался. 4.20 собрана из 4.19 от 16.11. Блоки версии 3 (отчёт 09.11, 93 покупателя) перенесены с пересчётом, где запрос сошёлся. Файл 4.19 не перезаписывался.</li>
+<li>Версия 3, период той сборки: PostHog foxiq 12.10–03.11 и отдельно до 06.11, воронка 17.10–02.11, записи с 13.10. Эти границы относятся только к строкам с пометкой «версия 3».</li>
+</ul>
+</section>
+
+</div>
+<script>
+(function(){
+  var body=document.getElementById('p-body');
+  var fw=document.getElementById('p-week');
+  var fp=document.getElementById('p-path');
+  var fo=document.getElementById('p-out');
+  var cnt=document.getElementById('p-count');
+  if(!body) return;
+  var rows=Array.prototype.slice.call(body.querySelectorAll('tr'));
+  function render(){
+    var n=0;
+    rows.forEach(function(tr){
+      var ok=(!fw.value || tr.getAttribute('data-week')===fw.value)
+        && (!fp.value || tr.getAttribute('data-path')===fp.value)
+        && (!fo.value || tr.getAttribute('data-out')===fo.value);
+      tr.style.display=ok?'':'none';
+      if(ok) n++;
+    });
+    if(cnt) cnt.textContent=n+' из '+rows.length;
+  }
+  [fw,fp,fo].forEach(function(el){ if(el) el.addEventListener('change',render); });
+  render();
+})();
+(function(){
+  var PRE={"now":{"p0":1,"up":0,"iap":0,"c":24.1,"d":46.6,"M":23.82,"r2":30,"r":75,"X":0,"f":3,"fee":5,"cac":0},"A":{"p0":1,"up":0,"iap":0,"c":17,"d":46.6,"M":23.82,"r2":45,"r":78,"X":0,"f":3,"fee":5,"cac":0},"B":{"p0":1,"up":0,"iap":0,"c":19,"d":46.6,"M":23.82,"r2":40,"r":78,"X":0,"f":3,"fee":5,"cac":0},"C":{"p0":1,"up":0,"iap":0,"c":20,"d":46.6,"M":23.82,"r2":38,"r":76,"X":0,"f":3,"fee":5,"cac":0}};
+  var F=['p0','up','iap','c','d','M','r2','r','X','f','fee','cac'];
+  function yen(n){if(!isFinite(n))return '—'; var neg=n<0; n=Math.abs(n); var s=n.toFixed(2).split('.'); return (neg?'−':'')+'$'+s[0]+','+s[1];}
+  function val(id){var el=document.getElementById('i-'+id); if(!el) return 0; var v=parseFloat(String(el.value).replace(',','.')); return isFinite(v)?v:0;}
+  function calc(){
+    var v={}; F.forEach(function(k){v[k]=val(k);});
+    var trialN=100;
+    var rev0=trialN*v.p0;
+    var s1=Math.max(0, trialN*(1-v.c/100-v.d/100));
+    var S=[s1, s1*v.r2/100];
+    for(var i=2;i<6;i++) S.push(S[i-1]*v.r/100);
+    var cum=rev0*(1-v.fee/100), rows=[], payback=null;
+    var per0=cum/100; if(per0>=v.cac) payback=0;
+    for(var m=0;m<6;m++){
+      var sub=S[m]*v.M;
+      cum += sub*(1-v.fee/100) - sub*v.f/100;
+      var per=cum/100;
+      if(payback===null && per>=v.cac) payback=m+1;
+      rows.push('<tr><td>Месяц '+(m+1)+'</td><td class="r num">'+S[m].toFixed(1)+'</td><td class="r num">'+yen(per)+'</td></tr>');
+    }
+    var ltv=cum/100;
+    var orows=document.getElementById('o-rows'); if(orows) orows.innerHTML='<tr><td>До первого списания</td><td class="r num">—</td><td class="r num">'+yen(per0)+'</td></tr>'+rows.join('');
+    var oltv=document.getElementById('o-ltv'); if(oltv) oltv.textContent=yen(ltv);
+    var cacEl=document.getElementById('o-cac');
+    if(cacEl){
+      if(v.cac<=0){ cacEl.textContent='до '+yen(ltv); }
+      else { cacEl.textContent=yen(v.cac); }
+    }
+    var pay=document.getElementById('o-pay');
+    if(pay){
+      if(v.cac<=0) pay.textContent='';
+      else {
+        var pr=ltv-v.cac;
+        pay.textContent=(pr>=0?'После рекламы остаётся '+yen(pr):'После рекламы не хватает '+yen(Math.abs(pr)));
+      }
+    }
+  }
+  function set(p){F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el && p[k]!=null) el.value=p[k]; }); calc();}
+  F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el) el.addEventListener('input',calc); });
+  var bs=document.querySelectorAll('[data-preset]');
+  Array.prototype.forEach.call(bs,function(b){ b.addEventListener('click',function(){ Array.prototype.forEach.call(bs,function(x){x.classList.remove('on');}); b.classList.add('on'); set(PRE[b.getAttribute('data-preset')]); }); });
+  if(PRE.now){ set(PRE.now); var first=document.querySelector('[data-preset="now"]'); if(first) first.classList.add('on'); }
+})();
+
+(function(){
+  var F=['p0','up','iap','c','d','M','r2','r','X','f','fee','cac'];
+  var PRE={"now":{"p0":1,"up":0,"iap":0,"c":24.1,"d":46.6,"M":23.82,"r2":30,"r":75,"X":0,"f":3,"fee":5,"cac":0},
+           "A":{"p0":1,"up":0,"iap":0,"c":17,"d":46.6,"M":23.82,"r2":45,"r":78,"X":0,"f":3,"fee":5,"cac":0},
+           "B":{"p0":1,"up":0,"iap":0,"c":19,"d":46.6,"M":23.82,"r2":40,"r":78,"X":0,"f":3,"fee":5,"cac":0},
+           "C":{"p0":1,"up":0,"iap":0,"c":20,"d":46.6,"M":23.82,"r2":38,"r":76,"X":0,"f":3,"fee":5,"cac":0}};
+  function yen(n){if(n==null||!isFinite(n))return '—'; var neg=n<0; n=Math.abs(n); var s=n.toFixed(2).split('.'); return (neg?'−':'')+'$'+s[0].replace(/\B(?=(\d{3})+(?!\d))/g,' ')+','+s[1];}
+  function val(id){var el=document.getElementById('i-'+id); if(!el) return 0; var v=parseFloat(String(el.value).replace(',','.')); return isFinite(v)?v:0;}
+  function calc(){
+    var v={}; F.forEach(function(k){v[k]=val(k);});
+    var rev0=100*v.p0+100*v.up+100*v.iap;
+    var S=[], s1=Math.max(0,100*(1-v.c/100-v.d/100)); S.push(s1); S.push(s1*v.r2/100);
+    for(var i=2;i<6;i++) S.push(S[i-1]*v.r/100);
+    var cum=rev0*(1-v.fee/100), rows=[], payback=null;
+    var per0=cum/100; if(per0>=v.cac) payback=0;
+    for(var m=0;m<6;m++){
+      var sub=S[m]*v.M, ext=S[m]*v.X;
+      cum+=(sub+ext)*(1-v.fee/100)-sub*v.f/100;
+      var per=cum/100;
+      if(payback===null && per>=v.cac) payback=m+1;
+      rows.push('<tr><td>Месяц '+(m+1)+'</td><td class="r num">'+S[m].toFixed(1)+'</td><td class="r num">'+yen(per)+'</td></tr>');
+    }
+    var ltv=cum/100;
+    document.getElementById('o-rows').innerHTML='<tr><td>До первого списания</td><td class="r num">—</td><td class="r num">'+yen(per0)+'</td></tr>'+rows.join('');
+    document.getElementById('o-ltv').textContent=yen(ltv);
+    var cacEl=document.getElementById('o-cac'), cacLab=cacEl.parentNode.querySelector('.l');
+    if(v.cac<=0){ cacEl.textContent='до '+yen(ltv); cacEl.className='big'; cacLab.textContent='Стоимость покупателя, до которой путь окупается'; document.getElementById('o-pay').textContent=''; }
+    else { cacEl.textContent=yen(v.cac); cacEl.className='v'; cacLab.textContent='Стоимость покупателя'; var pr=ltv-v.cac; document.getElementById('o-pay').textContent=(pr>=0?'После рекламы остаётся '+yen(pr):'После рекламы не хватает '+yen(Math.abs(pr)))+(payback===null ? '' : payback===0 ? ', окупается до первого списания' : ', окупается в месяце '+payback); }
+  }
+  function set(p){F.forEach(function(k){ if(p&&p[k]!=null){var el=document.getElementById('i-'+k); if(el) el.value=p[k];} }); calc();}
+  F.forEach(function(k){ var el=document.getElementById('i-'+k); if(el) el.addEventListener('input',calc); });
+  var bs=document.querySelectorAll('[data-preset]');
+  Array.prototype.forEach.call(bs,function(b){ b.addEventListener('click',function(){ Array.prototype.forEach.call(bs,function(x){x.classList.remove('on');}); b.classList.add('on'); set(PRE[b.getAttribute('data-preset')]); }); });
+  set(PRE.now); var first=document.querySelector('[data-preset="now"]'); if(first) first.classList.add('on');
+})();
+
+
+</script>
+</body>
+</html>

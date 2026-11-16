@@ -5,10 +5,12 @@ Run: python scripts/foxiq-weekly.py
 Reads repository extracts and, for trials that started before 02.11, the local
 Primer file payments-36.csv. That file is not copied into the repository.
 The script does not call PostHog or Primer and does not write to ClickUp.
+It writes the markdown, the csv and the html from the same numbers.
 """
 from __future__ import annotations
 
 import csv
+import html
 import json
 import re
 from collections import Counter, defaultdict
@@ -19,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "reports/data/foxiq-2026-11-16"
 OUT_MD = ROOT / "reports/weekly/foxiq-week-2026-11-09.md"
 OUT_CSV = ROOT / "reports/weekly/foxiq-week-2026-11-09.csv"
+OUT_HTML = ROOT / "reports/weekly/foxiq-week-2026-11-09.html"
 PAYMENTS_36 = Path(r"C:\Users\Ne Kochan\Downloads\payments-36.csv")
 TEST_LIST = ROOT / "reports/foxiq-test-users-list-2026-10-30.csv"
 MSK = timezone(timedelta(hours=3))
@@ -724,6 +727,139 @@ def short_window_line(short_n: int, complete_current: Counter[str], current_n: i
     )
 
 
+def write_html(
+    katya: list[str],
+    status: list[str],
+    sections: list[tuple[str, list[dict[str, str]]]],
+    daily: list[tuple[str, int, int, str]],
+    assumptions: list[str],
+) -> None:
+    def cell(value: str) -> str:
+        return html.escape(value, quote=True)
+
+    def change_cell(value: str) -> str:
+        kind = "flat"
+        if value.startswith("+"):
+            kind = "up"
+        elif value.startswith("-") or value.startswith("−"):
+            kind = "down"
+        return f'<td class="r num {kind}">{cell(value)}</td>'
+
+    section_html = []
+    for title, rows in sections:
+        body = []
+        for row in rows:
+            flag = f'<div><span class="chip warn">{cell(row["flag"])}</span></div>' if row["flag"] else ""
+            body.append(
+                "<tr>"
+                f'<td><div class="name">{cell(row["name"])}</div>{flag}'
+                f'<details><summary>Источник и ограничение</summary><p>{cell(row["note"])}</p></details></td>'
+                f'<td class="r num">{cell(row["current"])}</td>'
+                f'<td class="r num">{cell(row["previous"])}</td>'
+                f'{change_cell(row["change"])}'
+                f'<td class="sample">{cell(row["sample"])}</td>'
+                "</tr>"
+            )
+        section_html.append(
+            f"<section><h2>{cell(title)}</h2><div class=\"tbl\"><table>"
+            "<thead><tr><th>Метрика</th><th class=\"r\">Текущая неделя</th>"
+            "<th class=\"r\">Прошлая неделя</th><th class=\"r\">Изменение</th><th>Выборка</th></tr></thead>"
+            f"<tbody>{''.join(body)}</tbody></table></div></section>"
+        )
+    daily_rows = "".join(
+        f'<tr class="{week}"><td>{cell(day)}</td><td class="r num">{primer}</td><td class="r num">{posthog}</td></tr>'
+        for day, primer, posthog, week in daily
+    )
+    document = f"""<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxIQ — неделя 09.11–15.11.2026</title>
+<style>
+:root {{
+  --bg:#f5f7f8; --surface:#fff; --ink:#15202a; --muted:#56636f; --line:#dbe2e7; --soft:#eef3f5;
+  --accent:#0d5f6f; --accent-soft:#e3f1f3; --warn:#a15c07; --warn-soft:#fdf2e1;
+  --ok:#0b7a4b; --crit:#b42318;
+  --f:"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}}
+@media (prefers-color-scheme: dark) {{
+  :root {{
+    --bg:#0e1418; --surface:#151d22; --ink:#e5ecef; --muted:#9aa8b2; --line:#29353d; --soft:#1b252b;
+    --accent:#5cc0d2; --accent-soft:#16323a; --warn:#f3b45a; --warn-soft:#352a17;
+    --ok:#56d39a; --crit:#ff8a7d;
+    color-scheme:dark;
+  }}
+}}
+body {{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--f); font-size:16px; line-height:1.5; }}
+.wrap {{ max-width:1080px; margin:0 auto; padding:36px 20px 72px; display:flex; flex-direction:column; gap:28px; }}
+h1,h2 {{ margin:0; line-height:1.2; }}
+h1 {{ font-size:1.9rem; }}
+h2 {{ font-size:1.25rem; }}
+p,ul {{ margin:0; }}
+.eyebrow {{ font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:650; }}
+.meta {{ color:var(--muted); max-width:74ch; }}
+.summary, .card {{ background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 20px; }}
+.summary ol, .card ul {{ margin:0; padding-left:1.25em; display:flex; flex-direction:column; gap:10px; }}
+.tbl {{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--surface); }}
+table {{ border-collapse:collapse; width:100%; font-size:.92rem; }}
+th:nth-child(n+2), td:nth-child(n+2) {{ width:1%; }}
+th,td {{ padding:8px 11px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }}
+th {{ font-size:.74rem; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); background:var(--soft); }}
+tr:last-child td {{ border-bottom:none; }}
+td.r, th.r {{ text-align:right; }}
+.num {{ font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap; }}
+.up {{ color:var(--ok); }}
+.down {{ color:var(--crit); }}
+.flat {{ color:var(--muted); }}
+.sample {{ color:var(--muted); font-size:.84rem; white-space:nowrap; }}
+.name {{ font-weight:650; }}
+.chip {{ display:inline-flex; margin-top:4px; font-size:.72rem; font-weight:650; padding:1px 8px; border-radius:999px; background:var(--warn-soft); color:var(--warn); }}
+details {{ margin-top:4px; }}
+summary {{ cursor:pointer; color:var(--muted); font-size:.8rem; }}
+details p {{ margin-top:6px; color:var(--muted); font-size:.82rem; max-width:68ch; }}
+tr.prev td:first-child {{ color:var(--muted); }}
+section {{ display:flex; flex-direction:column; gap:12px; }}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<p class="eyebrow">FoxIQ · недельный отчёт</p>
+<h1>09.11–15.11.2026 против 02.11–08.11.2026</h1>
+<p class="meta">Обе недели целиком, границы по МСК. Числа те же, что в foxiq-week-2026-11-09.md. ClickUp не менялся.</p>
+</header>
+<section>
+<h2>Для комментария Кате</h2>
+<div class="summary"><ol>{''.join(f'<li>{cell(item)}</li>' for item in katya)}</ol></div>
+</section>
+<section>
+<h2>Статус данных</h2>
+<div class="card"><ul>{''.join(f'<li>{cell(item)}</li>' for item in status)}</ul></div>
+</section>
+{''.join(section_html)}
+<section>
+<h2>Покупатели по дням</h2>
+<p class="meta">Дата платежа или subscription_started после перевода UTC в МСК. Тесты исключены. Серым отмечены дни прошлой недели.</p>
+<div class="tbl"><table>
+<thead><tr><th>День, МСК</th><th class="r">Primer, первый $1</th><th class="r">PostHog subscription_started</th></tr></thead>
+<tbody>{daily_rows}</tbody>
+</table></div>
+</section>
+<section>
+<h2>Допущения и что не посчитано</h2>
+<div class="card"><ul>{''.join(f'<li>{cell(item)}</li>' for item in assumptions)}</ul></div>
+</section>
+</main>
+</body>
+</html>
+"""
+    if re.search(r"[\w.+-]+@[\w.-]+\.[a-z]{2,}", document, re.I):
+        raise SystemExit("html report contains an email")
+    OUT_HTML.write_text(document, encoding="utf-8")
+
+
 def write_outputs(
     primer_daily: Counter[date],
     posthog_daily: Counter[date],
@@ -824,31 +960,37 @@ def write_outputs(
     through_prev = ratio(previous_counts["paid"], previous_counts["first_question"])
     renewed_share = pct(ratio(outcomes["current"]["renewed"], len(cohorts["current"]))) if cohorts["current"] else NO_DATA
     declined_share = pct(ratio(outcomes["current"]["declined"], len(cohorts["current"]))) if cohorts["current"] else NO_DATA
-    lines = [
-        "# FoxIQ — недельные метрики, 09.11–15.11.2026",
-        "",
-        "## Статус данных",
-        "",
-        f"- Текущая неделя: **{current_period}**. Прошлая: **{previous_period}**. Обе недели в выгрузке целиком.",
-        "- PostHog: `reports/data/foxiq-2026-11-16/`. Primer текущих платежей: `primer_export.csv`.",
-        "- Первые платежи триалов, которые закончились 02.11–08.11, лежат в локальном `payments-36.csv` (06.10–11.11). Файл прочитан и в репозиторий не копировался."
+    status = [
+        f"Текущая неделя: {current_period}. Прошлая: {previous_period}. Обе недели в выгрузке целиком.",
+        "PostHog: reports/data/foxiq-2026-11-16/. Primer текущих платежей: primer_export.csv.",
+        "Первые платежи триалов, которые закончились 02.11–08.11, лежат в локальном payments-36.csv (06.10–11.11). Файл прочитан и в репозиторий не копировался."
         if payments_36_ok else
-        "- `payments-36.csv` не найден. Продления прошлой недели не считались по обрезанному экспорту.",
-        "- `utm_source` пустой у всех `subscription_started` окна. Рост покупателей 58 → 155 по источнику не разбирается.",
-        "",
-        "## Для комментария Кате",
-        "",
-        "- Покупатели триала: 155 против 58 (Primer и PostHog сходятся по каждому дню). Источник роста не установлен: utm_source пустой.",
-        f"- Оплата с пейволла {pct(paywall_now)} против {pct(paywall_prev)}, сквозная (оплата / первый вопрос) {pct(through_now)} против {pct(through_prev)}.",
+        "payments-36.csv не найден. Продления прошлой недели не считались по обрезанному экспорту.",
+        "utm_source пустой у всех subscription_started окна. Рост покупателей 58 → 155 по источнику не разбирается.",
+    ]
+    katya = [
+        "Покупатели триала: 155 против 58 (Primer и PostHog сходятся по каждому дню). Источник роста не установлен: utm_source пустой.",
+        f"Оплата с пейволла {pct(paywall_now)} против {pct(paywall_prev)}, сквозная (оплата / первый вопрос) {pct(through_now)} против {pct(through_prev)}.",
         (
-            f"- Из триалов, закончившихся на неделе, продлили {outcomes['current']['renewed']} из {len(cohorts['current'])} "
+            f"Из триалов, закончившихся на неделе, продлили {outcomes['current']['renewed']} из {len(cohorts['current'])} "
             f"({renewed_share}), отказ банка у {outcomes['current']['declined']} ({declined_share}), "
             f"без попытки списания {outcomes['current']['no_charge']} (включая отменивших до списания). "
             f"Прошлая неделя: {outcomes['previous']['renewed']} из {len(cohorts['previous'])}, тренд ненадёжен. "
             f"Предоплаченные карты дают около 40% отказов."
         ),
-        f"- Тренировка в первый час: {pct(ratio(activation['current'][0], activation['current'][1]))} ({activation['current'][0]} из {activation['current'][1]}), цель 35%.",
-        f"- Списаний после отмены не найдено среди {linked_cancels} склеенных отмен; {unlinked_cancels} отмены не склеились, по ним ноль не утверждаю.",
+        f"Тренировка в первый час: {pct(ratio(activation['current'][0], activation['current'][1]))} ({activation['current'][0]} из {activation['current'][1]}), цель 35%.",
+        f"Списаний после отмены не найдено среди {linked_cancels} склеенных отмен; {unlinked_cancels} отмены не склеились, по ним ноль не утверждаю.",
+    ]
+    lines = [
+        "# FoxIQ — недельные метрики, 09.11–15.11.2026",
+        "",
+        "## Статус данных",
+        "",
+        *[f"- {item}" for item in status],
+        "",
+        "## Для комментария Кате",
+        "",
+        *[f"- {item}" for item in katya],
         "",
     ]
     primer_metric = next(item for item in metrics if item["name"] == "Покупатели триала $1 — Primer")
@@ -894,13 +1036,43 @@ def write_outputs(
         "- Списания после отмены посчитаны только по склеенным отменам. Несклеенные в ноль не включены.",
         "- Причины анкеты: за 02.11–15.11 вместе, по анкете без даты. Пустая причина — доля от всех ответов. Заполненные n = 20, ориентир, не тренд.",
         "- Источник рекламы у покупок не посчитан: utm_source пустой.",
-        "- Скрипт `scripts/foxiq-weekly.py` пишет этот md и csv из одних и тех же чисел. ClickUp не менялся.",
+        "- Скрипт `scripts/foxiq-weekly.py` пишет этот md, csv и html из одних и тех же чисел. ClickUp не менялся.",
         "",
     ])
     text = "\n".join(lines)
     if "@" in text:
         raise SystemExit("report text contains @")
     OUT_MD.write_text(text, encoding="utf-8")
+    sections: list[tuple[str, list[dict[str, str]]]] = []
+    for section in ["Покупатели и воронка", "Продления и отказы банка", "Отмены", "Активация"]:
+        rows = []
+        for metric in (item for item in metrics if item["section"] == section):
+            flag = ""
+            flags = md_flags(metric)
+            if flags.startswith("мало данных"):
+                flag = flags.split(".", 1)[0]
+            rows.append({
+                "name": str(metric["name"]),
+                "current": md_value(metric["current"], str(metric["unit"])),
+                "previous": md_value(metric["previous"], str(metric["unit"])),
+                "change": md_change(metric),
+                "sample": md_sample(metric),
+                "note": f"{metric['source']}. {flags}".strip(),
+                "flag": flag,
+            })
+        sections.append((section, rows))
+    daily = []
+    for offset in range(14):
+        day = PREVIOUS_START + timedelta(days=offset)
+        daily.append((
+            day.strftime("%d.%m.%Y"),
+            primer_daily[day],
+            posthog_daily[day],
+            "prev" if day < CURRENT_START else "now",
+        ))
+    assumption_start = lines.index("## Допущения и что не посчитано")
+    assumptions = [item[2:].replace("`", "") for item in lines[assumption_start:] if item.startswith("- ")]
+    write_html(katya, status, sections, daily, assumptions)
     print(f"primer {primer_metric['previous']} -> {primer_metric['current']}")
     print(f"posthog {posthog_metric['previous']} -> {posthog_metric['current']}")
     print(f"cohorts { {key: len(value) for key, value in cohorts.items()} }")

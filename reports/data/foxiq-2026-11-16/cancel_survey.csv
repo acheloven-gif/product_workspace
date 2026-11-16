@@ -1,0 +1,8 @@
+outcome,reason,completed,is_test,people,events
+cancelled,,true,,48,48
+cancelled,something-else,true,,10,10
+cancelled,too-expensive,true,,7,7
+cancelled,dont-use,true,,3,3
+cancelled,,true,true,2,2
+cancelled,something-else,true,true,2,2
+cancelled,too-expensive,true,true,2,2

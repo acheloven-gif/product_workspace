@@ -1,0 +1,13 @@
+definition,value
+unit,person_id
+projects,foxiq_ff
+test_filter,"playbook/posthog.md FoxIQ email filter, plus yopmail, is_test, utm_campaign 88888888 and {campaignid}, and the Armenia account 28.10"
+first_screen,funnel_start
+first_question,"funnel_screen_open and screen_index = 1"
+paywall,"funnel_screen_open and screen_id exactly paywall or Paywall"
+opened_payment,funnel_checkout_open
+started_payment,funnel_purchase_start
+paid,funnel_purchase_success
+not_counted_as_paywall,"paywall_failed, cta_skip_paywall and other decline screens"
+grain,"funnel_weekly.csv is one row per Moscow week starting Monday. funnel_daily.csv is one row per Moscow day. Counts are unique person_id who had the step in that period, not a strict ordered funnel."
+window_msk,"2026-11-02 00:00:00 through 2026-11-15 23:59:59"

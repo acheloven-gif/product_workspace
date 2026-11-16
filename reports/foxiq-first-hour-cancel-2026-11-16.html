@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>FoxIQ — отмена в первый час, разбор 16.11</title>
+<style>
+body { font: 16px/1.45 Georgia, serif; max-width: 920px; margin: 32px auto; padding: 0 16px; color: #1a1a1a; }
+h1 { font-size: 28px; line-height: 1.2; }
+h2 { font-size: 20px; margin-top: 32px; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 8px; }
+th, td { border-bottom: 1px solid #ccc; text-align: left; padding: 6px 8px; vertical-align: top; }
+th { font-size: 14px; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+.note { color: #444; font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>FoxIQ: почему выросла отмена в первый час</h1>
+<p class="note">Отдельный разбор, 16.11.2026. Отчёт v4.19 не менялся. PostHog, project foxiq, покупки 07.10 00:00 – 11.11 14:00 МСК, тот же почтовый фильтр, что в v4.19. Метрика: subscription_cancelled с reason = user_initiated в течение часа после первой subscription_started. 46 из 208 (22,1%). Числа посчитаны запросом, не из каталога метрик. Интервалы — Вилсон, 95%.</p>
+
+<h2>Итог</h2>
+<p>Рост реальный и начинается 08.11, не 28.10. До 08.11 — 16 из 127 (12,6%), интервал 7,9–19,5%. С 08.11 по 11.11 14:00 — 30 из 81 (37,0%), интервал 27,3–47,9%. Интервалы не пересекаются. 28.10–07.11 остаётся 8 из 69 (11,6%). Средние 46 из 208 смешивают два куска.</p>
+<p>С 08.11 в данных видно три сдвига, и ни один не установлен как причина. Источник utm_source = 4 стал 64 из 81, а отмены внутри него выросли с 1 из 25 до 25 из 64. Android по экрану приложения стал 24 из 81, но отменяет так же, как iOS: 9 из 24 и 21 из 57. На результате останавливаются 52 из 81; тренировку в час начинают 12 из 81, не реже, чем раньше. 20 из 30 отмен короче 5 минут, и у всех 20 есть клик отмены в приложении.</p>
+<p>Для защитной метрики одна база 22,1% — среднее двух режимов. Уровень до скачка: 16 из 127 (12,6%). Уровень на конце среза: 30 из 81 (37,0%). 46 из 208 — среднее по всему окну, не норма одного периода.</p>
+
+<h2>1. Знаменатели 13–27.10</h2>
+<table>
+<thead><tr><th>Число</th><th>Кого считает</th><th class="r">Отмена в час</th><th>Почему отличается</th></tr></thead>
+<tbody>
+<tr><td>54</td><td>Календарь 13.10–27.10 МСК, почтовый фильтр отчёта</td><td class="r">7 из 54</td><td>Строка «Покупки по дням». Входит в 208</td></tr>
+<tr><td>53</td><td>То же окно, покупка не раньше 13.10 17:00 UTC</td><td class="r">7 из 53</td><td>Исключён один человек: покупка 13.10 19:59 МСК, US, ios, monthly, в час не отменял</td></tr>
+<tr><td>52</td><td>Ячейка отчёта 09.11</td><td class="r">6 из 52</td><td>В текущих событиях не воспроизводится</td></tr>
+</tbody>
+</table>
+<p class="note">Для календаря 13–27.10 при правилах отчёта верно 54. Фильтр почты в этом окне не убрал никого, пустых почт нет. События 53 покупок записаны в октябре, в пределах суток от покупки. Если отрезать покупку 27.10 23:50 МСК, людей станет 52, отмен останется 7. Пар с payment_failed в пределах 2 минут среди этих 7 нет. Списка старых 52 человек в данных нет. Четыре покупки 10.10 в эту тройку не входят: они внутри 208, одна отменила в час.</p>
+
+<h2>2. Дни</h2>
+<p class="note">Дней без покупок: 07–09.10, 11–12.10, 24–26.10. 11.11 только до 14:00. Сумма 208 и 46.</p>
+<table>
+<thead><tr><th>День покупки</th><th class="r">Покупателей</th><th class="r">Отменили в час</th><th class="r">Доля</th></tr></thead>
+<tbody>
+<tr><td>10.10</td><td class="r">4</td><td class="r">1</td><td class="r">1 из 4</td></tr>
+<tr><td>13.10</td><td class="r">1</td><td class="r">0</td><td class="r">0 из 1</td></tr>
+<tr><td>14.10</td><td class="r">9</td><td class="r">1</td><td class="r">1 из 9</td></tr>
+<tr><td>15.10</td><td class="r">5</td><td class="r">0</td><td class="r">0 из 5</td></tr>
+<tr><td>16.10</td><td class="r">3</td><td class="r">1</td><td class="r">1 из 3</td></tr>
+<tr><td>17.10</td><td class="r">7</td><td class="r">2</td><td class="r">2 из 7</td></tr>
+<tr><td>18.10</td><td class="r">8</td><td class="r">1</td><td class="r">1 из 8</td></tr>
+<tr><td>19.10</td><td class="r">3</td><td class="r">0</td><td class="r">0 из 3</td></tr>
+<tr><td>20.10</td><td class="r">2</td><td class="r">0</td><td class="r">0 из 2</td></tr>
+<tr><td>21.10</td><td class="r">7</td><td class="r">2</td><td class="r">2 из 7</td></tr>
+<tr><td>22.10</td><td class="r">5</td><td class="r">0</td><td class="r">0 из 5</td></tr>
+<tr><td>23.10</td><td class="r">2</td><td class="r">0</td><td class="r">0 из 2</td></tr>
+<tr><td>27.10</td><td class="r">2</td><td class="r">0</td><td class="r">0 из 2</td></tr>
+<tr><td>28.10</td><td class="r">10</td><td class="r">1</td><td class="r">1 из 10</td></tr>
+<tr><td>29.10</td><td class="r">3</td><td class="r">1</td><td class="r">1 из 3</td></tr>
+<tr><td>30.10</td><td class="r">5</td><td class="r">0</td><td class="r">0 из 5</td></tr>
+<tr><td>31.10</td><td class="r">2</td><td class="r">0</td><td class="r">0 из 2</td></tr>
+<tr><td>01.11</td><td class="r">3</td><td class="r">1</td><td class="r">1 из 3</td></tr>
+<tr><td>02.11</td><td class="r">4</td><td class="r">0</td><td class="r">0 из 4</td></tr>
+<tr><td>03.11</td><td class="r">10</td><td class="r">1</td><td class="r">1 из 10</td></tr>
+<tr><td>04.11</td><td class="r">5</td><td class="r">0</td><td class="r">0 из 5</td></tr>
+<tr><td>05.11</td><td class="r">7</td><td class="r">1</td><td class="r">1 из 7</td></tr>
+<tr><td>06.11</td><td class="r">16</td><td class="r">2</td><td class="r">2 из 16</td></tr>
+<tr><td>07.11</td><td class="r">4</td><td class="r">1</td><td class="r">1 из 4</td></tr>
+<tr><td>08.11</td><td class="r">12</td><td class="r">5</td><td class="r">5 из 12</td></tr>
+<tr><td>09.11</td><td class="r">20</td><td class="r">8</td><td class="r">8 из 20</td></tr>
+<tr><td>10.11</td><td class="r">30</td><td class="r">8</td><td class="r">8 из 30</td></tr>
+<tr><td>11.11 до 14:00</td><td class="r">19</td><td class="r">9</td><td class="r">9 из 19</td></tr>
+</tbody>
+</table>
+
+<h2>Недели</h2>
+<table>
+<thead><tr><th>Неделя</th><th class="r">Отменили</th><th class="r">Доля</th><th class="r">Интервал 95%</th></tr></thead>
+<tbody>
+<tr><td>07–12.10</td><td class="r">1 из 4</td><td class="r">25%</td><td class="r">4,6–69,9%</td></tr>
+<tr><td>13–19.10</td><td class="r">5 из 36</td><td class="r">13,9%</td><td class="r">6,1–28,7%</td></tr>
+<tr><td>20–27.10</td><td class="r">2 из 18</td><td class="r">11,1%</td><td class="r">3,1–32,8%</td></tr>
+<tr><td>28.10–03.11</td><td class="r">4 из 37</td><td class="r">10,8%</td><td class="r">4,3–24,7%</td></tr>
+<tr><td>04–11.11</td><td class="r">34 из 113</td><td class="r">30,1%</td><td class="r">22,4–39,1%</td></tr>
+</tbody>
+</table>
+<p class="note">Внутри 04–11.11: 04–07.11 — 4 из 32, с 08.11 — 30 из 81. У недель с 4–18 людьми интервал широкий, по ним сдвиг не утверждается. Четыре дня подряд с 08.11: 5 из 12, 8 из 20, 8 из 30, 9 из 19. 06.11 при 16 покупках — 2 из 16.</p>
+
+<h2>3. Источник, страна, устройство</h2>
+<p>План, цена и trial у всех 208 одинаковые: monthly, цена 1, trial. Сдвига нет.</p>
+<table>
+<thead><tr><th>Период</th><th class="r">utm 4</th><th class="r">Отмены среди utm 4</th><th>Страна по экрану</th><th class="r">Android по экрану</th></tr></thead>
+<tbody>
+<tr><td>до 27.10, 58</td><td class="r">5 из 58</td><td class="r">1 из 5</td><td>US 58 из 58</td><td class="r">2 из 58</td></tr>
+<tr><td>28.10–07.11, 69</td><td class="r">25 из 69</td><td class="r">1 из 25</td><td>US 64 из 69; CA 2, SE 1, AM 1, без экрана 1</td><td class="r">4 из 69</td></tr>
+<tr><td>08.11–11.11, 81</td><td class="r">64 из 81</td><td class="r">25 из 64</td><td>US 81 из 81</td><td class="r">24 из 81</td></tr>
+</tbody>
+</table>
+<p class="note">События воронки foxiq_ff есть с 16.10, поэтому у 21 из 58 покупок до 27.10 источника нет. Коды 4, 19 и 22 в правилах записаны как Meta, google — как Google. Что такое int3 и googlemail, в правилах не записано. Поле страны на событии покупки с 08.11 пустое у 81 из 81; страна взята с экрана приложения. Поле platform на покупке почти всё время ios: до 27.10 web 4 из 58, с 08.11 web 5 из 81. С 08.11 отмены Android и iOS: 9 из 24 и 21 из 57. Один покупатель 28.10, страна AM, Mac, без utm, отмена в час. В правилах это свой аккаунт, почтовый фильтр отчёта его не убирает. Это 1 из 46.</p>
+
+<h2>Путь, результат, тренировка</h2>
+<p class="note">Типы пути, строго до среза: результат 99, сертификат 65, игра 31, два дня 12, не открыл 1.</p>
+<table>
+<thead><tr><th>Период</th><th class="r">Результат</th><th class="r">Сертификат</th><th class="r">Игра</th><th class="r">2 дня</th><th class="r">Не открыл</th><th class="r">Открыли результат</th><th class="r">Тренировка в час</th></tr></thead>
+<tbody>
+<tr><td>до 27.10, 58</td><td class="r">26 из 58</td><td class="r">22 из 58</td><td class="r">7 из 58</td><td class="r">3 из 58</td><td class="r">0</td><td class="r">58 из 58</td><td class="r">8 из 58</td></tr>
+<tr><td>28.10–07.11, 69</td><td class="r">21 из 69</td><td class="r">26 из 69</td><td class="r">14 из 69</td><td class="r">7 из 69</td><td class="r">1 из 69</td><td class="r">68 из 69</td><td class="r">14 из 69</td></tr>
+<tr><td>08.11–11.11, 81</td><td class="r">52 из 81</td><td class="r">17 из 81</td><td class="r">10 из 81</td><td class="r">2 из 81</td><td class="r">0</td><td class="r">81 из 81</td><td class="r">12 из 81</td></tr>
+</tbody>
+</table>
+<p class="note">Результат открывают 207 из 208. Тренировка в час всего 34 из 208 и с 08.11 не ниже раннего периода. У покупок с 08.11 второй день к срезу часто ещё не наступил, поэтому тип «2 дня» занижен сроком наблюдения.</p>
+
+<h2>Минуты до отмены</h2>
+<table>
+<thead><tr><th>Период</th><th class="r">До 5 мин</th><th class="r">5–15 мин</th><th class="r">15–60 мин</th><th class="r">Клик отмены в приложении</th></tr></thead>
+<tbody>
+<tr><td>до 27.10, 8 отмен</td><td class="r">5 из 8</td><td class="r">2 из 8</td><td class="r">1 из 8</td><td class="r">6 из 8</td></tr>
+<tr><td>28.10–07.11, 8 отмен</td><td class="r">1 из 8</td><td class="r">4 из 8</td><td class="r">3 из 8</td><td class="r">4 из 8</td></tr>
+<tr><td>08.11–11.11, 30 отмен</td><td class="r">20 из 30</td><td class="r">4 из 30</td><td class="r">6 из 30</td><td class="r">26 из 30</td></tr>
+</tbody>
+</table>
+<p class="note">У всех 20, кто с 08.11 отменил быстрее 5 минут, клик отмены в приложении есть.</p>
+
+<h2>Опрос, выкладки, отказ банка</h2>
+<p>Событие cancellation_survey_completed идёт с 09.11 07:45 UTC. Среди 30 отмен с 08.11 оно есть у 20 из 30. Пять из этих 30 — покупки 08.11, до появления события. Причины у 20: something-else 12, too-expensive 6, dont-use 2. offer_accepted = false у всех 20. outcome = kept у 2 из 20 при уже случившейся отмене user_initiated. Вывода по этой выборке нет.</p>
+<p>В событиях app_version на экранах — 0.0.0, даты релиза там нет. Цена и план покупки не менялись. Кнопка «Cancel subscription» на экранах воронки в отчёте v4.19 записана как выкладка 11.11 вечером, после среза 14:00. Скачок уже есть 08.11: 5 из 12. Память на проде для всех записана на 11.11 14:06 UTC, тоже после среза. Неделя 28.10–03.11 по доле не высокая: 4 из 37.</p>
+<p>Пара subscription_cancelled и subscription_expired с reason = payment_failed в пределах 2 минут: 0 из 46. Выгрузку Primer этот разбор не сверял.</p>
+
+<h2>Чего не хватает</h2>
+<ul>
+<li>Что изменилось 08.11 у источника utm_source = 4. В PostHog нет версии приложения, кроме 0.0.0.</li>
+<li>Поимённый список, из которого 09.11 получились 52 человека и 6 отмен.</li>
+<li>Словарь значений int3, googlemail и outcome = kept.</li>
+<li>Сверка 46 отмен со списаниями Primer.</li>
+</ul>
+</body>
+</html>

@@ -37,7 +37,9 @@ Reasons in the file: `user_initiated` 151, `payment_failed` 53. Six rows are tes
 
 ## Primer payments
 
-`primer_payment_events.csv`: 567 raw `primer_payment` events. This is not a Primer export.
+`primer_payment_events.csv`: 567 raw `primer_payment` events from PostHog. This is not a Primer export.
+
+`primer_export.csv` is the Primer dashboard file `payments.csv` (local download, 4 365 rows, 01.11.2026 17:00 UTC through 16.11.2026 12:42 UTC). The raw file is not in the repository. FoxIQ is a payment with statement descriptor FoxIQ, FunnelFox org `live_145ee003c9326d`, or campaign path `/test-iq`, `/iq-test-web-v1`, `/start-iq-test`, `/you-may-wish`; later payments of the same `customer_id` are kept. 610 payments, 400 customers. Emails, names and card numbers are not in the file. `is_test=1` marks one customer from the FoxIQ email filter and `reports/foxiq-test-users-list-2026-10-30.csv`. `in_report_window=0` marks 17 payments outside 02.11 00:00–15.11 23:59 MSK. Settled $1 in the window, tests excluded: 58 people on 02.11–08.11 and 155 on 09.11–15.11.
 The event has no `is_test` property. The column is the email filter plus the Armenia account.
 `prepaid=1` only when `card_type` is `PREPAID` (135 events). Other card types in the file are CREDIT, DEBIT and UNKNOWN.
 Decline reason is `decline_code` and `decline_type`. Of 324 declined events, 222 have a code and 102 have none. One of those 102 has a `decline_message` and no code; that text is not in the file. `decline_message` was not exported.

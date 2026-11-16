@@ -1,0 +1,6 @@
+# 2026-11-16: MemoryOS test, inbox and FoxIQ funnel links
+
+- Наталья уточнит у Даши, можно ли закрывать задачу по воронке memoryOS-клона; не отмечать её как прочитанную вместе с остальными входящими, пока не будет уточнения.
+- Наталья попросила пометить прочитанными остальные 7 непрочитанных входящих. ClickUp показал предварительный список: серия M FoxIQ (https://app.clickup.com/t/1249d35p2th), Rememblo (https://app.clickup.com/t/1249d35huw5), доработка памяти FoxIQ (https://app.clickup.com/t/1249d35k3jc), саппорт-почта Rememblo (https://app.clickup.com/t/1249d35pwkw), письма-возвраты FoxIQ (https://app.clickup.com/t/1249d35nu7q), paywall FoxIQ (https://app.clickup.com/t/1249d35ptgn), T1 FoxIQ (https://app.clickup.com/t/1249d35ptkt). Обновление пока не применено, ожидает подтверждения по предварительному просмотру.
+- Наталья попросила напомнить ей пройти тестовую оплату на MemoryOS/Rememblo. Конкретное время не указано; напоминание пока не создано, нужно уточнить срок.
+- Наталья попросила прислать preview и «прот/прод» воронки новой версии FoxIQ. Найдены актуальные превью для Memory Plan (локализации и каналы) в задаче https://app.clickup.com/t/1249d35qdt3; production URL в ней не указан. Исходная английская версия и две её вариации (strict и $1 trial) указаны в задаче https://app.clickup.com/t/1249d35j198.

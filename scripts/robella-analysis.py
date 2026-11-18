@@ -877,487 +877,425 @@ def sample_size(p1: float, p2: float) -> int | None:
     return math.ceil(z * z * (p1 * (1 - p1) + p2 * (1 - p2)) / (p2 - p1) ** 2)
 
 
+def _n(value):
+    return int(value or 0)
+
+
+def _bar_rows(items, denominator, scale=None, show_pct=False):
+    """CSS-столбцы. items: label, n, необязательные den/color/note."""
+    scale = denominator if scale is None else scale
+    scale = max(1, scale or 1)
+    out = []
+    for item in items:
+        num = _n(item.get("n"))
+        den = _n(item.get("den", denominator))
+        width = min(100, num / scale * 100) if num else 0
+        small = num < 30
+        color = item.get("color", "accent")
+        label = esc(n_of(num, den))
+        if show_pct and den:
+            label += " · " + esc(pct(num, den))
+        if item.get("note"):
+            label += " · " + esc(item["note"])
+        out.append(
+            "<div class='bar-row'>"
+            f"<div class='bar-label'>{esc(item['label'])}</div>"
+            f"<div class='track' aria-hidden='true'><div class='fill {color}{' small' if small else ''}' style='width:{width:.2f}%'></div></div>"
+            f"<div class='bar-value num'>{label}</div></div>"
+        )
+    return "".join(out)
+
+
+def _funnel_panel(title, rows, order, started):
+    by_step = {row["step"]: row for row in rows}
+    steps = [step for step in order if step in by_step]
+    steps += sorted(step for step in by_step if step not in steps and step)
+    items = [{"label": step, "n": _n(by_step[step].get("people"))} for step in steps]
+    return (
+        "<div class='chart card'><h3>" + esc(title) + "</h3>"
+        "<div class='bars funnel-bars'>" + _bar_rows(items, started) + "</div></div>"
+    )
+
+
+def _checkout_daily(data):
+    counts = defaultdict(lambda: {"open": 0, "reached": 0, "purchase": 0})
+    for story in data.get("checkout") or []:
+        day = None
+        for event in story.get("events") or []:
+            if event.get("event") == "funnel_checkout_open":
+                day = str(event.get("ts") or "")[:10]
+                break
+        if not day:
+            continue
+        counts[day]["open"] += 1
+        counts[day]["reached"] += 1 if _n(story.get("primer")) > 0 else 0
+        counts[day]["purchase"] += 1 if _n(story.get("purchase")) > 0 else 0
+    return counts
+
+
+def _checkout_chart(data, started):
+    daily = _checkout_daily(data)
+    day_labels = [(datetime(2026, 11, 11) + timedelta(days=i)).strftime("%d.%m.%Y") for i in range(8)]
+    largest = max([1] + [max(daily.get(day, {}).get("open", 0), daily.get(day, {}).get("purchase", 0)) for day in day_labels])
+    step = max(1, math.ceil(largest / 4))
+    y_max = step * 4
+    ticks = "".join(f"<span>{value}</span>" for value in range(y_max, -1, -step))
+    plots, labels = [], []
+    for day in day_labels:
+        vals = daily.get(day, {"open": 0, "purchase": 0})
+        bars = []
+        for key, css_class in (("open", "accent"), ("purchase", "ok")):
+            num = vals.get(key, 0)
+            height = num / y_max * 100
+            value = f"<span class='vbar-value'>{esc(n_of(num, started))}</span>" if num else ""
+            small = " small" if num < 30 else ""
+            bars.append(
+                f"<div class='vbar-slot' style='--bar-height:{height:.2f}%'>"
+                f"{value}<div class='vbar {css_class}{small}' style='height:{height:.2f}%'></div></div>"
+            )
+        plots.append("<div class='day-plot'>" + "".join(bars) + "</div>")
+        labels.append(f"<div class='day-label'>{day[:5]}</div>")
+    return (
+        "<div class='column-chart' role='img' aria-label='Столбчатая диаграмма: открытия оплаты и успешные оплаты по дням'>"
+        f"<div class='y-axis'>{ticks}</div>" + "".join(plots) + "<div class='x-spacer'></div>" + "".join(labels) + "</div>"
+    )
+
+
+def _preview_count(data):
+    total = 0
+    for story in data.get("checkout") or []:
+        paths = [str(story.get("last_screen") or "")]
+        paths += [str(event.get("path") or "") for event in story.get("events") or []]
+        if any("/preview/" in path for path in paths):
+            total += 1
+    return total
+
+
+def _report_css():
+    return """
+:root{--bg:#fff5ee;--card:#fffdfb;--ink:#3a2a26;--muted:#8b6f65;--line:#f4d9cb;--accent:#e48a6c;--chip:#fde3d6;--soft:#fdebe1;--title:#7a3f2c;--ok:#5f9c7a;--warn:#c9922f;--bad:#c9604f;--fox:#c9a18d;--azora:#7a3f2c}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:900px;margin:0 auto;padding:30px 16px 56px;display:flex;flex-direction:column;gap:26px}
+header{display:flex;flex-direction:column;gap:8px}
+h1,h2,h3,p{margin:0}
+h1{color:var(--title);font-size:30px;line-height:1.2}
+h2{color:var(--title);font-size:21px}
+h3{font-size:15px}
+.eyebrow{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.meta,.note{color:var(--muted);font-size:13px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+a{color:var(--title);font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 5px 18px rgba(122,63,44,.05)}
+section{display:flex;flex-direction:column;gap:12px}
+.summary{border-top:4px solid var(--accent)}
+.summary ol{margin:0;padding-left:21px}
+.summary li+li{margin-top:7px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chart{display:flex;flex-direction:column;gap:12px;min-width:0}
+.bars{display:flex;flex-direction:column;gap:8px}
+.bar-row{display:grid;grid-template-columns:minmax(100px,150px) minmax(45px,1fr) auto;gap:9px;align-items:center;min-width:0}
+.bar-label{font-size:12px;overflow-wrap:anywhere}
+.bar-value{font-size:12px;text-align:right}
+.track{height:17px;background:var(--soft);border-radius:99px;overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--accent)}
+.fill.fox{background:var(--fox)}
+.fill.azora{background:var(--azora)}
+.fill.warn{background:var(--warn)}
+.fill.bad{background:var(--bad)}
+.fill.ok{background:var(--ok)}
+.fill.small,.small-mark{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.72) 0 4px,transparent 4px 8px);background-size:12px 12px}
+.funnel-bars{gap:6px}
+.funnel-bars .bar-row{grid-template-columns:minmax(90px,125px) minmax(30px,1fr) 62px;gap:7px}
+.funnel-bars .track{height:12px}
+.funnel-bars .bar-label,.funnel-bars .bar-value{font-size:10px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.dot{width:12px;height:12px;border-radius:4px;background:var(--accent);display:inline-block}
+.dot.fox{background:var(--fox)}
+.dot.azora{background:var(--azora)}
+.dot.warn{background:var(--warn)}
+.dot.bad{background:var(--bad)}
+.dot.ok{background:var(--ok)}
+.callout{border-left:4px solid var(--accent);background:var(--soft);padding:11px 13px;border-radius:0 10px 10px 0}
+.callout.warn{border-color:var(--warn)}
+.day-group{padding:10px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.day-group:last-child{border-bottom:0}
+.day-name{font-weight:700;font-size:13px}
+.day-bars .bar-row{grid-template-columns:130px minmax(40px,1fr) 72px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1px solid var(--line)}
+th{background:var(--chip);color:var(--title);font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+tr:last-child td{border-bottom:0}
+.bugs{min-width:680px}
+.hyp{display:flex;flex-direction:column;gap:7px;border-left:4px solid var(--warn)}
+.hyp p{font-size:13px}
+.hyp b{color:var(--title)}
+.questions{margin:0;padding-left:20px}
+.questions li+li{margin-top:6px}
+.priority{margin:0;padding-left:20px;font-size:13px}
+.priority li+li{margin-top:4px}
+.tag{display:inline-block;background:var(--chip);border-radius:99px;padding:2px 8px;color:var(--title);font-size:11px;font-weight:700}
+.method-link{font-size:13px}
+
+
+.column-chart{display:grid;grid-template-columns:28px repeat(8,minmax(0,1fr));grid-template-rows:190px 30px}.y-axis{grid-column:1;grid-row:1;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding:0 6px 0 0;color:var(--muted);font-size:10px}.day-plot{grid-row:1;display:flex;align-items:flex-end;justify-content:center;gap:5px;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px 25%)}.day-label{grid-row:2;text-align:center;color:var(--muted);font-size:10px;padding-top:7px}.x-spacer{grid-column:1;grid-row:2}.vbar-slot{position:relative;width:22px;height:100%;display:flex;align-items:flex-end}.vbar{width:100%;border-radius:4px 4px 0 0;background:var(--accent)}.vbar.ok{background:var(--ok)}.vbar.small{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.75) 0 4px,transparent 4px 8px);background-size:12px 12px}.vbar-value{position:absolute;bottom:calc(var(--bar-height) + 4px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;font-weight:700;color:var(--title)}
+@media(max-width:680px){.column-chart{grid-template-columns:20px repeat(8,minmax(0,1fr));grid-template-rows:170px 30px}.day-plot{gap:2px}.vbar-slot{width:12px}.vbar-value{font-size:8px}.day-label{font-size:9px}}
+@media(max-width:680px){.wrap{padding:22px 11px 40px;gap:22px}.grid2{grid-template-columns:1fr}h1{font-size:26px}.card{padding:13px}.bar-row{grid-template-columns:105px minmax(35px,1fr) 68px;gap:6px}.bar-label,.bar-value{font-size:11px}.bar-value.num{white-space:normal;overflow-wrap:anywhere}.day-bars .bar-row{grid-template-columns:112px minmax(30px,1fr) 66px}.funnel-bars .bar-row{grid-template-columns:112px minmax(35px,1fr) 65px}.funnel-bars .bar-label,.funnel-bars .bar-value{font-size:11px}th,td{padding:8px}.table-wrap{overflow:visible}.bugs{min-width:0}.bugs thead{display:none}.bugs,.bugs tbody,.bugs tr,.bugs td{display:block;width:100%}.bugs tr{padding:10px;border-bottom:1px solid var(--line)}.bugs tr:last-child{border-bottom:0}.bugs td{padding:2px 0;border:0;white-space:normal}.bugs td:before{display:block;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}.bugs td:nth-child(1):before{content:"Наблюдение"}.bugs td:nth-child(2):before{content:"Люди / события"}.bugs td:nth-child(3):before{content:"Предложение"}.bugs td:nth-child(4):before{content:"Владелец"}}
+"""
+
+
 def render_html(data: dict) -> str:
     us = data["us"]
-    started = int(us.get("started") or 0)
-    scope = data["scope"]
-    path = data["path"]
-    sid = data["sid"]
-    age_path = int((path.get("age_group") or {}).get("people") or 0)
-    social_path = int((path.get("social_proof") or {}).get("people") or 0)
-    age_sid = int((sid.get("age_group") or {}).get("people") or 0)
-    social_sid = int((sid.get("social_proof") or {}).get("people") or 0)
-    drop_same = age_path == age_sid and social_path == social_sid
-    buyers_n = len(data["buyers"])
-    primer_items = [row for row in data["primer"]["items"] if not row["test"]]
-    days = data["days"]
-    day_people = sum(int(row["people"]) for row in days) if days else 0
-    active_days = len(days)
-    per_day = (started / active_days) if active_days else 0
-    email_n = int(us.get("email_n") or 0)
-    p_email = email_n / started if started else 0
-    need_email = sample_size(p_email, min(0.99, p_email + 0.05)) if started else None
-    days_need = math.ceil(need_email / per_day) if need_email and per_day else None
-
-    def row_pair(title, num, den):
-        return f"<tr><td>{esc(title)}</td><td class='r num'>{esc(n_of(num, den))}</td><td class='r num'>{esc(pct(num, den))}</td></tr>"
-
-    path_table = []
-    seen = set()
-    by_path = {row["step"]: row for row in data["path_rows"]}
-    for step in data.get("step_order") or []:
-        row = by_path.get(step) or {"people": 0}
-        seen.add(step)
-        other = sid.get(step) or {}
-        path_table.append(
-            "<tr><td><code>{}</code></td><td class='r num'>{}</td><td class='r num'>{}</td></tr>".format(
-                esc(step),
-                esc(n_of(row["people"], started)),
-                esc(n_of(other.get("people", 0), started)),
-            )
-        )
-    for step, row in sid.items():
-        if step not in seen and step:
-            path_table.append(
-                "<tr><td><code>{}</code> <span class='sub'>только screen_id</span></td><td class='r num'>0 из {}</td><td class='r num'>{}</td></tr>".format(
-                    esc(step), started, esc(n_of(row["people"], started))
-                )
-            )
+    started = _n(us.get("started"))
+    email_n = _n(us.get("email_n"))
+    checkout_n = _n(us.get("checkout_n"))
+    purchase_n = _n(us.get("purchase_n"))
+    app_web = _n(us.get("app_web"))
+    path_rows = data.get("path_rows") or []
+    sid_rows = data.get("sid_rows") or []
+    path = data.get("path") or {row["step"]: row for row in path_rows}
+    sid = data.get("sid") or {row["step"]: row for row in sid_rows}
+    age_path = _n((path.get("age_group") or {}).get("people"))
+    social_path = _n((path.get("social_proof") or {}).get("people"))
+    age_sid = _n((sid.get("age_group") or {}).get("people"))
+    social_sid = _n((sid.get("social_proof") or {}).get("people"))
+    mismatch = data.get("mismatch") or {}
     overlap = data.get("overlap") or {}
-    cross_rows = "".join(
-        "<tr><td><code>{}</code></td><td><code>{}</code></td><td class='r num'>{}</td><td class='r num'>{}</td></tr>".format(
-            esc(row["path_step"]), esc(row["screen_id"]), esc(n_of(row["people"], started)), row["events"]
-        )
-        for row in data.get("cross") or []
-    )
+    buyers = data.get("buyers") or []
+    buyers_n = len(buyers)
+    primer = data["primer"]
+    preview_n = _preview_count(data)
 
-    primer_rows = []
-    for row in data["primer"]["by_day"]:
-        primer_rows.append(
-            "<tr><td>{}</td><td>{}</td><td class='num'>{}</td><td>{}</td><td>{}</td><td class='r num'>{}</td></tr>".format(
-                esc(row["day"]), esc(row["status"]), esc(row["amount"]), esc(row["init"] or "нет данных"), esc(row["test"]), row["n"]
-            )
-        )
+    renewed = sum(1 for row in buyers if _n(row.get("renews")) > 0)
+    cancelled = sum(1 for row in buyers if _n(row.get("renews")) == 0 and _n(row.get("cancels")) > 0)
+    untouched = buyers_n - renewed - cancelled
 
-    checkout_cards = []
-    for story in data["checkout"]:
-        lines = []
-        for event in story["events"]:
-            if event["event"].startswith("$") and event["event"] not in ("$pageview",):
-                continue
-            extra = ""
-            if event["status"] and event["status"] not in ("None", "null", ""):
-                extra += f", статус {event['status']}"
-            if event["amount"] and event["amount"] not in ("None", "null", ""):
-                extra += f", сумма {event['amount']}"
-            screen = f", экран {event['screen_id']}" if event["screen_id"] and event["screen_id"] not in ("None", "null") else ""
-            lines.append(
-                f"<li><span class='num'>{esc(event['ts'])}</span> {esc(event['event'])} {esc(event['path'])}{esc(screen)}{esc(extra)}</li>"
-            )
-        checkout_cards.append(
-            "<div class='card'><h3>Открытие оплаты {}</h3>"
-            "<p>Событий экрана: {}. Последний путь: <code>{}</code>. "
-            "funnel_checkout_open: {}. primer_payment: {}. funnel_purchase_success: {}. "
-            "funnel_purchase_fail: {}. События project robella, любой источник: {}. "
-            "События с recording_status = active: {}.{}"
-            "</p><ol class='list'>{}</ol></div>".format(
-                story["n"],
-                story["screen_events"],
-                esc(story["last_screen"] or "нет данных"),
-                story["checkout"],
-                story["primer"],
-                story["purchase"],
-                story["fail"],
-                story["app_events"],
-                story["recording_active"],
-                " Список обрезан на 250 событиях." if story["truncated"] else "",
-                "".join(lines) or "<li>до почты и оплаты отдельных событий нет</li>",
-            )
-        )
+    daily_chart = _checkout_chart(data, started)
 
-    buyer_rows = []
-    for buyer in data["buyers"]:
-        money = "; ".join(
-            f"{item['ts']} {item['event']} {item['reason']}".strip() for item in buyer["money"]
-        ) or "нет событий оплаты кроме старта"
-        pages = ", ".join(buyer.get("pages") or []) or "нет данных"
-        same = ", ".join(buyer.get("same_second") or []) or "нет"
-        buyer_rows.append(
-            "<tr><td class='num'>{}</td><td>{}</td><td class='r num'>{}</td><td>{}</td><td class='r num'>{}</td><td class='r num'>{}</td><td>{}</td><td>{}</td></tr>".format(
-                buyer["n"],
-                esc(buyer["started"]),
-                buyer["web_events"],
-                esc(pages),
-                buyer["renews"],
-                buyer["cancels"],
-                esc(same),
-                esc(money),
-            )
-        )
-
-    def comp_row(name, block, label):
-        if not block.get("ok"):
-            return f"<tr><td>{esc(name)}</td><td colspan='4'>нет данных: запрос не выполнился ({esc(block.get('error',''))})</td></tr>"
-        mark = "ориентир" if started < 30 or int(block.get("started") or 0) < 30 else "сравнение"
-        return (
-            "<tr><td>{}<span class='sub'>{} · {}</span></td>"
-            "<td class='r num'>{}</td><td class='r num'>{}</td><td class='r num'>{}</td><td class='r num'>{}</td></tr>"
-        ).format(
-            esc(name),
-            esc(label),
-            mark,
-            esc(n_of(block.get("email_n"), block.get("started"))),
-            esc(n_of(block.get("checkout_n"), block.get("started"))),
-            esc(n_of(block.get("purchase_n"), block.get("started"))),
-            esc(n_of(block.get("email_and_app"), block.get("email_people")))
-            + " по персоне; "
-            + esc(n_of(block.get("email_join_both"), block.get("email_join_emails")))
-            + " по почте",
-        )
-
-    rob_comp = (
-        "<tr><td>Robella, воронка США<span class='sub'>{} · {}</span></td>"
-        "<td class='r num'>{}</td><td class='r num'>{}</td><td class='r num'>{}</td><td class='r num'>{}</td></tr>"
-    ).format(
-        PERIOD_US,
-        "ориентир" if started < 30 else "сравнение",
-        esc(n_of(us.get("email_n"), started)),
-        esc(n_of(us.get("checkout_n"), started)),
-        esc(n_of(us.get("purchase_n"), started)),
-        esc(n_of(us.get("email_and_app"), us.get("email_n"))) + (" · ориентир" if email_n < 30 else ""),
-    )
-
-    product_rows = "".join(
-        f"<tr><td><code>{esc(row['event'])}</code></td><td class='r num'>{esc(n_of(row['people'], int(us.get('app_web') or 0)))}</td><td class='r num'>{row['n']}</td></tr>"
-        for row in data["product_events"]
-    )
-    path_app = "".join(
-        f"<tr><td><code>{esc(row['path'] or '/')}</code></td><td class='r num'>{esc(n_of(row['people'], int(us.get('app_web') or 0)))}</td></tr>"
-        for row in data["app_paths"]
-    )
-    onboarding_sorted = sorted(
-        data["onboarding"],
-        key=lambda row: int(row["step"]) if str(row["step"]).isdigit() else 999,
-    )
-    onb_rows = "".join(
-        f"<tr><td class='num'>{esc(row['step'])}</td><td class='r num'>{row['events']}</td><td class='r num'>{row['people']}</td></tr>"
-        for row in onboarding_sorted
-    ) or "<tr><td colspan='3'>нет данных: событий onboarding_step в окне США после фильтра нет</td></tr>"
-
-    drop_text = (
-        f"По пути age_group — {n_of(age_path, started)}, social_proof — {n_of(social_path, started)}. "
-        f"По screen_id age_group — {n_of(age_sid, started)}, social_proof — {n_of(social_sid, started)}. "
-        f"Людей, у кого путь дошёл до main_goals, а пути social_proof не было: {n_of(overlap.get('goals_without_social'), started)}. "
-        f"Путь остановился на age_group и дальше social_proof или main_goals нет: {n_of(overlap.get('age_only'), started)}. "
-        + (
-            "Обе версии совпали."
-            if drop_same
-            else "Версии расходятся. Обрыв из аудита 57 → 14 — это версия screen_id, она завышает social_proof: имя экрана приезжает и на соседний путь. По пути social_proof меньше, но часть людей уже на main_goals без этого URL, значит дыра в разметке есть и там."
-        )
-    )
-    mismatch = data["mismatch"]
-    facts = [
-        f"Воронку США начали {n_of(started, started)} человек за {PERIOD_US}. Почту оставили {n_of(email_n, started)}, оплату открыли {n_of(us.get('checkout_n'), started)}, покупку в событиях воронки зафиксировали {n_of(us.get('purchase_n'), started)}.",
-        f"Веб-событие приложения за окно США есть у {us.get('app_web')} человек. Среди оставивших почту такое событие есть у {n_of(us.get('email_and_app'), email_n)}.",
-        drop_text,
-        f"В Primer с {msk(data['primer']['first'])} МСК по {msk(data['primer']['last'])} МСК у Robella {data['primer']['rows']} платежей. Успешных первых оплат не из теста: {data['primer']['settled_cit']}. Триал $1: {data['primer']['trial_1']} строк. Подписка $39.90: {data['primer']['month_3990']} строк. После конца файла Primer в PostHog primer_payment: {data['primer']['after_file']['people']} человек, событий {data['primer']['after_file']['n']}. Знаменателя нет: это проверка дыры в файле, а не доля.",
-        f"До 11.11 успешный старт подписки есть у {buyers_n} человек после фильтра. Это мало данных для вывода о продукте.",
+    login_items = [
+        {"label": "Вошли в продукт", "n": 2, "color": "ok"},
+        {"label": "Дошли до «Check your inbox»", "n": 3, "color": "accent"},
+        {"label": "Ушли с формы без запроса письма", "n": 2, "color": "bad"},
+        {"label": "Network Error", "n": 1, "color": "warn"},
+        {"label": "Ссылка истекла", "n": 1, "color": "warn"},
+    ]
+    first_items = [
+        {"label": "Начали онбординг", "n": us.get("onb_started")},
+        {"label": "Дошли до шага 7", "n": 1},
+        {"label": "Завершили онбординг", "n": us.get("onb_done")},
+        {"label": "Открыли капсулу", "n": us.get("capsule")},
+        {"label": "Открыли шкаф", "n": us.get("closet")},
+        {"label": "Примерка", "n": us.get("tryon")},
+        {"label": "Отчёт", "n": us.get("report_n")},
+    ]
+    early_items = [
+        {"label": "Продлили", "n": renewed, "color": "ok"},
+        {"label": "Отменили (событие)", "n": cancelled, "color": "bad"},
+        {"label": "Ничего", "n": untouched, "color": "warn"},
     ]
 
-    css = """
-:root{--bg:#fff8f3;--surface:#fff;--ink:#2b1d17;--muted:#7a6359;--line:#f2dfd3;--soft:#fff0e6;--accent:#e0703f;--accent-soft:#ffe7d9;--crit:#c2412d;--crit-soft:#fde8e3;--warn:#b26a12;--warn-soft:#fff1dc;--ok:#2f8a5b;--ok-soft:#e6f5ec;--f-body:"Golos Text","Segoe UI",Roboto,Arial,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#ffe9dc 0,var(--bg) 420px) no-repeat,var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55}
-.wrap{max-width:960px;margin:0 auto;padding:40px 16px 64px;display:flex;flex-direction:column;gap:42px}
-h1,h2,h3{margin:0;line-height:1.2}h1{font-size:2.05rem}h2{font-size:1.4rem}h3{font-size:1.05rem}
-p{margin:0;max-width:76ch}.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.meta{color:var(--muted)}.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-section{display:flex;flex-direction:column;gap:14px}
-.card,.summary{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;box-shadow:0 1px 2px rgba(160,90,60,.06)}
-.summary{border-top:4px solid var(--accent)} .summary ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
-.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:640px}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{background:var(--soft);font-size:.74rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}tr:last-child td{border-bottom:none}
-td.r,th.r{text-align:right}.sub{display:block;color:var(--muted);font-size:.8rem;font-weight:400;text-transform:none;letter-spacing:0}
-code{font-family:var(--f-mono);font-size:.84em;background:var(--soft);padding:1px 4px;border-radius:4px}
-.note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;border-radius:0 8px 8px 0}
-.hyp{border-left:3px solid var(--warn);background:var(--warn-soft);padding:12px 14px;border-radius:0 8px 8px 0}
-ul,ol{margin:0;padding-left:1.25em}a{color:var(--accent)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-.fact{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.fact .v{font-family:var(--f-mono);font-size:1.2rem;font-weight:600}.fact .l{color:var(--muted);font-size:.84rem}
-"""
-    html_doc = f"""<!doctype html>
-<html lang="ru" data-theme="light">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Путь пользователей Robella — 18.11.2026</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
-<style>{css}</style>
-</head>
-<body>
-<div class="wrap">
-<header>
-<p class="eyebrow">Robella · веб · разбор продукта</p>
-<h1>Путь пользователей Robella</h1>
-<p class="meta">Весь срок: {esc(data['period_full'])}. Окно воронки США: {PERIOD_US}. Источники: PostHog (robella_ff, robella, robella_landing), Primer с дескриптором ROBELLA.APP, события сессий. Тестовые исключены так же, как в аудите 17.11. Почты и distinct_id в файл не входят. Подробный расчёт: robella-product-analysis-2026-11-18-metodika.md.</p>
-</header>
+    compare = data.get("compare") or {}
+    fox = compare.get("foxiq") or {}
+    az = compare.get("azora") or {}
+    comparison_groups = []
+    metrics = [
+        ("Конверсия в почту", email_n, started, fox.get("email_n"), fox.get("started"), az.get("email_n"), az.get("started")),
+        ("Конверсия в оплату", checkout_n, started, fox.get("checkout_n"), fox.get("started"), az.get("checkout_n"), az.get("started")),
+        ("Вход по той же почте", us.get("email_and_app"), email_n, fox.get("email_join_both"), fox.get("email_join_emails"), az.get("email_join_both"), az.get("email_join_emails")),
+    ]
+    for label, rn, rd, fn, fd, an, ad in metrics:
+        comparison_groups.append(
+            f"<div class='card chart'><h3>{esc(label)}</h3><div class='bars'>"
+            + _bar_rows([
+                {"label": "Robella", "n": rn, "den": rd, "color": "accent", "note": "ориентир" if _n(rn) < 30 else ""},
+                {"label": "FoxIQ", "n": fn, "den": fd, "color": "fox"},
+                {"label": "Azora, Япония", "n": an, "den": ad, "color": "azora"},
+            ], 100, scale=100, show_pct=True)
+            + "</div></div>"
+        )
 
-<section id="summary">
-<p class="eyebrow">1. Итог</p>
-<h2>Коротко</h2>
-<p>Весь срок, {esc(data['period_full'])}: воронку robella_ff начали {data['full'].get('started')} человек, почту оставили {esc(n_of(data['full'].get('email_n'), data['full'].get('started')))}, оплату открыли {esc(n_of(data['full'].get('checkout_n'), data['full'].get('started')))}, покупку в событиях воронки — {esc(n_of(data['full'].get('purchase_n'), data['full'].get('started')))}. Из них до 11.11.2026 00:00 МСК старт был у {data['before'].get('started_before')} человек, покупка воронки — у {data['before'].get('purchase_before')}. Веб-событие приложения за весь срок: {esc(n_of(data['full'].get('app_web'), data['full'].get('people')))}. Лендинг: {esc(n_of(data['full'].get('landing'), data['full'].get('people')))}. Ниже окно США отдельно: воронка на английском отдана с 11.11.</p>
-<div class="facts">
-<div class="fact"><div class="v">{started}</div><div class="l">начали воронку США, {PERIOD_US}</div></div>
-<div class="fact"><div class="v">{email_n} из {started}</div><div class="l">оставили почту</div></div>
-<div class="fact"><div class="v">{us.get('checkout_n')} из {started}</div><div class="l">открыли оплату</div></div>
-<div class="fact"><div class="v">{us.get('purchase_n')} из {started}</div><div class="l">покупка в событиях воронки</div></div>
-<div class="fact"><div class="v">{us.get('app_web')} из {us.get('people')}</div><div class="l">веб-приложение среди всех людей Robella в окне США</div></div>
-</div>
-<div class="summary"><ol>
-{''.join(f'<li>{esc(item)}</li>' for item in facts)}
-</ol></div>
-<p class="meta">Как считали. Люди, не события. Тест — это is_test на событии, почтовый шаблон или такой же шаблон в distinct_id. Окно США считается отдельно от всего срока. Шаг воронки по умолчанию — последний кусок pathname.</p>
-</section>
+    primer_total = _n(primer.get("rows"))
+    primer_declined = _n(primer.get("declined"))
+    primer_renew = sum(_n(row.get("n")) for row in primer.get("by_day") or [] if row.get("init") == "mit" and row.get("status") == "SETTLED")
+    primer_first = _n(primer.get("settled_cit"))
+    primer_period = f"{msk(primer.get('first'))} — {msk(primer.get('last'))} МСК"
 
-<section id="funnel">
-<p class="eyebrow">2. Воронка</p>
-<h2>Экраны воронки США</h2>
-<p>Знаменатель везде — люди с funnel_start, {n_of(started, started)}, {PERIOD_US}. В колонке «по пути» шаг — последний сегмент pathname, корень воронки записан как intro. В колонке «по screen_id» то же имя берётся из свойства screen_id.</p>
-<div class="note">{esc(drop_text)} Расхождение screen_id и вложенного пути: {esc(n_of(mismatch.get('mismatch_nested'), mismatch.get('events')))} событий funnel_screen_open. Если считать и корень intro, где путь не содержит имя экрана: {esc(n_of(mismatch.get('mismatch_all'), mismatch.get('events')))}.</div>
-<p>Колонки ниже независимы. «По пути» — сколько людей открыли такой URL. «По screen_id» — сколько людей имели такое имя экрана, даже если URL уже другой. Порядок строк — как шли люди, дошедшие до оплаты 12.11, в те события, где путь и screen_id совпали. Средняя позиция по всем стартам ставит social_proof раньше age_group, потому что URL иногда уезжает вперёд имени экрана. Для чтения взята совпавшая последовательность. Шаги, которых в ней не было, стоят в конце.</p>
-<div class="tbl"><table>
-<thead><tr><th>Шаг</th><th class="r">По пути</th><th class="r">По screen_id</th></tr></thead>
-<tbody>{''.join(path_table)}</tbody>
-</table></div>
-<h3>Стык возраста, social_proof и целей</h3>
-<p>Только три имени. Строка — это пара «путь и screen_id на одном событии», не шаг воронки.</p>
-<div class="tbl"><table>
-<thead><tr><th>Путь</th><th>screen_id</th><th class="r">Люди</th><th class="r">События</th></tr></thead>
-<tbody>{cross_rows or '<tr><td colspan="4">нет данных</td></tr>'}</tbody>
-</table></div>
-<p class="meta">Период: {PERIOD_US}. Источник: PostHog, project = robella_ff, событие funnel_screen_open.</p>
-<h3>Шаги до оплаты, по событиям</h3>
-<div class="tbl"><table>
-<thead><tr><th>Шаг</th><th class="r">Люди</th><th class="r">Доля от старта</th></tr></thead>
-<tbody>
-{row_pair('funnel_start', started, started)}
-{row_pair('funnel_email_submit', us.get('email_n'), started)}
-{row_pair('funnel_checkout_open', us.get('checkout_n'), started)}
-{row_pair('funnel_purchase_success', us.get('purchase_n'), started)}
-{row_pair('веб-событие приложения у тех, кто оставил почту', us.get('email_and_app'), email_n)}
+    css = _report_css()
+    return f"""<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robella — продуктовый разбор, 18.11.2026</title><style>{css}</style></head>
+<body><main class="wrap">
+<header><div class="eyebrow">Robella · веб · продуктовый разбор</div><h1>Путь пользователя и оплата</h1>
+<p class="meta">{esc(data['period_full'])} · окно США {PERIOD_US} · люди после фильтра тестов · <a href="robella-product-analysis-2026-11-18-metodika.md">методика и проверки</a></p></header>
+
+<section><div class="eyebrow">Главное · выводы</div><div class="card summary"><ol>
+<li><b>Главная потеря — до почты:</b> {n_of(started - email_n, started)} не оставили email. Точный экран обрыва не называем, пока разметка расходится.</li>
+<li><b>До продукта доходят единицы:</b> после email веб-заход есть у {n_of(us.get('email_and_app'), email_n)}, покупки после checkout — {n_of(us.get('checkout_and_purchase'), checkout_n)}. Приоритет — разобрать вход и завершение оплаты, а не переписывать квиз вслепую.</li>
+<li><b>Ценность и удержание оценивать рано:</b> онбординг завершили {n_of(us.get('onb_done'), app_web)}, ранних покупателей только {buyers_n}. Сначала нужно дать людям войти и оплатить, затем оценивать капсулы и продления.</li>
+</ol></div></section>
+
+<section><div class="eyebrow">1 · Воронка по экранам</div><h2>Одна воронка, два несовпадающих измерения</h2>
+<p class="meta">{PERIOD_US} · знаменатель {started} из {started} с funnel_start · штриховка = меньше 30 человек на шаге</p>
+<div class="callout"><b>Как читать две колонки.</b> Это одна и та же воронка, а не две версии продукта. Слева экран определён по адресу URL, справа — по названию screen_id, которое передал разработчик. Обе колонки описывают одних и тех же людей.</div>
+<div class="callout warn"><b>Почему точный обрыв пока не доказан.</b> URL и screen_id расходятся в {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий. Пример: у 7 человек URL уже main_goals, а screen_id всё ещё social_proof. Поэтому обрыв age_group → social_proof получается {n_of(age_path, started)} → {n_of(social_path, started)} по URL и {n_of(age_sid, started)} → {n_of(social_sid, started)} по screen_id. Сначала Дане нужно исправить screen_id и пересчитать воронку; квиз не сокращаем.</div>
+<div class="grid2">{_funnel_panel('По адресу URL (pathname)', path_rows, data.get('step_order') or [], started)}{_funnel_panel('По screen_id разработчика', sid_rows, data.get('step_order') or [], started)}</div></section>
+
+<section><div class="eyebrow">2 · Оплата</div><h2>Оплата по дням</h2>
+<p class="meta">{PERIOD_US} · ось X — дата, ось Y — люди · знаменатель каждого значения {started} из {started} стартов окна</p>
+<div class="legend"><span><i class="dot"></i>открыли оплату</span><span><i class="dot ok"></i>оплатили</span><span>штриховка = мало данных</span></div>
+<div class="card">{daily_chart}</div>
+<p class="note">Пустые столбцы — 0 из {started}. Успешные оплаты: {n_of(purchase_n, started)} в каждый день окна.</p>
+<div class="callout warn"><b>Причина не установлена.</b> У {n_of(us.get('checkout_and_primer'), checkout_n)} открывших оплату есть primer_payment; в Primer $1 — {n_of(primer.get('trial_1'), primer_total)} строк, $39.90 — {n_of(primer.get('month_3990'), primer_total)}.</div>
+<p class="note">Проверка трафика: {n_of(preview_n, checkout_n)} открытий оплаты пришло из пути /preview/ 18.11; фильтр аудита его не исключил. Нужно подтвердить, тестовый ли это проход.</p>
+<div class="table-wrap"><table><thead><tr><th>Primer, {esc(primer_period)}</th><th>Строк</th></tr></thead><tbody>
+<tr><td>Успешные первые оплаты, не тест</td><td class="num">{n_of(primer_first, primer_total)}</td></tr>
+<tr><td>Повторные успешные списания</td><td class="num">{n_of(primer_renew, primer_total)}</td></tr>
+<tr><td>Отказы, включая 1 тест</td><td class="num">{n_of(primer_declined, primer_total)}</td></tr>
+<tr><td>Триал $1 / подписка $39.90</td><td class="num">{n_of(primer.get('trial_1'), primer_total)} / {n_of(primer.get('month_3990'), primer_total)}</td></tr>
+</tbody></table></div></section>
+
+<section><div class="eyebrow">3 · Вход в приложение</div><h2>Семь разобранных записей</h2>
+<p class="meta">12.11–17.11 · снимки из аудита 17.11 · знаменатель 7 из 7 · первые три строки разбивают записи, ошибки с ними пересекаются · штриховка = мало данных</p>
+<div class="callout"><b>«Check your inbox» — ожидаемый шаг, а не зависание.</b> Человек уходит в почту, а magic link открывает <code>web.robella.app/magic-link-login</code> отдельно, часто в новой вкладке и новой записи. По исходной записи нельзя решить, вошёл ли он позже: нужно связать email с последующим <code>/magic-link-login</code> и веб-событиями приложения в других сессиях.</div>
+<div class="card chart"><div class="bars">{_bar_rows(login_items, 7)}</div></div>
+<p class="note">Network Error: «Signing you in…» около 34 секунд у 1 из 7. После «This link has expired» главная открылась у 1 из 7. Кадры 18.11 заново не разбирались.</p></section>
+
+<section><div class="eyebrow">4 · Первая сессия</div><h2>Что происходит в продукте</h2>
+<p class="meta">{PERIOD_US} · знаменатель {app_web} из {app_web} с веб-событием приложения · штриховка = меньше 30 человек</p>
+<div class="card chart"><div class="bars">{_bar_rows(first_items, app_web)}</div></div>
+<p class="note">В записи 16.11 после шага 7 был возврат на шаг 2 у 1 из 7 записей; onboarding_step у 1 из {app_web} веб-заходов двоился на шагах 1–6.</p></section>
+
+<section><div class="eyebrow">5 · Покупатели до 11.11</div><h2>Пять человек <span class="tag">мало данных</span></h2>
+<p class="meta">15.10–28.10 первые оплаты; события до 18.11.2026 23:59 МСК · взаимоисключающие группы: продление → отмена → ничего</p>
+<div class="card chart"><div class="bars">{_bar_rows(early_items, buyers_n)}</div></div>
+<p class="note">У {n_of(cancelled, buyers_n)} есть subscription_cancelled; у обоих позднее в одну секунду subscription_expired payment_failed, поэтому самостоятельная отмена не доказана.</p></section>
+
+<section><div class="eyebrow">6 · Сравнение</div><h2>Robella против FoxIQ и Azora</h2>
+<p class="meta">Robella {PERIOD_US} · FoxIQ {FOX_LABEL} · Azora {AZ_LABEL} · вход склеен по почте · штриховка и «ориентир» при N &lt; 30</p>
+<div class="legend"><span><i class="dot"></i>Robella</span><span><i class="dot fox"></i>FoxIQ</span><span><i class="dot azora"></i>Azora</span></div>
+<div class="grid2">{''.join(comparison_groups)}</div>
+<p class="note">Периоды разные, поэтому это ориентиры конверсий, не доказательство причины. У Robella вход считается только от {email_n} оставивших почту.</p></section>
+
+<section><div class="eyebrow">7 · Баги и точки роста</div><h2>Что передать в работу</h2>
+<div class="table-wrap"><table class="bugs"><thead><tr><th>Что видим</th><th>Сколько</th><th>Что предлагаем</th><th>Кому</th></tr></thead><tbody>
+<tr><td>После checkout нет платежа</td><td class="num">{n_of(us.get('checkout_and_primer'), checkout_n)} с primer_payment</td><td>Проверить создание платежа и прайс $1/$39.90</td><td>Даня, Дима</td></tr>
+<tr><td>screen_id расходится с pathname</td><td class="num">{n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий</td><td>Починить разметку, затем пересчитать обрыв</td><td>Даня</td></tr>
+<tr><td>Работающий автологин не виден в аналитике</td><td class="num">{n_of(us.get('autologin'), app_web)} pageview /auto-login</td><td>Починить событие успешного входа, не менять сам автологин</td><td>Даня</td></tr>
+<tr><td>Онбординг не завершён, шаги двоятся</td><td class="num">{n_of(us.get('onb_done'), us.get('onb_started'))} завершили</td><td>Убрать дубли и возврат с шага 7 на 2</td><td>Даня</td></tr>
+<tr><td>Капсула не показала готовый образ</td><td class="num">1 из 7 записей</td><td>Проверить завершение генерации и таймаут</td><td>Даня</td></tr>
+<tr><td>Отмена совпадает с payment_failed</td><td class="num">2 из 5 ранних покупателей</td><td>Не писать user_initiated на отказ банка</td><td>Даня</td></tr>
 </tbody></table></div>
-</section>
-
-<section id="pay">
-<p class="eyebrow">3. Оплата</p>
-<h2>Цены и открытия оплаты</h2>
-<p>Файл Primer: {data['primer']['file_rows']} платежей всех продуктов, {esc(msk(data['primer']['first']))} МСК — {esc(msk(data['primer']['last']))} МСК. Строк с Robella: {data['primer']['rows']}. Сумма $1 (100 центов) встречается {data['primer']['trial_1']} раз, сумма $39.90 (3990 центов) — {data['primer']['month_3990']} раз. Это не оценка: других дескрипторов с словом robella в файле нет. Файл кончается раньше отчёта. В PostHog с 17.11.2026 12:28 МСК до {PERIOD_END_LABEL} primer_payment у Robella: {data['primer']['after_file']['people']} человек, событий {data['primer']['after_file']['n']}. Доли нет: это проверка, что файл не спрятал платёж.</p>
-<div class="tbl"><table>
-<thead><tr><th>День МСК</th><th>Статус</th><th>Сумма</th><th>Тип</th><th>Тест</th><th class="r">Строк</th></tr></thead>
-<tbody>{''.join(primer_rows) or '<tr><td colspan="6">нет данных</td></tr>'}</tbody>
-</table></div>
-<p>Почему нет триала $1 и подписки $39.90. В окне США покупки воронки нет: {n_of(us.get('purchase_n'), started)}. В Primer за весь файл нет ни одной строки Robella на эти суммы, ни успешной, ни отказной. Значит платежи на $1 и $39.90 не проходят как ROBELLA.APP. Выложен ли на пейволле другой прайс, из событий не видно: у экрана paywall свойства price, amount, currency, trial_price и plan пустые.</p>
-<p class="meta">Экран paywall за {PERIOD_US}: путь и screen_id совпали, свойства price, amount, currency, trial_price и plan пустые. Событий {data['paywall_props'][0]['events'] if data['paywall_props'] else 0}, людей {data['paywall_props'][0]['people'] if data['paywall_props'] else 0}.</p>
-<h3>Кто открыл оплату</h3>
-<p>Людей с funnel_checkout_open: {n_of(us.get('checkout_n'), started)}. Из них покупка в воронке: {n_of(us.get('checkout_and_purchase'), us.get('checkout_n'))}. primer_payment на той же персоне: {n_of(us.get('checkout_and_primer'), us.get('checkout_n'))}. Веб-событие приложения: {n_of(us.get('checkout_and_app'), us.get('checkout_n'))}.</p>
-{''.join(checkout_cards) or '<p>нет данных: открытий оплаты нет</p>'}
-<p class="meta">Список событий этих людей за весь срок до {PERIOD_END_LABEL}. Служебные $web_vitals и $pageleave скрыты. Если в списке нет primer_payment, отказа в PostHog у этого человека нет.</p>
-</section>
-
-<section id="login">
-<p class="eyebrow">4. Вход после воронки</p>
-<h2>Почта, ссылка, приложение</h2>
-<div class="tbl"><table>
-<thead><tr><th>Шаг</th><th class="r">Люди</th><th>Период</th></tr></thead>
-<tbody>
-<tr><td>Оставили почту в воронке</td><td class="r num">{esc(n_of(email_n, started))}</td><td>{PERIOD_US}</td></tr>
-<tr><td>Запросили magic link</td><td class="r num">{esc(n_of(us.get('magic'), int(us.get('app_web') or 0)))}</td><td>знаменатель — веб-заход в приложение, {PERIOD_US}</td></tr>
-<tr><td>Открыли /auth</td><td class="r num">{esc(n_of(us.get('auth_n'), int(us.get('app_web') or 0)))}</td><td>знаменатель — веб-заход в приложение</td></tr>
-<tr><td>Открыли /magic-link-login</td><td class="r num">{esc(n_of(us.get('magic_page'), int(us.get('app_web') or 0)))}</td><td>тот же знаменатель</td></tr>
-<tr><td>Событие login</td><td class="r num">{esc(n_of(us.get('login_n'), int(us.get('app_web') or 0)))}</td><td>тот же знаменатель</td></tr>
-<tr><td>Событие app_opened</td><td class="r num">{esc(n_of(us.get('app_opened'), int(us.get('app_web') or 0)))}</td><td>тот же знаменатель</td></tr>
-<tr><td>Pageview /auto-login</td><td class="r num">{esc(n_of(us.get('autologin'), int(us.get('app_web') or 0)))}</td><td>тот же знаменатель</td></tr>
-</tbody></table></div>
-<p>В аудите 17.11 по снимкам семи не-тестовых записей приложения 5 из 7 остались на форме почты или на «Check your inbox», 1 из 7 видел «Signing you in…» около 34 секунд с Axios Network Error, 1 из 7 увидел «This link has expired» и через 2 секунды главную. Этот разбор кадры заново не смотрел. В окне США pageview /auto-login — {esc(n_of(us.get('autologin'), int(us.get('app_web') or 0)))}. У ранних покупателей, до 11.11, /auto-login входит в шесть частых страниц у {sum(1 for buyer in data['buyers'] if any(str(page).startswith('/auto-login') for page in buyer.get('pages') or []))} из {len(data['buyers'])}. Путь в приложении был, в окне США его нет.</p>
-<div class="tbl"><table><thead><tr><th>Путь</th><th class="r">Люди</th></tr></thead><tbody>{path_app or '<tr><td colspan="2">нет данных</td></tr>'}</tbody></table></div>
-<p class="meta">Знаменатель путей — {esc(n_of(us.get('app_web'), us.get('app_web')))} с веб-событием project = robella, {PERIOD_US}.</p>
-</section>
-
-<section id="first">
-<p class="eyebrow">5. Первая сессия в продукте</p>
-<h2>Что успевают сделать</h2>
-<p>Веб-заходов в приложение за окно США: {esc(n_of(us.get('app_web'), us.get('app_web')))}. Онбординг начали {esc(n_of(us.get('onb_started'), us.get('app_web')))}, завершили {esc(n_of(us.get('onb_done'), us.get('app_web')))}. Капсулу открыли {esc(n_of(us.get('capsule'), us.get('app_web')))}. Шкаф /closet: {esc(n_of(us.get('closet'), us.get('app_web')))}. Отчёт: {esc(n_of(us.get('report_n'), us.get('app_web')))}. Примерка, события tryon_*: {esc(n_of(us.get('tryon'), us.get('app_web')))}.</p>
-<div class="tbl"><table>
-<thead><tr><th>Событие</th><th class="r">Люди</th><th class="r">Событий</th></tr></thead>
-<tbody>{product_rows or '<tr><td colspan="3">нет данных</td></tr>'}</tbody>
-</table></div>
-<h3>Шаги онбординга</h3>
-<div class="tbl"><table><thead><tr><th>step</th><th class="r">Событий</th><th class="r">Людей</th></tr></thead><tbody>{onb_rows}</tbody></table></div>
-<p>Таблица шагов — окно США, не весь срок. Возврат с шага 7 на шаг 2 виден в одной записи 16.11. Это наблюдение по записи, не доля: в окне онбординг начал {esc(n_of(us.get('onb_started'), us.get('app_web')))}.</p>
-<p class="meta">Период событий: {PERIOD_US}. Весь срок приложения до {PERIOD_END_LABEL} в знаменатель веб-захода не смешан.</p>
-</section>
-
-<section id="early">
-<p class="eyebrow">6. Покупатели до 11.11</p>
-<h2>Пять первых оплат <span class="sub">мало данных</span></h2>
-<p>После фильтра это {buyers_n} человек с subscription_started раньше 11.11 00:00 МСК. Выборка меньше 30, доли по ним — ориентир, не вывод о продукте.</p>
-<div class="tbl"><table>
-<thead><tr><th></th><th>Старт МСК</th><th class="r">Веб-событий</th><th>Страницы</th><th class="r">Продлений</th><th class="r">Отмен</th><th>Отмена и отказ в одну секунду</th><th>Оплата и отмена, без почты</th></tr></thead>
-<tbody>{''.join(buyer_rows) or '<tr><td colspan="6">нет данных</td></tr>'}</tbody>
-</table></div>
-<p class="meta">Колонка «в одну секунду» сравнивает timestamp subscription_cancelled и subscription_expired. Период поведения — от их оплаты до {PERIOD_END_LABEL}. Мало данных: 5 человек.</p>
-</section>
-
-<section id="compare">
-<p class="eyebrow">7. Сравнение</p>
-<h2>Те же шаги, другие продукты</h2>
-<p>Периоды у продуктов разные. Почта и оплата считаются от старта воронки. У Robella старт {started}, это больше 30, поэтому доля почты сравнивается как доля. Вход в приложение у Robella считается от {email_n} оставивших почту: это меньше 30, в этой колонке ориентир. Покупка в таблице — событие funnel_purchase_success, не subscription_started. У FoxIQ в разборе покупателей больше, потому что там другой признак.</p>
-<div class="tbl"><table>
-<thead><tr><th>Продукт</th><th class="r">Почта от старта</th><th class="r">Оплата от старта</th><th class="r">Покупка от старта</th><th class="r">Вход в приложение среди оставивших почту</th></tr></thead>
-<tbody>
-{rob_comp}
-{comp_row('FoxIQ', data['compare']['foxiq'], FOX_LABEL)}
-{comp_row('Azora, Япония', data['compare']['azora'], AZ_LABEL)}
-</tbody></table></div>
-<p class="meta">FoxIQ: project foxiq_ff и foxiq, фильтр тестовых почт из playbook, {FOX_LABEL}. Azora: воронка azora_ff со страной JP, приложение — project web, не ios. В playbook воронка и приложение — разные персоны, связь по почте. Колонка входа показывает оба способа. {AZ_LABEL}. Полного списка тестов Azora нет, отсечён общий почтовый шаблон.</p>
-</section>
-
-<section id="bugs">
-<p class="eyebrow">8. Баги и точки роста</p>
-<h2>Что видно и кому отдать</h2>
-<div class="tbl"><table>
-<thead><tr><th>Что видим</th><th>Сколько людей</th><th>Откуда</th><th>Что предлагаем</th><th>Кому</th></tr></thead>
-<tbody>
-<tr><td>screen_id не равен вложенному пути</td><td class="num">{esc(n_of(mismatch.get('mismatch_nested'), mismatch.get('events')))} событий</td><td>PostHog, {PERIOD_US}</td><td>Считать шаги по pathname, поправить screen_id</td><td>Даня</td></tr>
-<tr><td>Нет покупки воронки и нет цен $1 и $39.90</td><td class="num">{esc(n_of(us.get('purchase_n'), started))} покупок; {data['primer']['trial_1']} и {data['primer']['month_3990']} строк Primer</td><td>PostHog и Primer</td><td>Проверить, какой прайс выложен на пейволле США</td><td>Дима, Даня</td></tr>
-<tr><td>Открыли оплату и не купили</td><td class="num">{esc(n_of(us.get('checkout_n'), started))}, покупок {esc(n_of(us.get('checkout_and_purchase'), us.get('checkout_n')))}</td><td>события этих людей</td><td>Разобрать, почему после открытия оплаты нет primer_payment</td><td>Даня</td></tr>
-<tr><td>/auto-login не встречается</td><td class="num">{esc(n_of(us.get('autologin'), int(us.get('app_web') or 0)))}</td><td>pageview, {PERIOD_US}</td><td>Либо слать событие на этот путь, либо считать входом /auth и magic link</td><td>Даня</td></tr>
-<tr><td>Онбординг не завершается, шаги двоятся</td><td class="num">{esc(n_of(us.get('onb_done'), us.get('onb_started')))} завершили из начавших</td><td>PostHog и запись 16.11</td><td>Один шаг — одно событие, без возврата с 7 на 2</td><td>Даня</td></tr>
-<tr><td>Отмена пишется вместе с отказом оплаты</td><td class="num">{sum(1 for b in data['buyers'] if b['cancels'] and b['expires'])} из {buyers_n} ранних покупателей</td><td>PostHog, мало данных</td><td>Не ставить user_initiated на отказ банка</td><td>Даня</td></tr>
-</tbody></table></div>
-<h3>Дане, по приоритету, из аудита</h3>
-<ol class="list">
-<li>Починить screen_id: он расходится с путём у {esc(n_of(mismatch.get('mismatch_nested'), mismatch.get('events')))} вложенных событий.</li>
-<li>Найти, почему пейволл США не даёт ни $1, ни $39.90, ни funnel_purchase_success.</li>
-<li>Писать сумму на subscription_started. Сейчас сумма есть только на primer_payment. Отказ должен оставаться declined и не становиться user_initiated.</li>
-<li>Помечать тест на персоне. У тестового отказа 15.10 флаг is_test пустой.</li>
-<li>Одно событие входа. Сейчас login и app_opened приходят у разных людей, /auto-login не приходит.</li>
-<li>Онбординг: не дублировать шаги и не возвращать человека с шага 7 на шаг 2.</li>
-<li>Вход по ссылке: «Signing you in…» около 34 секунд с Network Error и вспышка «This link has expired» перед главной. Это из записей 17.11, по 1 из 7.</li>
-</ol>
-</section>
-
-<section id="tests">
-<p class="eyebrow">9. Гипотезы</p>
-<h2>Это не факты</h2>
-<div class="hyp">Ниже гипотезы. Цифры объёма посчитаны из фактов окна США, но сами утверждения ещё не проверены. База почты: {esc(n_of(email_n, started))}, это {esc(pct(email_n, started))}. Дней со стартом воронки: {active_days}. Стартов в такой день в среднем: {per_day:.1f}. Формула объёма: два варианта, α = 5%, мощность 80%, нормальное приближение.</div>
-<div class="card">
-<h3>Гипотеза 1. Длинный квиз режет почту</h3>
-<p>Факт, не гипотеза: почту оставляют {esc(n_of(email_n, started))}. Обрыв age_group → social_proof гипотезой не считается: путь и screen_id расходятся, у {esc(n_of(overlap.get('goals_without_social'), started))} путь main_goals есть без пути social_proof.</p>
-<p>Гипотеза: если сократить квиз до почты, почту оставят чаще. Вариант: social_proof и длинные вопросы после почты. Метрика: доля funnel_email_submit от funnel_start. Защитная: доля открытий оплаты от тех, кто оставил почту. Объём на вариант, чтобы увидеть рост почты на 5 процентных пунктов: {need_email if need_email else 'нет данных'} человек. При текущем темпе {per_day:.1f} старта в день со стартом это около {days_need if days_need else 'нет данных'} дней на один вариант. Трафика на тест короче месяца не хватает.</p>
-</div>
-<div class="card">
-<h3>Гипотеза 2. После открытия оплаты нечего купить по цене США</h3>
-<p>Факт: открытий оплаты {esc(n_of(us.get('checkout_n'), started))}, покупок {esc(n_of(us.get('purchase_n'), started))}, строк Primer на $1 и $39.90 нет. Гипотеза: на пейволле выложена другая цена или кнопка не создаёт платёж.</p>
-<p>Вариант: выложить заявленные $1 и $39.90 и записать цену в событие. Метрика: funnel_purchase_success и Primer SETTLED на 100 и 3990 центов. Защитная: доля отказов primer_payment. Объём не считается: базовая покупка 0, формула доли от нуля не даёт срок. Сначала нужно получить хотя бы первые покупки.</p>
-</div>
-<div class="card">
-<h3>Гипотеза 3. Вход ломается на письме со ссылкой</h3>
-<p>Факт из записей 17.11: 5 из 7 остались на почте. Гипотеза: magic link не доводит до приложения.</p>
-<p>Вариант: /auto-login сразу после оплаты, без отдельного письма. Метрика: доля login или app_opened среди оставивших почту. Защитная: доля ошибок входа. Сейчас оставивших почту {email_n}. Это меньше 30, тест на этой воронке не набрать, пока почту не оставляют хотя бы десятки людей в неделю.</p>
-</div>
-</section>
-
-<section id="questions">
-<p class="eyebrow">10. Открытые вопросы</p>
-<h2>Кому что выяснить</h2>
-<div class="card"><h3>Диме</h3>
-<ul class="list">
-<li>Сколько людей и из какого источника пришло на воронку США с 11.11? В PostHog старт есть, источник трафика этим скриптом не разбирался.</li>
-<li>Какая цена должна быть на пейволле: $1 затем $39.90, или 19.99 и 29.99, которые видны в Primer до 11.11?</li>
-<li>Воронка США точно отдана в трафик, и это /ai-stilist-week-web?</li>
-</ul></div>
-<div class="card"><h3>Дане</h3>
-<ul class="list">
-<li>Почему screen_id расходится с pathname у {esc(n_of(mismatch.get('mismatch_nested'), mismatch.get('events')))} событий?</li>
-<li>Почему у четырёх открытий оплаты нет primer_payment и нет funnel_purchase_success?</li>
-<li>Куда делся /auto-login и почему login и app_opened не приходят вместе?</li>
-</ul></div>
-<div class="card"><h3>Кате</h3>
-<p>Решение нужно, только если Дима подтвердит, что трафик США уже идёт, а цены $1 и $39.90 так и не появились к следующей неделе. Тогда вопрос: останавливать трафик до починки оплаты или нет. Сейчас для этого решения не хватает ответа Димы об объёме.</p></div>
-</section>
-
-<section id="limits">
-<p class="eyebrow">Ограничения</p>
-<h2>Чего в числах нет</h2>
-<ul class="list">
-<li>Кадры записей за 18.11 заново не разбирались. Выводы про 5 из 7, 34 секунды и «link has expired» взяты из аудита 17.11.</li>
-<li>Файл rules/report-style.md в репозитории не найден. Оформление повторяет персиковую палитру FoxIQ v4.23: без подсказок при наведении и без свёрнутых блоков.</li>
-<li>Источник трафика и показы рекламы: нет данных в этом скрипте.</li>
-<li>Если запрос к FoxIQ или Azora падал, в таблице сравнения стоит «нет данных».</li>
-</ul>
-</section>
-</div>
-</body></html>
-"""
-    return html_doc
+<div class="card"><h3>Дане — по приоритету</h3><ol class="priority"><li><b>Платёж:</b> выяснить, почему у {n_of(checkout_n, started)} открытий оплаты нет primer_payment; проверить цены США.</li><li><b>Разметка и тесты:</b> выяснить расхождение screen_id и pathname у {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий; проверить, все ли тестеры помечены и не попал ли /preview/ 18.11 в живые данные.</li><li><b>Вход:</b> проверить Network Error и событие работающего автологина; по 3 записям с «Check your inbox» склеить последующий /magic-link-login по email, не считая ожидание письма зависанием.</li><li><b>Онбординг:</b> убрать дубли и возврат с шага 7 на 2; проверить генерацию капсулы.</li><li><b>Подписка:</b> is_test на персоне и причина subscription_cancelled.</li></ol></div></section>
+</main></body></html>"""
 
 
 def render_md(data: dict) -> str:
     us = data["us"]
-    return f"""# Как считали разбор Robella, 18.11.2026
+    started = _n(us.get("started"))
+    email_n = _n(us.get("email_n"))
+    checkout_n = _n(us.get("checkout_n"))
+    purchase_n = _n(us.get("purchase_n"))
+    path = data.get("path") or {row["step"]: row for row in data.get("path_rows") or []}
+    sid = data.get("sid") or {row["step"]: row for row in data.get("sid_rows") or []}
+    mismatch = data.get("mismatch") or {}
+    overlap = data.get("overlap") or {}
+    primer = data["primer"]
+    buyers = data.get("buyers") or []
+    renewed = sum(1 for row in buyers if _n(row.get("renews")) > 0)
+    cancelled = sum(1 for row in buyers if _n(row.get("renews")) == 0 and _n(row.get("cancels")) > 0)
+    untouched = len(buyers) - renewed - cancelled
+    daily = _checkout_daily(data)
+    daily_sum = sum(item["open"] for item in daily.values())
+    preview_n = _preview_count(data)
+    compare = data.get("compare") or {}
+    fox = compare.get("foxiq") or {}
+    az = compare.get("azora") or {}
 
-Числа в HTML считал `scripts/robella-analysis.py`, не вручную. Ключ PostHog в файлы не пишется.
+    primer_declined = _n(primer.get("declined"))
+    primer_renew = sum(_n(row.get("n")) for row in primer.get("by_day") or [] if row.get("init") == "mit" and row.get("status") == "SETTLED")
+    primer_first = _n(primer.get("settled_cit"))
+    primer_total = _n(primer.get("rows"))
+    primer_check = primer_first + primer_renew + primer_declined
 
-## Период
+    return f"""# Методика продуктового разбора Robella, 18.11.2026
 
-- Верхняя граница: события с `timestamp < 2026-11-18 21:00:00` UTC, это 19.11.2026 00:00 МСК. В отчёте период заканчивается 18.11.2026 23:59 МСК.
-- Начало всего срока: первое событие с project robella, robella_ff или robella_landing. В этом прогоне: {data['scope'].get('first_ts')}.
-- Окно воронки США: `timestamp >= 2026-11-10 21:00:00` и та же верхняя граница. Это 11.11.2026 00:00 МСК — 18.11.2026 23:59 МСК.
+Расчёты выполняет `scripts/robella-analysis.py`; HTML собирается тем же скриптом. Почты, distinct_id, токены и ключ PostHog в файлы не выносятся. ClickUp не используется.
 
-## Кто исключён
+## 1. Источники и периоды
 
-Человек исключён целиком, если на любом его событии до верхней границы есть одно из:
+- PostHog, проект 1: свойства `project = robella_ff`, `robella`, `robella_landing`. Люди — `person_id`, не события.
+- Primer: дескриптор или metadata с `robella`; файл — {primer['file_rows']} платежей всех продуктов, {msk(primer.get('first'))} — {msk(primer.get('last'))} МСК. Строк Robella: {primer_total}.
+- Записи: 7 не-тестовых снимков 12.11–17.11, разобранных в аудите `reports/robella-posthog-audit-2026-11-17.md`. Кадры 18.11 заново не разбирались.
+- Весь срок: {data['period_full']}. Первое событие в выгрузке: `{data['scope'].get('first_ts')}`.
+- Окно США: `timestamp >= 2026-11-10 21:00:00` и `< 2026-11-18 21:00:00` UTC, то есть {PERIOD_US}.
+- Весь срок после фильтра: воронку начали {data['full'].get('started')} из {data['full'].get('started')}, почту оставили {n_of(data['full'].get('email_n'), data['full'].get('started'))}, оплату открыли {n_of(data['full'].get('checkout_n'), data['full'].get('started'))}, покупку воронки — {n_of(data['full'].get('purchase_n'), data['full'].get('started'))}. Веб-событие приложения — {n_of(data['full'].get('app_web'), data['full'].get('people'))} всех людей Robella; лендинг — {n_of(data['full'].get('landing'), data['full'].get('people'))}.
 
-- `properties.is_test` или `person.properties.is_test` равно true или 1;
-- почта персоны или distinct_id подходит под шаблон `+`, gox-media, yandex, test, example, mailinator, eevakenn, nedvedyea.
+## 2. Исключение тестовых
 
-Исключено людей: {data['excluded']}. В HTML их почты нет.
+Человек исключён целиком, если хотя бы на одном событии до верхней границы:
 
-## Воронка
+- `properties.is_test` или `person.properties.is_test` равно true/1;
+- почта персоны или distinct_id содержит шаблон аудита: `+`, gox-media, yandex, test, example, mailinator, eevakenn, nedvedyea.
 
-- Знаменатель — `uniq(person_id)` события `funnel_start`, project `robella_ff`.
-- Путь: последний сегмент `$pathname`. Корень `/ai-stilist-week-web` записан как intro.
-- Порядок строк в HTML — последовательность четырёх людей, дошедших до оплаты, по событиям, где последний сегмент пути совпал с screen_id. Средний ранг по всем людям этой последовательности не даёт: URL иногда раньше имени экрана.
-- screen_id считается отдельно. Обрыв age_group → social_proof сравнивается в обеих версиях.
-- Расхождение — событие `funnel_screen_open`, у которого последний сегмент пути не пустой, не равен корню и не равен screen_id.
+Исключено людей за весь срок: {data['excluded']}. Дополнительно исключаются `environment = dev`, если такое свойство появится.
 
-## Оплата
+**Проверка 18.11:** {n_of(preview_n, checkout_n)} открытий оплаты имеет путь `/preview/`. Исходный фильтр аудита его не исключает, поэтому базовые числа оставлены без изменения: {started} стартов, {email_n} почт, {checkout_n} открытий оплаты. Это не подтверждённый живой трафик; вопрос тестировщикам вынесен в HTML. Нельзя молча считать такой проход покупкой или живым пользователем.
 
-- Primer: строка Robella, если в metadata или statementDescriptor есть «robella». Суммы в файле в центах: 100 = $1, 3990 = $39.90, 1999 = $19.99.
-- PostHog: `funnel_checkout_open`, `funnel_purchase_success`, `primer_payment`, `subscription_started`.
-- Открытия оплаты — это люди с `funnel_checkout_open` в окне США. Их события выгружаются списком без person_id.
+## 3. Воронка
 
-## Сравнение
+- Знаменатель: уникальные люди с `funnel_start`, `project = robella_ff`, окно США: {started} из {started}.
+- Шаг по pathname: последний сегмент `$pathname`; корень `/ai-stilist-week-web` обозначен `intro`.
+- Шаг по screen_id: `properties.screen_id`. Две версии считаются независимо; это «открыли экран хотя бы раз», не строгая последовательность.
+- Основная проверка: pathname age_group {n_of((path.get('age_group') or {}).get('people'), started)}, social_proof {n_of((path.get('social_proof') or {}).get('people'), started)}, main_goals {n_of((path.get('main_goals') or {}).get('people'), started)}.
+- По screen_id: age_group {n_of((sid.get('age_group') or {}).get('people'), started)}, social_proof {n_of((sid.get('social_proof') or {}).get('people'), started)}.
+- У {n_of(overlap.get('goals_without_social'), started)} есть main_goals без pathname social_proof. У {n_of(overlap.get('age_only'), started)} нет ни social_proof, ни main_goals после age_group.
+- Расхождение screen_id и вложенного pathname: {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий `funnel_screen_open`; с корнем intro — {n_of(mismatch.get('mismatch_all'), mismatch.get('events'))}.
+- Вывод ограничен: главный обрыв виден, но его точное место не установлено, пока разметка расходится. Квиз не сокращаем.
 
-- FoxIQ: {FOX_LABEL}, project foxiq_ff и foxiq, расширенный почтовый фильтр playbook.
-- Azora, Япония: {AZ_LABEL}, воронка azora_ff и страна JP. Приложение Azora в PostHog — project `web`, не отдельное имя azora. iOS (project ios) в колонку не входит.
-- Вход в приложение: сначала та же персона, затем та же почта. В playbook воронка и приложение — разные персоны, поэтому почта честнее. Почты в файл не пишутся, группировка остаётся в запросе.
-- «Ориентир» ставится, если у Robella или у сравниваемого продукта меньше 30 стартов.
+## 4. Оплата
 
-## Объём теста
+- «Открыли оплату»: человек с `funnel_checkout_open` в день МСК.
+- «Оплатили»: человек с `funnel_purchase_success`; сверка — Primer SETTLED первой оплаты. Повторное списание не считается новой покупкой. Промежуточный `primer_payment` любого статуса не рисуется как отдельный этап: это обращение к процессору, а не успешная оплата.
+- По дням открытия суммируются в {daily_sum} из {checkout_n}: расчёт сходится. `primer_payment` после checkout — {n_of(us.get('checkout_and_primer'), checkout_n)}; покупки после checkout — {n_of(us.get('checkout_and_purchase'), checkout_n)}.
+- Primer: первые успешные не-тестовые {n_of(primer_first, primer_total)}, повторные успешные {n_of(primer_renew, primer_total)}, отказы {n_of(primer_declined, primer_total)}. Контрольная сумма: {primer_first} + {primer_renew} + {primer_declined} = {primer_check} из {primer_total}.
+- $1: {n_of(primer.get('trial_1'), primer_total)} строк; $39.90: {n_of(primer.get('month_3990'), primer_total)} строк. Старые цены: $19.99/$29.99, повтор $59.99.
+- Файл Primer заканчивается 17.11 12:28 МСК. После него до 18.11 23:59 МСК в PostHog `primer_payment`: {primer['after_file']['n']} событий, {primer['after_file']['people']} человек.
+- Причина нулевых покупок не установлена: события не различают «другой прайс на пейволле» и «платёж не создан». У paywall свойства price/amount/currency/trial_price/plan пустые.
 
-Два варианта, α = 5% (z = 1,96), мощность 80% (z = 0,84):
+## 5. Вход и первая сессия
 
-n на вариант = (zα + zβ)² × (p1(1−p1) + p2(1−p2)) / (p2−p1)².
+- Источник входа: снимки 7 записей из аудита 17.11. Вошли в продукт 2 из 7; дошли до «Check your inbox» 3 из 7; ушли с формы без запроса письма 2 из 7. Первые три группы взаимоисключающие. Network Error 1 из 7 и истёкшая ссылка 1 из 7 пересекаются с ними.
+- «Check your inbox» — ожидаемый шаг входа в `web.robella.app`, не FunnelFox: человек уходит в почту, а magic link открывает `/magic-link-login` отдельно, часто в новой вкладке и новой записи. Эти 3 записи не считаются зависанием или неудачным входом. Последующий вход надо проверять по email и событиям `/magic-link-login` в других сессиях; такая склейка в разборе не выполнялась.
+- «Signing you in…» длился около 34 секунд у 1 из 7. После «This link has expired» главная открылась у 1 из 7.
+- Веб-заходы в приложение в окне США: {n_of(us.get('app_web'), us.get('app_web'))}. Автологин в продукте уже работает; проблема в измерении: pageview `/auto-login` — {n_of(us.get('autologin'), us.get('app_web'))}. `/auth`: {n_of(us.get('auth_n'), us.get('app_web'))}; `/magic-link-login`: {n_of(us.get('magic_page'), us.get('app_web'))}.
+- Онбординг: начали {n_of(us.get('onb_started'), us.get('app_web'))}, завершили {n_of(us.get('onb_done'), us.get('app_web'))}. Шаги 1–6 удвоены у 1 из 1 начавшего; возврат с шага 7 на шаг 2 виден в 1 из 7 записей.
+- Капсула: {n_of(us.get('capsule'), us.get('app_web'))}; шкаф: {n_of(us.get('closet'), us.get('app_web'))}; примерка: {n_of(us.get('tryon'), us.get('app_web'))}; отчёт: {n_of(us.get('report_n'), us.get('app_web'))}.
 
-Если базовая доля 0, срок не считается.
+## 6. Пять покупателей до 11.11
 
-## Что скрипт не делает
+Группы взаимоисключающие с приоритетом «продлили» → «отменили» → «ничего»:
 
-- Не открывает кадры записей. Фразы про 5 из 7, Network Error и истёкшую ссылку перенесены из аудита 17.11 как уже посчитанные по снимкам.
-- Не ходит в ClickUp и не пишет почты.
+- продлили: {n_of(renewed, len(buyers))} с `subscription_renewed`;
+- отменили: {n_of(cancelled, len(buyers))} с `subscription_cancelled`, без продления;
+- ничего: {n_of(untouched, len(buyers))}.
+
+Контрольная сумма: {renewed} + {cancelled} + {untouched} = {renewed + cancelled + untouched} из {len(buyers)}. У двух с отменой позднее `subscription_expired payment_failed` приходит в ту же секунду; по правилу FoxIQ это похоже на отказ банка, а не доказанную самостоятельную отмену. Выборка меньше 30 — только ориентир.
+
+## 7. Сравнение с FoxIQ и Azora
+
+- Robella: {PERIOD_US}; старт {started}, почта {email_n}, checkout {checkout_n}, вход по той же почте {n_of(us.get('email_and_app'), email_n)}.
+- FoxIQ: {FOX_LABEL}; `foxiq_ff` + `foxiq`, расширенный фильтр тестовых playbook. Старт {fox.get('started')}, почта {n_of(fox.get('email_n'), fox.get('started'))}, checkout {n_of(fox.get('checkout_n'), fox.get('started'))}, вход по почте {n_of(fox.get('email_join_both'), fox.get('email_join_emails'))}.
+- Azora, Япония: {AZ_LABEL}; `azora_ff` + `web`, страна JP, iOS исключена. Старт {az.get('started')}, почта {n_of(az.get('email_n'), az.get('started'))}, checkout {n_of(az.get('checkout_n'), az.get('started'))}, вход по почте {n_of(az.get('email_join_both'), az.get('email_join_emails'))}.
+- Для входа воронка и приложение склеиваются по нормализованной почте; почта в файлы не пишется. Периоды разные, поэтому сравнение — ориентир, не доказательство причинности. Полного списка тестовых Azora нет; применён общий почтовый фильтр.
+
+## 8. Проверки перед выдачей
+
+- Суммы: ежедневные checkout = {daily_sum} из {checkout_n}; Primer = {primer_check} из {primer_total}; ранние покупатели = {renewed + cancelled + untouched} из {len(buyers)}.
+- На каждом столбце есть `N из M`; у каждого раздела указаны период и знаменатель. Штриховка — N < 30, «ориентир» добавлен в сравнении.
+- HTML использует только чистый CSS; JavaScript, внешние библиотеки, шрифты и подсказки при наведении отсутствуют.
+- Узкий экран: двойные графики складываются в одну колонку; таблица багов превращается в карточки с подписями полей; горизонтальная прокрутка и обрезание не нужны.
+- Ограничения: записи 18.11 не разобраны; Primer не покрывает последние 35,5 часа окна; preview 18.11 требует ручной проверки; причины нулевой оплаты и точного обрыва не установлены.
 """
 
 

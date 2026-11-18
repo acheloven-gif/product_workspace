@@ -31,6 +31,8 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 .index { color:var(--accent); font-size:.72rem; font-weight:750; letter-spacing:.12em; }
 .main-points { padding-left:1.25em; display:grid; gap:7px; }
 .main-points li::marker { color:var(--accent); }
+.positive-label { color:var(--good); font-weight:700; }
+.positive-list li::marker { color:var(--good); }
 .caption { margin-top:14px; color:var(--muted); font-size:.83rem; }
 .h-row { display:grid; grid-template-columns:minmax(130px,180px) minmax(0,1fr); gap:14px; padding:10px 0; border-bottom:1px solid var(--line); }
 .h-row:last-child { border-bottom:0; padding-bottom:0; }
@@ -119,7 +121,7 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 </header>
 <section class="card">
   <h2>Главное</h2>
-  <ul class="main-points"><li>Отмены в первый час: <b>63 из 155 (40,6%)</b> против <b>10 из 58 (17,2%)</b>.</li><li>Отмены за 72 часа: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.</li><li>Тренировка в первый час: <b>22 из 155 (14,2%)</b> против <b>13 из 58 (22,4%)</b>.</li></ul>
+  <ul class="main-points"><li>Отмены в первый час: <b>63 из 155 (40,6%)</b> против <b>10 из 58 (17,2%)</b>.</li><li>Отмены за 72 часа: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.</li><li><span class="positive-label">Положительные моменты:</span> результат IQ — <b>100,0%</b>; D2/D3 и занятия в 2+ дня выше; память — <b>18 из 155 (11,6%)</b>.</li></ul>
 </section>
 <section class="card chart-card">
   <div class="card-head"><span class="index">01</span><h2>Покупатели по дням</h2></div>
@@ -874,6 +876,11 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
     <li>Главная может быть путём к кнопке отмены.<span>гипотеза, не подтверждена данными</span></li>
     <li>Серия M могла изменить возвраты.<span>гипотеза, не подтверждена данными</span></li>
   </ul>
+</section>
+<section class="card">
+  <h2>Положительные моменты · без учёта роста трафика</h2>
+  <ul class="compact-list positive-list"><li>Результат IQ увидели <b>155 из 155 (100,0%)</b> против <b>57 из 58 (98,3%)</b>.</li><li>Возвраты выше: D2 — <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>; D3 — <b>6 из 155 (3,9%)</b> против <b>0 из 58 (0,0%)</b>.</li><li>Занятия в 2+ дня: <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>.</li><li>Новый раздел памяти открыли <b>18 из 155 (11,6%)</b> за 72 часа; в прошлой когорте он был закрыт.</li></ul>
+  <p class="caption">Возвраты и регулярные занятия выше, но их абсолютные доли остаются низкими.</p>
 </section>
 <p class="method"><a href="foxiq-cohort-compare-2026-11-09-metodika.md">Методика, определения метрик и проверки до расчётов</a></p>
 </main>

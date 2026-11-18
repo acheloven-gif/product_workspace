@@ -320,10 +320,16 @@ def build_html(data: dict) -> str:
         ("Тренировка в первый час", (after["train_1h"], after["n"]), (before["train_1h"], before["n"]), after["n"] < 30, before["n"] < 30),
     ]
 
+    positive_points = [
+        f"Результат IQ увидели <b>{of(data['sections_72h']['current']['result'], nc)}</b> против <b>{of(data['sections_72h']['previous']['result'], np_)}</b>.",
+        f"Возвраты выше: D2 — <b>{of(cur['visit_d2'], nc)}</b> против <b>{of(prev['visit_d2'], np_)}</b>; D3 — <b>{of(cur['visit_d3'], nc)}</b> против <b>{of(prev['visit_d3'], np_)}</b>.",
+        f"Занятия в 2+ дня: <b>{of(cur['train_days_2plus'], nc)}</b> против <b>{of(prev['train_days_2plus'], np_)}</b>.",
+        f"Новый раздел памяти открыли <b>{of(data['sections_72h']['current']['memory'], nc)}</b> за 72 часа; в прошлой когорте он был закрыт.",
+    ]
     main_points = [
         f"Отмены в первый час: <b>{of(cur['cancel_1h'], nc)}</b> против <b>{of(prev['cancel_1h'], np_)}</b>.",
         f"Отмены за 72 часа: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.",
-        f"Тренировка в первый час: <b>{of(cur['train_1h'], nc)}</b> против <b>{of(prev['train_1h'], np_)}</b>.",
+        f"<span class=\"positive-label\">Положительные моменты:</span> результат IQ — <b>{pct(data['sections_72h']['current']['result'], nc)}</b>; D2/D3 и занятия в 2+ дня выше; память — <b>{of(data['sections_72h']['current']['memory'], nc)}</b>.",
     ]
 
     return f"""<!doctype html>
@@ -359,6 +365,8 @@ h3 {{ color:var(--title); font-size:.92rem; text-align:center; }}
 .index {{ color:var(--accent); font-size:.72rem; font-weight:750; letter-spacing:.12em; }}
 .main-points {{ padding-left:1.25em; display:grid; gap:7px; }}
 .main-points li::marker {{ color:var(--accent); }}
+.positive-label {{ color:var(--good); font-weight:700; }}
+.positive-list li::marker {{ color:var(--good); }}
 .caption {{ margin-top:14px; color:var(--muted); font-size:.83rem; }}
 .h-row {{ display:grid; grid-template-columns:minmax(130px,180px) minmax(0,1fr); gap:14px; padding:10px 0; border-bottom:1px solid var(--line); }}
 .h-row:last-child {{ border-bottom:0; padding-bottom:0; }}
@@ -498,6 +506,11 @@ h3 {{ color:var(--title); font-size:.92rem; text-align:center; }}
     <li>Главная может быть путём к кнопке отмены.<span>гипотеза, не подтверждена данными</span></li>
     <li>Серия M могла изменить возвраты.<span>гипотеза, не подтверждена данными</span></li>
   </ul>
+</section>
+<section class="card">
+  <h2>Положительные моменты · без учёта роста трафика</h2>
+  <ul class="compact-list positive-list">{''.join(f'<li>{point}</li>' for point in positive_points)}</ul>
+  <p class="caption">Возвраты и регулярные занятия выше, но их абсолютные доли остаются низкими.</p>
 </section>
 <p class="method"><a href="foxiq-cohort-compare-2026-11-09-metodika.md">Методика, определения метрик и проверки до расчётов</a></p>
 </main>

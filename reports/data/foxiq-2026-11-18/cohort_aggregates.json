@@ -1,0 +1,126 @@
+{
+  "cutoff_msk": "2026-11-18 23:59:59",
+  "weeks": {
+    "previous": {"label": "02.11–08.11", "n": 58},
+    "current": {"label": "09.11–15.11", "n": 155}
+  },
+  "daily_buyers": [
+    ["2026-11-02", 4],
+    ["2026-11-03", 10],
+    ["2026-11-04", 5],
+    ["2026-11-05", 7],
+    ["2026-11-06", 16],
+    ["2026-11-07", 4],
+    ["2026-11-08", 12],
+    ["2026-11-09", 20],
+    ["2026-11-10", 30],
+    ["2026-11-11", 27],
+    ["2026-11-12", 21],
+    ["2026-11-13", 19],
+    ["2026-11-14", 19],
+    ["2026-11-15", 19]
+  ],
+  "daily_events": [
+    ["2026-11-02", 2089, 150],
+    ["2026-11-03", 5122, 239],
+    ["2026-11-04", 5356, 293],
+    ["2026-11-05", 7112, 394],
+    ["2026-11-06", 10335, 456],
+    ["2026-11-07", 6416, 254],
+    ["2026-11-08", 8263, 289],
+    ["2026-11-09", 18854, 582],
+    ["2026-11-10", 21411, 642],
+    ["2026-11-11", 19167, 585],
+    ["2026-11-12", 15233, 593],
+    ["2026-11-13", 15935, 641],
+    ["2026-11-14", 11947, 446],
+    ["2026-11-15", 13049, 481],
+    ["2026-11-16", 5331, 457],
+    ["2026-11-17", 4954, 340],
+    ["2026-11-18", 4461, 243]
+  ],
+  "variants": {
+    "buyers_with_t1_or_t3": 0,
+    "t1_first_utc": "2026-11-13T11:20:28Z",
+    "t3_first_utc": "2026-11-17T12:16:16Z",
+    "live_non_cohort_t1_utc": "2026-11-18T09:35:20Z"
+  },
+  "cohort": {
+    "previous": {
+      "d1_ready": 58, "d2_ready": 58, "d3_ready": 58,
+      "train_1h": 13, "game_1h": 13, "test_1h": 2, "lesson_1h": 6,
+      "nothing_screens_1h": 41, "cancel_1h": 10,
+      "visit_d1": 4, "visit_d2": 1, "visit_d3": 0,
+      "any_train_day": 16, "train_days_2plus": 1, "train_days_3": 0,
+      "people_games": 16, "game_starts": 486,
+      "people_tests": 4, "test_starts": 16,
+      "people_lessons": 7, "lesson_completed": 140,
+      "cancelled": 33,
+      "cancel_lt_1h": 10, "cancel_1h_6h": 3, "cancel_6h_24h": 1,
+      "cancel_1d_3d": 1, "cancel_after_3d": 18,
+      "cancel_no_app": 1, "no_app": 1
+    },
+    "current": {
+      "d1_ready": 155, "d2_ready": 155, "d3_ready": 155,
+      "train_1h": 22, "game_1h": 19, "test_1h": 7, "lesson_1h": 8,
+      "nothing_screens_1h": 119, "cancel_1h": 63,
+      "visit_d1": 11, "visit_d2": 5, "visit_d3": 6,
+      "any_train_day": 28, "train_days_2plus": 5, "train_days_3": 1,
+      "people_games": 24, "game_starts": 364,
+      "people_tests": 11, "test_starts": 28,
+      "people_lessons": 12, "lesson_completed": 151,
+      "cancelled": 85,
+      "cancel_lt_1h": 63, "cancel_1h_6h": 3, "cancel_6h_24h": 6,
+      "cancel_1d_3d": 5, "cancel_after_3d": 8,
+      "cancel_no_app": 0, "no_app": 0
+    }
+  },
+  "first_session": {
+    "previous": {
+      "cancelled": {"n": 33, "train_1h": 6, "game_1h": 6, "test_1h": 2, "lesson_1h": 3, "result_1h": 32, "cert_1h": 18, "home_1h": 16, "left_minute": 8, "had_30m": 32},
+      "kept": {"n": 25, "train_1h": 7, "game_1h": 7, "test_1h": 0, "lesson_1h": 3, "result_1h": 25, "cert_1h": 14, "home_1h": 8, "left_minute": 6, "had_30m": 25}
+    },
+    "current": {
+      "cancelled": {"n": 85, "train_1h": 16, "game_1h": 14, "test_1h": 5, "lesson_1h": 6, "result_1h": 85, "cert_1h": 41, "home_1h": 75, "left_minute": 8, "had_30m": 85},
+      "kept": {"n": 70, "train_1h": 6, "game_1h": 5, "test_1h": 2, "lesson_1h": 2, "result_1h": 69, "cert_1h": 34, "home_1h": 23, "left_minute": 28, "had_30m": 70}
+    }
+  },
+  "sections_72h": {
+    "previous": {"result": 57, "home": 26, "certificate": 24, "games": 16, "profile": 16, "settings": 12, "track": 11, "explore": 10, "tests": 5, "memory": 0, "lessons": 0, "palaces": 0, "plan": 0},
+    "current": {"result": 155, "home": 107, "profile": 74, "settings": 69, "certificate": 45, "games": 24, "track": 19, "memory": 18, "lessons": 17, "tests": 14, "explore": 13, "palaces": 9, "plan": 6}
+  },
+  "certificate_name_72h": {"previous": 31, "current": 66},
+  "iq_result_shown_72h": {"previous": 57, "current": 155},
+  "games_72h": {
+    "previous": [
+      ["fox-memory", 14, 94],
+      ["color-rush", 8, 39],
+      ["nonogram", 6, 43],
+      ["raindrops", 6, 53],
+      ["number-hunt", 5, 36],
+      ["word-forge", 5, 137],
+      ["pattern-matrix", 3, 33],
+      ["fillwords", 3, 18],
+      ["shape-rotate", 3, 14],
+      ["contexto", 2, 6],
+      ["word-guess", 2, 13]
+    ],
+    "current": [
+      ["fox-memory", 21, 141],
+      ["color-rush", 13, 50],
+      ["nonogram", 11, 31],
+      ["number-hunt", 9, 40],
+      ["shape-rotate", 8, 25],
+      ["word-forge", 7, 26],
+      ["raindrops", 7, 29],
+      ["pattern-matrix", 2, 6],
+      ["contexto", 1, 3],
+      ["fillwords", 1, 10],
+      ["word-guess", 1, 3]
+    ]
+  },
+  "monetization": {
+    "previous": {"hearts_page": 0, "hearts_purchase": 0, "coin_purchase": 0, "token_paywall": 0, "paywall_72h": 0, "paywall_to_cutoff": 1, "paywall_placement": "app_entry", "subscription_month_purchase": 0, "brain_score": 0},
+    "current": {"hearts_page": 2, "hearts_purchase": 0, "coin_purchase": 0, "token_paywall": 0, "paywall_72h": 0, "paywall_to_cutoff": 1, "paywall_placement": "paywall", "subscription_month_purchase": 1, "brain_score": 0}
+  }
+}

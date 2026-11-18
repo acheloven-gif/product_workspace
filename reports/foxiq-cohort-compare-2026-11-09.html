@@ -38,7 +38,8 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 .h-label { min-width:0; font-size:.88rem; font-weight:620; overflow-wrap:anywhere; }
 .small-note { display:block; width:max-content; margin-top:3px; color:var(--warn); font-size:.7rem; font-weight:600; }
 .h-bars { min-width:0; display:grid; gap:5px; }
-.bar-line { min-width:0; display:grid; grid-template-columns:minmax(36px,1fr) minmax(124px,148px); gap:10px; align-items:center; }
+.bar-line { min-width:0; display:grid; grid-template-columns:64px minmax(36px,1fr) minmax(124px,148px); gap:10px; align-items:center; }
+.bar-period { color:var(--title); font-size:.72rem; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .track { height:15px; min-width:0; overflow:hidden; border-radius:4px; background:var(--head); }
 .fill { display:block; min-width:0; height:100%; border-radius:4px; background:var(--accent); }
 .fill.previous { background:var(--previous); }
@@ -90,7 +91,8 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   .h-row { grid-template-columns:1fr; gap:7px; padding:11px 0; }
   .h-label { font-size:.84rem; }
   .small-note { display:inline; margin-left:6px; }
-  .bar-line { grid-template-columns:minmax(32px,1fr) 128px; gap:7px; }
+  .bar-line { grid-template-columns:58px minmax(24px,1fr) 124px; gap:7px; }
+  .bar-period { font-size:.67rem; }
   .bar-value { font-size:.69rem; }
   .days { gap:3px; }
   .day-value { font-size:.68rem; }
@@ -203,10 +205,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Тренировка</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:14.194%"></span></div>
       <span class="bar-value">22 из 155 (14,2%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:22.414%"></span></div>
       <span class="bar-value">13 из 58 (22,4%)</span>
     </div>
@@ -216,10 +220,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Игра</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:12.258%"></span></div>
       <span class="bar-value">19 из 155 (12,3%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:22.414%"></span></div>
       <span class="bar-value">13 из 58 (22,4%)</span>
     </div>
@@ -229,10 +235,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Тест</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:4.516%"></span></div>
       <span class="bar-value">7 из 155 (4,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:3.448%"></span></div>
       <span class="bar-value">2 из 58 (3,4%)</span>
     </div>
@@ -242,10 +250,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Урок</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:5.161%"></span></div>
       <span class="bar-value">8 из 155 (5,2%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:10.345%"></span></div>
       <span class="bar-value">6 из 58 (10,3%)</span>
     </div>
@@ -255,10 +265,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Ничего не начали</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:85.806%"></span></div>
       <span class="bar-value">133 из 155 (85,8%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:77.586%"></span></div>
       <span class="bar-value">45 из 58 (77,6%)</span>
     </div>
@@ -268,10 +280,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Отменили в первый час</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:40.645%"></span></div>
       <span class="bar-value">63 из 155 (40,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:17.241%"></span></div>
       <span class="bar-value">10 из 58 (17,2%)</span>
     </div>
@@ -305,10 +319,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Заход D1</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:7.097%"></span></div>
       <span class="bar-value">11 из 155 (7,1%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:6.897%"></span></div>
       <span class="bar-value">4 из 58 (6,9%)</span>
     </div>
@@ -318,10 +334,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Заход D2</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:3.226%"></span></div>
       <span class="bar-value">5 из 155 (3,2%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:1.724%"></span></div>
       <span class="bar-value">1 из 58 (1,7%)</span>
     </div>
@@ -331,10 +349,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Заход D3</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:3.871%"></span></div>
       <span class="bar-value">6 из 155 (3,9%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:0.000%"></span></div>
       <span class="bar-value">0 из 58 (0,0%)</span>
     </div>
@@ -344,10 +364,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">0 дней с занятием</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:81.935%"></span></div>
       <span class="bar-value">127 из 155 (81,9%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:72.414%"></span></div>
       <span class="bar-value">42 из 58 (72,4%)</span>
     </div>
@@ -357,10 +379,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">1 день с занятием</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:14.839%"></span></div>
       <span class="bar-value">23 из 155 (14,8%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:25.862%"></span></div>
       <span class="bar-value">15 из 58 (25,9%)</span>
     </div>
@@ -370,10 +394,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">2 дня с занятием</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:2.581%"></span></div>
       <span class="bar-value">4 из 155 (2,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:1.724%"></span></div>
       <span class="bar-value">1 из 58 (1,7%)</span>
     </div>
@@ -383,10 +409,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">3 дня с занятием</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:0.645%"></span></div>
       <span class="bar-value">1 из 155 (0,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:0.000%"></span></div>
       <span class="bar-value">0 из 58 (0,0%)</span>
     </div>
@@ -400,10 +428,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Результат IQ</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:100.000%"></span></div>
       <span class="bar-value">155 из 155 (100,0%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous" style="width:98.276%"></span></div>
       <span class="bar-value">57 из 58 (98,3%)</span>
     </div>
@@ -413,10 +443,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Главная<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:69.032%"></span></div>
       <span class="bar-value">107 из 155 (69,0%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:44.828%"></span></div>
       <span class="bar-value">26 из 58 (44,8%)</span>
     </div>
@@ -426,10 +458,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Профиль<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:47.742%"></span></div>
       <span class="bar-value">74 из 155 (47,7%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:27.586%"></span></div>
       <span class="bar-value">16 из 58 (27,6%)</span>
     </div>
@@ -439,10 +473,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Настройки<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:44.516%"></span></div>
       <span class="bar-value">69 из 155 (44,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:20.690%"></span></div>
       <span class="bar-value">12 из 58 (20,7%)</span>
     </div>
@@ -452,10 +488,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Сертификат<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current" style="width:29.032%"></span></div>
       <span class="bar-value">45 из 155 (29,0%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:41.379%"></span></div>
       <span class="bar-value">24 из 58 (41,4%)</span>
     </div>
@@ -465,10 +503,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Игры<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:15.484%"></span></div>
       <span class="bar-value">24 из 155 (15,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:27.586%"></span></div>
       <span class="bar-value">16 из 58 (27,6%)</span>
     </div>
@@ -478,10 +518,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Трек<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:12.258%"></span></div>
       <span class="bar-value">19 из 155 (12,3%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:18.966%"></span></div>
       <span class="bar-value">11 из 58 (19,0%)</span>
     </div>
@@ -491,10 +533,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Обзор<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:8.387%"></span></div>
       <span class="bar-value">13 из 155 (8,4%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:17.241%"></span></div>
       <span class="bar-value">10 из 58 (17,2%)</span>
     </div>
@@ -504,10 +548,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Тесты<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:9.032%"></span></div>
       <span class="bar-value">14 из 155 (9,0%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:8.621%"></span></div>
       <span class="bar-value">5 из 58 (8,6%)</span>
     </div>
@@ -517,10 +563,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Память<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:11.613%"></span></div>
       <span class="bar-value">18 из 155 (11,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:0.000%"></span></div>
       <span class="bar-value">0 из 58 (0,0%)</span>
     </div>
@@ -534,10 +582,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">fox-memory<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:13.548%"></span></div>
       <span class="bar-value">21 из 155 (13,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:24.138%"></span></div>
       <span class="bar-value">14 из 58 (24,1%)</span>
     </div>
@@ -547,10 +597,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">color-rush<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:8.387%"></span></div>
       <span class="bar-value">13 из 155 (8,4%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:13.793%"></span></div>
       <span class="bar-value">8 из 58 (13,8%)</span>
     </div>
@@ -560,10 +612,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">nonogram<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:7.097%"></span></div>
       <span class="bar-value">11 из 155 (7,1%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:10.345%"></span></div>
       <span class="bar-value">6 из 58 (10,3%)</span>
     </div>
@@ -573,10 +627,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">number-hunt<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:5.806%"></span></div>
       <span class="bar-value">9 из 155 (5,8%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:8.621%"></span></div>
       <span class="bar-value">5 из 58 (8,6%)</span>
     </div>
@@ -586,10 +642,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">shape-rotate<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:5.161%"></span></div>
       <span class="bar-value">8 из 155 (5,2%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:5.172%"></span></div>
       <span class="bar-value">3 из 58 (5,2%)</span>
     </div>
@@ -599,10 +657,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">word-forge<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:4.516%"></span></div>
       <span class="bar-value">7 из 155 (4,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:8.621%"></span></div>
       <span class="bar-value">5 из 58 (8,6%)</span>
     </div>
@@ -612,10 +672,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">raindrops<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:4.516%"></span></div>
       <span class="bar-value">7 из 155 (4,5%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:10.345%"></span></div>
       <span class="bar-value">6 из 58 (10,3%)</span>
     </div>
@@ -625,10 +687,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">pattern-matrix<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:1.290%"></span></div>
       <span class="bar-value">2 из 155 (1,3%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:5.172%"></span></div>
       <span class="bar-value">3 из 58 (5,2%)</span>
     </div>
@@ -638,10 +702,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">contexto<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:0.645%"></span></div>
       <span class="bar-value">1 из 155 (0,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:3.448%"></span></div>
       <span class="bar-value">2 из 58 (3,4%)</span>
     </div>
@@ -651,10 +717,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">fillwords<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:0.645%"></span></div>
       <span class="bar-value">1 из 155 (0,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:5.172%"></span></div>
       <span class="bar-value">3 из 58 (5,2%)</span>
     </div>
@@ -664,10 +732,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">word-guess<span class="small-note">мало данных</span></div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">09–15.11</span>
       <div class="track"><span class="fill current hatched" style="width:0.645%"></span></div>
       <span class="bar-value">1 из 155 (0,6%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:3.448%"></span></div>
       <span class="bar-value">2 из 58 (3,4%)</span>
     </div>
@@ -682,10 +752,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Отмена в первый час</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">11–15.11</span>
       <div class="track"><span class="fill current" style="width:44.762%"></span></div>
       <span class="bar-value">47 из 105 (44,8%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">09–10.11</span>
       <div class="track"><span class="fill previous" style="width:32.000%"></span></div>
       <span class="bar-value">16 из 50 (32,0%)</span>
     </div>
@@ -695,10 +767,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Отмена за 72 часа</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">11–15.11</span>
       <div class="track"><span class="fill current" style="width:56.190%"></span></div>
       <span class="bar-value">59 из 105 (56,2%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">09–10.11</span>
       <div class="track"><span class="fill previous" style="width:36.000%"></span></div>
       <span class="bar-value">18 из 50 (36,0%)</span>
     </div>
@@ -708,10 +782,12 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
   <div class="h-label">Тренировка в первый час</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">11–15.11</span>
       <div class="track"><span class="fill current" style="width:14.286%"></span></div>
       <span class="bar-value">15 из 105 (14,3%)</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">09–10.11</span>
       <div class="track"><span class="fill previous" style="width:14.000%"></span></div>
       <span class="bar-value">7 из 50 (14,0%)</span>
     </div>

@@ -32,6 +32,7 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 .main-points { padding-left:1.25em; display:grid; gap:7px; }
 .main-points li::marker { color:var(--accent); }
 .positive-label { color:var(--good); font-weight:700; }
+.negative { color:var(--problem); }
 .positive-list li::marker { color:var(--good); }
 .caption { margin-top:14px; color:var(--muted); font-size:.83rem; }
 .h-row { display:grid; grid-template-columns:minmax(130px,180px) minmax(0,1fr); gap:14px; padding:10px 0; border-bottom:1px solid var(--line); }
@@ -121,7 +122,7 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 </header>
 <section class="card">
   <h2>Главное</h2>
-  <ul class="main-points"><li>Отмены в первый час <b>выросли на 135,7%</b>: <b>63 из 155 (40,6%)</b> против <b>10 из 58 (17,2%)</b>.</li><li>Отмены за 72 часа <b>выросли на 92,1%</b>: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.</li><li><span class="positive-label">Положительные моменты:</span> результат IQ <b>вырос на 1,8%</b>; D2 <b>выросли на 87,1%</b>; занятия в 2+ дня <b>выросли на 87,1%</b>; D3 — с 0 до <b>3,9%</b>; память — <b>11,6%</b>.</li></ul>
+  <ul class="main-points"><li>Отмены в первый час <b class="negative">выросли на 23,4 п. п.</b>: <b>63 из 155 (40,6%)</b> против <b>10 из 58 (17,2%)</b>.</li><li>Отмены за 72 часа <b class="negative">выросли на 23,8 п. п.</b>: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.</li><li><span class="positive-label">Положительные моменты:</span> результат IQ <b>вырос на 1,7 п. п.</b>; D2 <b>выросли на 1,5 п. п.</b>; занятия в 2+ дня <b>выросли на 1,5 п. п.</b>; D3 <b>выросли на 3,9 п. п.</b>; память — <b>11,6%</b>.</li></ul>
 </section>
 <section class="card chart-card">
   <div class="card-head"><span class="index">01</span><h2>Покупатели по дням</h2></div>
@@ -666,7 +667,7 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
     <div class="bar-line">
       <span class="bar-period">02–08.11</span>
       <div class="track"><span class="fill previous hatched" style="width:8.621%"></span></div>
-      <span class="bar-value">5 из 58 (8,6%)</span>
+      <span class="bar-value">5 из 58 (5,2%)</span>
     </div>
   </div>
 </div>
@@ -878,7 +879,7 @@ h3 { color:var(--title); font-size:.92rem; text-align:center; }
 </section>
 <section class="card">
   <h2>Положительные моменты · без учёта роста трафика</h2>
-  <ul class="compact-list positive-list"><li>Доля увидевших результат IQ <b>выросла на 1,8%</b>: <b>155 из 155 (100,0%)</b> против <b>57 из 58 (98,3%)</b>.</li><li>Возвраты D2 <b>выросли на 87,1%</b>: <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>; D3 — с <b>0 из 58 (0,0%)</b> до <b>6 из 155 (3,9%)</b> (при нулевой базе рост в % не считаем).</li><li>Доля занимавшихся в 2+ дня <b>выросла на 87,1%</b>: <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>.</li><li>Новый раздел памяти открыли <b>18 из 155 (11,6%)</b> за 72 часа; в прошлой когорте он был закрыт, поэтому рост в % не сравниваем.</li></ul>
+  <ul class="compact-list positive-list"><li>Доля увидевших результат IQ <b>выросла на 1,7 п. п.</b>: <b>155 из 155 (100,0%)</b> против <b>57 из 58 (98,3%)</b>.</li><li>Возвраты D2 <b>выросли на 1,5 п. п.</b>: <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>; D3 <b>выросли на 3,9 п. п.</b>: <b>6 из 155 (3,9%)</b> против <b>0 из 58 (0,0%)</b>.</li><li>Доля занимавшихся в 2+ дня <b>выросла на 1,5 п. п.</b>: <b>5 из 155 (3,2%)</b> против <b>1 из 58 (1,7%)</b>.</li><li>Новый раздел памяти открыли <b>18 из 155 (11,6%)</b> за 72 часа; в прошлой когорте он был закрыт.</li></ul>
   <p class="caption">Возвраты и регулярные занятия выше, но их абсолютные доли остаются низкими.</p>
 </section>
 <p class="method"><a href="foxiq-cohort-compare-2026-11-09-metodika.md">Методика, определения метрик и проверки до расчётов</a></p>

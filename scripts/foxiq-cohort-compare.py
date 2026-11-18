@@ -166,9 +166,10 @@ def fill_class(period: str, small: bool = False) -> str:
     return f"fill {period}" + (" hatched" if small else "")
 
 
-def pair_bars(rows: list[tuple]) -> str:
+def pair_bars(rows: list[tuple], period_labels: tuple[str, str] = ("09–15.11", "02–08.11")) -> str:
     """Rows: label, current n/m, previous n/m, current small, previous small."""
     output = []
+    current_label, previous_label = period_labels
     for label, cur, prev, small_c, small_p in rows:
         nc, mc = cur
         np_, mp = prev
@@ -178,10 +179,12 @@ def pair_bars(rows: list[tuple]) -> str:
   <div class="h-label">{html.escape(label)}{note}</div>
   <div class="h-bars">
     <div class="bar-line">
+      <span class="bar-period">{current_label}</span>
       <div class="track"><span class="{fill_class('current', small_c)}" style="width:{nc / mc * 100 if mc else 0:.3f}%"></span></div>
       <span class="bar-value">{html.escape(of(nc, mc))}</span>
     </div>
     <div class="bar-line">
+      <span class="bar-period">{previous_label}</span>
       <div class="track"><span class="{fill_class('previous', small_p)}" style="width:{np_ / mp * 100 if mp else 0:.3f}%"></span></div>
       <span class="bar-value">{html.escape(of(np_, mp))}</span>
     </div>
@@ -363,7 +366,8 @@ h3 {{ color:var(--title); font-size:.92rem; text-align:center; }}
 .h-label {{ min-width:0; font-size:.88rem; font-weight:620; overflow-wrap:anywhere; }}
 .small-note {{ display:block; width:max-content; margin-top:3px; color:var(--warn); font-size:.7rem; font-weight:600; }}
 .h-bars {{ min-width:0; display:grid; gap:5px; }}
-.bar-line {{ min-width:0; display:grid; grid-template-columns:minmax(36px,1fr) minmax(124px,148px); gap:10px; align-items:center; }}
+.bar-line {{ min-width:0; display:grid; grid-template-columns:64px minmax(36px,1fr) minmax(124px,148px); gap:10px; align-items:center; }}
+.bar-period {{ color:var(--title); font-size:.72rem; font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }}
 .track {{ height:15px; min-width:0; overflow:hidden; border-radius:4px; background:var(--head); }}
 .fill {{ display:block; min-width:0; height:100%; border-radius:4px; background:var(--accent); }}
 .fill.previous {{ background:var(--previous); }}
@@ -415,7 +419,8 @@ h3 {{ color:var(--title); font-size:.92rem; text-align:center; }}
   .h-row {{ grid-template-columns:1fr; gap:7px; padding:11px 0; }}
   .h-label {{ font-size:.84rem; }}
   .small-note {{ display:inline; margin-left:6px; }}
-  .bar-line {{ grid-template-columns:minmax(32px,1fr) 128px; gap:7px; }}
+  .bar-line {{ grid-template-columns:58px minmax(24px,1fr) 124px; gap:7px; }}
+  .bar-period {{ font-size:.67rem; }}
   .bar-value {{ font-size:.69rem; }}
   .days {{ gap:3px; }}
   .day-value {{ font-size:.68rem; }}
@@ -471,7 +476,7 @@ h3 {{ color:var(--title); font-size:.92rem; text-align:center; }}
 <section class="card chart-card">
   <div class="card-head"><span class="index">07</span><h2>До и после кнопки отмены с 11.11</h2></div>
   <div class="split-legend"><span><i class="swatch"></i>11–15.11: 105</span><span><i class="swatch previous"></i>09–10.11: 50</span></div>
-  {pair_bars(button_rows)}
+  {pair_bars(button_rows, ("11–15.11", "09–10.11"))}
 </section>
 <section class="card chart-card">
   <div class="card-head"><span class="index">08</span><h2>Первая сессия · первый час</h2></div>

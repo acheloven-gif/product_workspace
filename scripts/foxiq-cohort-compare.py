@@ -34,20 +34,21 @@ def of(n: int, m: int) -> str:
     return f"{n} из {m} ({pct(n, m)})"
 
 
-def relative_change(n: int, m: int, previous_n: int, previous_m: int) -> float | None:
-    if m <= 0 or previous_m <= 0 or previous_n == 0:
+def percentage_point_change(n: int, m: int, previous_n: int, previous_m: int) -> float | None:
+    if m <= 0 or previous_m <= 0:
         return None
-    return ((n / m) / (previous_n / previous_m) - 1) * 100
+    return (n / m - previous_n / previous_m) * 100
 
 
 def trend(n: int, m: int, previous_n: int, previous_m: int, up: str = "выросли", down: str = "упали") -> str:
-    change = relative_change(n, m, previous_n, previous_m)
+    change = percentage_point_change(n, m, previous_n, previous_m)
     if change is None:
         return "нет базы для сравнения"
     if abs(change) < 0.05:
         return "не изменились"
     verb = up if change > 0 else down
-    return f"{verb} на {abs(change):.1f}%".replace(".", ",")
+    value = f"{abs(change):.1f}".replace(".", ",")
+    return f"{verb} на {value} п. п."
 
 
 def load() -> dict:
@@ -341,14 +342,14 @@ def build_html(data: dict) -> str:
     memory_current = data['sections_72h']['current']['memory']
     positive_points = [
         f"Доля увидевших результат IQ <b>{trend(result_current, nc, result_previous, np_, 'выросла', 'упала')}</b>: <b>{of(result_current, nc)}</b> против <b>{of(result_previous, np_)}</b>.",
-        f"Возвраты D2 <b>{trend(cur['visit_d2'], nc, prev['visit_d2'], np_)}</b>: <b>{of(cur['visit_d2'], nc)}</b> против <b>{of(prev['visit_d2'], np_)}</b>; D3 — с <b>{of(prev['visit_d3'], np_)}</b> до <b>{of(cur['visit_d3'], nc)}</b> (при нулевой базе рост в % не считаем).",
+        f"Возвраты D2 <b>{trend(cur['visit_d2'], nc, prev['visit_d2'], np_)}</b>: <b>{of(cur['visit_d2'], nc)}</b> против <b>{of(prev['visit_d2'], np_)}</b>; D3 <b>{trend(cur['visit_d3'], nc, prev['visit_d3'], np_)}</b>: <b>{of(cur['visit_d3'], nc)}</b> против <b>{of(prev['visit_d3'], np_)}</b>.",
         f"Доля занимавшихся в 2+ дня <b>{trend(cur['train_days_2plus'], nc, prev['train_days_2plus'], np_, 'выросла', 'упала')}</b>: <b>{of(cur['train_days_2plus'], nc)}</b> против <b>{of(prev['train_days_2plus'], np_)}</b>.",
-        f"Новый раздел памяти открыли <b>{of(memory_current, nc)}</b> за 72 часа; в прошлой когорте он был закрыт, поэтому рост в % не сравниваем.",
+        f"Новый раздел памяти открыли <b>{of(memory_current, nc)}</b> за 72 часа; в прошлой когорте он был закрыт.",
     ]
     main_points = [
         f"Отмены в первый час <b class=\"negative\">{trend(cur['cancel_1h'], nc, prev['cancel_1h'], np_)}</b>: <b>{of(cur['cancel_1h'], nc)}</b> против <b>{of(prev['cancel_1h'], np_)}</b>.",
         f"Отмены за 72 часа <b class=\"negative\">{trend(77, nc, 15, np_)}</b>: <b>77 из 155 (49,7%)</b> против <b>15 из 58 (25,9%)</b>.",
-        f"<span class=\"positive-label\">Положительные моменты:</span> результат IQ <b>{trend(result_current, nc, result_previous, np_, 'вырос', 'упал')}</b>; D2 <b>{trend(cur['visit_d2'], nc, prev['visit_d2'], np_)}</b>; занятия в 2+ дня <b>{trend(cur['train_days_2plus'], nc, prev['train_days_2plus'], np_)}</b>; D3 — с 0 до <b>{pct(cur['visit_d3'], nc)}</b>; память — <b>{pct(memory_current, nc)}</b>.",
+        f"<span class=\"positive-label\">Положительные моменты:</span> результат IQ <b>{trend(result_current, nc, result_previous, np_, 'вырос', 'упал')}</b>; D2 <b>{trend(cur['visit_d2'], nc, prev['visit_d2'], np_)}</b>; занятия в 2+ дня <b>{trend(cur['train_days_2plus'], nc, prev['train_days_2plus'], np_)}</b>; D3 <b>{trend(cur['visit_d3'], nc, prev['visit_d3'], np_)}</b>; память — <b>{pct(memory_current, nc)}</b>.",
     ]
 
     return f"""<!doctype html>

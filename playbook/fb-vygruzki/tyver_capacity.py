@@ -43,23 +43,35 @@ def host(i):
     return h[4:] if h.startswith("www.") else h
 def slim(i):
     return {k:i.get(k) for k in ("provider_page_name","impressions_from","impressions_until","countries","first_active_date","last_active_date","is_active","target_url","languages","activity_days_amount")} | {"host":host(i)}
-res = {"window":[D_FROM,D_TO],"kw":{}, "dom":{}}
+import os
+RAW = f"{OUT}/tyver_raw.json"
+res = json.load(open(RAW)) if os.path.exists(RAW) else {"window":[D_FROM,D_TO],"kw":{}, "dom":{}}
+def done(r): return r.get("total") is not None and not r.get("partial")
+def save(): json.dump(res, open(RAW,"w"), ensure_ascii=False)
 base = {"sort_by":"impressions_from","first_appearance":D_FROM,"last_appearance":D_TO,"size":100}
 for prod, kws in KW.items():
     for kw in kws:
-        items=[]; tot=None
+        if done(res["kw"].get(prod,{}).get(kw,{})): continue
+        items=[]; tot=None; bad=False
         for page in (1,2):
             d = get(base | {"search_query": f'"{kw}"', "page":page})
+            if "error" in d: bad=True; break
             tot = d.get("total", tot); items += d["items"]
             if len(d["items"]) < 100: break
-        res["kw"].setdefault(prod,{})[kw] = {"total":tot,"items":[slim(i) for i in items], "views_left": d.get("remainder_views")}
+        if bad:
+            print("STOP: API error", d["error"][:120], flush=True); save(); sys.exit(2)
+        res["kw"].setdefault(prod,{})[kw] = {"total":tot,"items":[slim(i) for i in items], "views_left": d.get("remainder_views")}; save()
         print(prod, kw, tot, len(items), d.get("remainder_views"), flush=True)
 for prod, dom in DOM.items():
-    items=[]; tot=None
+    if done(res["dom"].get(prod,{})): continue
+    items=[]; tot=None; bad=False
     for page in (1,2,3):
         d = get(base | {"domain": dom, "page":page})
+        if "error" in d: bad=True; break
         tot = d.get("total", tot); items += d["items"]
         if len(d["items"]) < 100: break
-    res["dom"][prod] = {"domain":dom,"total":tot,"items":[slim(i) for i in items]}
+    if bad:
+        print("STOP: API error", d["error"][:120], flush=True); save(); sys.exit(2)
+    res["dom"][prod] = {"domain":dom,"total":tot,"items":[slim(i) for i in items]}; save()
     print("DOM", prod, dom, tot, len(items), d.get("remainder_views"), flush=True)
-json.dump(res, open(f"{OUT}/tyver_raw.json","w"), ensure_ascii=False)
+save()

@@ -30,13 +30,16 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_HTML = ROOT / "reports" / "robella-product-analysis-2026-11-18.html"
-OUT_MD = ROOT / "reports" / "robella-product-analysis-2026-11-18-metodika.md"
+OUT_HTML = ROOT / "reports" / "robella-product-analysis-2026-11-20.html"
+OUT_MD = ROOT / "reports" / "robella-product-analysis-2026-11-20-metodika.md"
 API = "https://ph.app-inkfolio-reader.pro/api/projects/1/query/"
 MSK = timezone(timedelta(hours=3))
 END = "2026-11-18 21:00:00"
-US_START = "2026-11-10 21:00:00"
-PERIOD_US = "11.11.2026 00:00 МСК — 18.11.2026 23:59 МСК"
+# 20.11: окно США и «до 11.11» объединены в один период — весь срок Robella (замечание Кати 19.11).
+US_START = "2026-09-30 15:00:00"
+PERIOD_US = "30.09.2026 18:14 МСК — 18.11.2026 23:59 МСК"
+# Записи сессий и склейка magic link — только по окну записей аудита (11–18.11), как в разделе 3.
+REC_START = "2026-11-10 21:00:00"
 PERIOD_END_LABEL = "18.11.2026 23:59 МСК"
 FOX_START, FOX_END = "2026-10-06 21:00:00", "2026-11-11 11:00:00"
 FOX_LABEL = "07.10.2026 00:00 МСК — 11.11.2026 14:00 МСК"
@@ -198,6 +201,7 @@ def step_people(where: str, column_sql: str) -> list:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--primer")
+    parser.add_argument("--primer-json", help="сводка Primer без карт и почт (JSON) вместо исходного CSV")
     parser.add_argument("--magic-links", action="store_true")
     parser.add_argument("--apply-magic-links", action="store_true")
     args = parser.parse_args()
@@ -209,9 +213,9 @@ def main() -> None:
             print("html", OUT_HTML)
             print("md", OUT_MD)
         return
-    if not args.primer:
-        parser.error("укажите --primer, --magic-links или --apply-magic-links")
-    data = compute(Path(args.primer))
+    if not args.primer and not args.primer_json:
+        parser.error("укажите --primer, --primer-json, --magic-links или --apply-magic-links")
+    data = compute(Path(args.primer or args.primer_json))
     OUT_HTML.write_text(render_html(data), encoding="utf-8")
     OUT_MD.write_text(render_md(data), encoding="utf-8")
     print("html", OUT_HTML)
@@ -275,7 +279,7 @@ def _unlinked_magic_candidate(request: dict) -> dict | None:
 
 def magic_link_journeys() -> list:
     """Доказательная склейка по email; близость по времени не засчитывается."""
-    requests = hog(f"""SELECT person_id, toString(timestamp) AS requested_ts, toString(properties.$session_id) AS session_id, toString(properties.$device_id) AS device_id, toString(properties) AS props, toString(person.properties) AS person_props FROM events WHERE event = 'magic_link_requested' AND toString(properties.project) = 'robella' AND toString(properties.$lib) = 'web' AND timestamp >= toDateTime('{US_START}') AND timestamp < toDateTime('{END}') AND {ROB_TEST} ORDER BY timestamp LIMIT 20""")
+    requests = hog(f"""SELECT person_id, toString(timestamp) AS requested_ts, toString(properties.$session_id) AS session_id, toString(properties.$device_id) AS device_id, toString(properties) AS props, toString(person.properties) AS person_props FROM events WHERE event = 'magic_link_requested' AND toString(properties.project) = 'robella' AND toString(properties.$lib) = 'web' AND timestamp >= toDateTime('{REC_START}') AND timestamp < toDateTime('{END}') AND {ROB_TEST} ORDER BY timestamp LIMIT 20""")
     journeys = []
     for index, request in enumerate(requests, start=1):
         result = {"n": index, "requested": msk_sec(request.get("requested_ts")), "email_found": False, "email_source": None}
@@ -388,6 +392,8 @@ def compare_product(ff: str, app: str, start: str, end: str, test_sql: str, extr
 
 
 def read_primer(path: Path) -> dict:
+    if path.suffix.lower() == ".json":
+        return json.loads(path.read_text(encoding="utf-8"))
     rows = []
     total = 0
     first = last = None
@@ -415,7 +421,7 @@ def read_primer(path: Path) -> dict:
 
 
 def early_buyers() -> list:
-    rows = hog(f"""SELECT person_id, minIf(timestamp, event = 'subscription_started') AS started, countIf(event = 'subscription_cancelled') AS cancels, countIf(event = 'subscription_expired') AS expires, countIf(event = 'subscription_renewed') AS renews, countIf(event = 'primer_payment' AND toString(properties.status) = 'settled') AS settled_n, countIf(event = 'primer_payment' AND toString(properties.status) = 'declined') AS declined_n, countIf(toString(properties.$lib) = 'web') AS web_events, uniqIf(toString(properties.$pathname), event = '$pageview' AND toString(properties.$lib) = 'web') AS paths, max(event = 'onboarding_started') AS onb, max(event = 'capsule_opened') AS capsule, max(event = 'login') AS login_n, max(event = 'app_opened') AS opened FROM events WHERE toString(properties.project) = 'robella' AND timestamp < toDateTime('{END}') AND {ROB_TEST} AND person_id IN (SELECT person_id FROM events WHERE event = 'subscription_started' AND toString(properties.project) = 'robella' AND timestamp < toDateTime('{US_START}') AND {ROB_TEST}) GROUP BY person_id ORDER BY started""")
+    rows = hog(f"""SELECT person_id, minIf(timestamp, event = 'subscription_started') AS started, countIf(event = 'subscription_cancelled') AS cancels, countIf(event = 'subscription_expired') AS expires, countIf(event = 'subscription_renewed') AS renews, countIf(event = 'primer_payment' AND toString(properties.status) = 'settled') AS settled_n, countIf(event = 'primer_payment' AND toString(properties.status) = 'declined') AS declined_n, countIf(toString(properties.$lib) = 'web') AS web_events, uniqIf(toString(properties.$pathname), event = '$pageview' AND toString(properties.$lib) = 'web') AS paths, max(event = 'onboarding_started') AS onb, max(event = 'capsule_opened') AS capsule, max(event = 'login') AS login_n, max(event = 'app_opened') AS opened FROM events WHERE toString(properties.project) = 'robella' AND timestamp < toDateTime('{END}') AND {ROB_TEST} AND person_id IN (SELECT person_id FROM events WHERE event = 'subscription_started' AND toString(properties.project) = 'robella' AND timestamp < toDateTime('{END}') AND {ROB_TEST}) GROUP BY person_id ORDER BY started""")
     out = []
     for index, row in enumerate(rows, start=1):
         reasons = hog(f"""SELECT event, toString(properties.reason) AS reason, toString(timestamp) AS ts FROM events WHERE person_id = '{row['person_id']}' AND toString(properties.project) = 'robella' AND (event = 'subscription_cancelled' OR event = 'subscription_expired' OR event = 'subscription_renewed' OR event = 'primer_payment') AND timestamp < toDateTime('{END}') ORDER BY timestamp LIMIT 12""")
@@ -500,7 +506,17 @@ def _funnel_panel(title, rows, order, started):
     return "<div class='chart card'><h3>" + esc(title) + "</h3><div class='bars funnel-bars'>" + _bar_rows(items, started) + "</div></div>"
 
 
+WEEKS = [datetime(2026, 9, 28) + timedelta(days=7 * i) for i in range(8)]
+
+
+def _week_key(day: str) -> str:
+    dt = datetime.strptime(day, "%d.%m.%Y")
+    monday = dt - timedelta(days=dt.weekday())
+    return monday.strftime("%d.%m.%Y")
+
+
 def _checkout_daily(data):
+    """Открытия оплаты и покупки по неделям МСК (пн–вс): с 20.11 период — весь срок."""
     counts = defaultdict(lambda: {"open": 0, "reached": 0, "purchase": 0})
     for story in data.get("checkout") or []:
         day = None
@@ -510,6 +526,7 @@ def _checkout_daily(data):
                 break
         if not day:
             continue
+        day = _week_key(day)
         counts[day]["open"] += 1
         counts[day]["reached"] += 1 if _n(story.get("primer")) > 0 else 0
         counts[day]["purchase"] += 1 if _n(story.get("purchase")) > 0 else 0
@@ -518,7 +535,7 @@ def _checkout_daily(data):
 
 def _checkout_chart(data, started):
     daily = _checkout_daily(data)
-    day_labels = [(datetime(2026, 11, 11) + timedelta(days=i)).strftime("%d.%m.%Y") for i in range(8)]
+    day_labels = [w.strftime("%d.%m.%Y") for w in WEEKS]
     largest = max([1] + [max(daily.get(day, {}).get("open", 0), daily.get(day, {}).get("purchase", 0)) for day in day_labels])
     step = max(1, math.ceil(largest / 4))
     y_max = step * 4
@@ -534,8 +551,9 @@ def _checkout_chart(data, started):
             small = " small" if num < 30 else ""
             bars.append(f"<div class='vbar-slot' style='--bar-height:{height:.2f}%'>" f"{value}<div class='vbar {css_class}{small}' style='height:{height:.2f}%'></div></div>")
         plots.append("<div class='day-plot'>" + "".join(bars) + "</div>")
-        labels.append(f"<div class='day-label'>{day[:5]}</div>")
-    return "<div class='column-chart' role='img' aria-label='Столбчатая диаграмма: открытия оплаты и успешные оплаты по дням'>" f"<div class='y-axis'>{ticks}</div>" + "".join(plots) + "<div class='x-spacer'></div>" + "".join(labels) + "</div>"
+        end = (datetime.strptime(day, "%d.%m.%Y") + timedelta(days=6)).strftime("%d.%m")
+        labels.append(f"<div class='day-label'>{day[:5]}–{end}</div>")
+    return "<div class='column-chart' role='img' aria-label='Столбчатая диаграмма: открытия оплаты и успешные оплаты по неделям'>" f"<div class='y-axis'>{ticks}</div>" + "".join(plots) + "<div class='x-spacer'></div>" + "".join(labels) + "</div>"
 
 
 def _preview_count(data):
@@ -552,7 +570,7 @@ def _preview_note(preview_n, checkout_n, started, email_n):
     if not preview_n:
         return "<p class=\"note\">Проверка трафика: preview-проходов среди открытий оплаты не найдено.</p>"
     production_n = max(0, _n(checkout_n) - _n(preview_n))
-    return f"<p class=\"note\"><b>Проверка трафика: это preview, не живой трафик.</b> {n_of(preview_n, checkout_n)} открытий оплаты 18.11 прошло по /preview/…/main/: полный квиз → email → 2 checkout → purchase_fail. По <a href=\"https://funnelfox.com/docs/editor/publishing\">документации FunnelFox</a> в preview платежи работают в test mode, без реального списания, поэтому purchase_fail здесь нельзя считать отказом живого платежа. Остальные {production_n} checkout шли по /ai-stilist-week-web/. FunnelFox также <a href=\"https://funnelfox.com/docs/dashboard/customers\">не рекомендует использовать preview-профили в аналитике</a>. Базовые {started}/{email_n}/{checkout_n} не пересчитаны: нужен полный фильтр preview по всем шагам.</p>"
+    return f"<p class=\"note\"><b>Проверка трафика: часть открытий оплаты — preview, не живой трафик.</b> {n_of(preview_n, checkout_n)} открытий оплаты прошли по /preview/…/main/ (в том числе тестовая цепочка 18.11: полный квиз → email → 2 checkout → purchase_fail). По <a href=\"https://funnelfox.com/docs/editor/publishing\">документации FunnelFox</a> в preview платежи работают в test mode, без реального списания, поэтому purchase_fail здесь нельзя считать отказом живого платежа. Остальные {production_n} checkout шли по /ai-stilist-week-web/. FunnelFox также <a href=\"https://funnelfox.com/docs/dashboard/customers\">не рекомендует использовать preview-профили в аналитике</a>. Базовые {started}/{email_n}/{checkout_n} не пересчитаны: нужен полный фильтр preview по всем шагам.</p>"
 
 
 def _preview_md(preview_n, checkout_n, started, email_n):
@@ -581,7 +599,14 @@ def _magic_link_html(journeys: list) -> str:
             if not candidate.get("shared_identifiers"):
                 text += " Общих идентификаторов с запросом нет, поэтому цепочка не засчитана."
         items.append(text + "</li>")
-    return "<div class=\"callout\"><b>«Check your inbox» — ожидаемый шаг, а не зависание. Склейка по email выполнена; совпадение только по времени не использовалось.</b><ul>" + "".join(items) + "</ul><p><b>Итог:</b> доказанный возврат после запроса есть у 0 из 1 записи с доступным email; для 2 из 3 итог — нет данных, а не «не вошли».</p></div>"
+    return "<div class=\"callout\"><b>«Check your inbox» — ожидаемый шаг, а не зависание. Склейка по email выполнена; совпадение только по времени не использовалось.</b><ul>" + "".join(items) + f"</ul><p><b>Итог:</b> {_magic_summary(journeys)}</p></div>"
+
+
+def _magic_summary(journeys: list) -> str:
+    total = len(journeys)
+    found = [j for j in journeys if j.get("email_found")]
+    back = sum(1 for j in found if _n(j.get("login_count")) or _n(j.get("app_opened_count")) or _n(j.get("web_events_after")))
+    return f"доказанный возврат после запроса есть у {back} из {len(found)} запросов с доступным email; для {total - len(found)} из {total} итог — нет данных, а не «не вошли»."
 
 
 def _magic_link_md(journeys: list) -> str:
@@ -598,7 +623,7 @@ def _magic_link_md(journeys: list) -> str:
             if not candidate.get("shared_identifiers"):
                 line += " Общих `person_id`, `distinct_id`, `$device_id`, `$session_id`, `$window_id` и `$ip` с запросом нет; цепочка не приписана запросу."
         lines.append(line)
-    lines.append("- Итог склейки: у 1 из 3 email доступен, последующий вход не найден; у 2 из 3 результат неизвестен из-за отсутствия email. В `magic_link_requested` нужно передавать email и сохранять доказательную связь magic-link token с email.")
+    lines.append("- Итог склейки: " + _magic_summary(journeys) + " В `magic_link_requested` нужно передавать email и сохранять доказательную связь magic-link token с email.")
     return "\n".join(lines)
 
 
@@ -644,8 +669,11 @@ def render_html(data: dict) -> str:
     age_sid = _n((sid.get("age_group") or {}).get("people"))
     social_sid = _n((sid.get("social_proof") or {}).get("people"))
     mismatch = data.get("mismatch") or {}
+    overlap = data.get("overlap") or {}
     buyers = data.get("buyers") or []
     buyers_n = len(buyers)
+    buyer_days = sorted(datetime.strptime(str(row["started"])[:10], "%d.%m.%Y") for row in buyers if str(row.get("started") or "")[:2].isdigit())
+    buyers_span = f"{buyer_days[0]:%d.%m}–{buyer_days[-1]:%d.%m}" if buyer_days else "нет данных"
     primer = data["primer"]
     preview_n = _preview_count(data)
     renewed = sum(1 for row in buyers if _n(row.get("renews")) > 0)
@@ -653,7 +681,7 @@ def render_html(data: dict) -> str:
     untouched = buyers_n - renewed - cancelled
     daily_chart = _checkout_chart(data, started)
     login_items = [{"label": "Вошли в продукт", "n": 2, "color": "ok"}, {"label": "Дошли до «Check your inbox»", "n": 3, "color": "accent"}, {"label": "Ушли с формы без запроса письма", "n": 2, "color": "bad"}, {"label": "Network Error", "n": 1, "color": "warn"}, {"label": "Ссылка истекла", "n": 1, "color": "warn"}]
-    first_items = [{"label": "Начали онбординг", "n": us.get("onb_started")}, {"label": "Дошли до шага 7", "n": 1}, {"label": "Завершили онбординг", "n": us.get("onb_done")}, {"label": "Открыли капсулу", "n": us.get("capsule")}, {"label": "Открыли шкаф", "n": us.get("closet")}, {"label": "Примерка", "n": us.get("tryon")}, {"label": "Отчёт", "n": us.get("report_n")}]
+    first_items = [{"label": "Начали онбординг (событие)", "n": us.get("onb_started")}, {"label": "Завершили онбординг", "n": us.get("onb_done")}, {"label": "Открыли капсулу", "n": us.get("capsule")}, {"label": "Открыли шкаф", "n": us.get("closet")}, {"label": "Примерка", "n": us.get("tryon")}, {"label": "Отчёт", "n": us.get("report_n")}]
     early_items = [{"label": "Продлили", "n": renewed, "color": "ok"}, {"label": "Отменили (событие)", "n": cancelled, "color": "bad"}, {"label": "Ничего", "n": untouched, "color": "warn"}]
     compare = data.get("compare") or {}
     fox = compare.get("foxiq") or {}
@@ -668,7 +696,7 @@ def render_html(data: dict) -> str:
     primer_first = _n(primer.get("settled_cit"))
     primer_period = f"{msk(primer.get('first'))} — {msk(primer.get('last'))} МСК"
     css = _report_css()
-    return f"""<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Robella — продуктовый разбор, 18.11.2026</title><style>{css}</style></head><body><main class="wrap"><header><div class="eyebrow">Robella · веб · продуктовый разбор</div><h1>Путь пользователя и оплата</h1><p class="meta">{esc(data['period_full'])} · окно США {PERIOD_US} · люди после фильтра тестов · <a href="robella-product-analysis-2026-11-18-metodika.md">методика и проверки</a></p></header><section><div class="eyebrow">Главное · выводы</div><div class="card summary"><ol><li><b>Главная потеря — до почты:</b> {n_of(started - email_n, started)} не оставили email. Точный экран обрыва не называем, пока разметка расходится.</li><li><b>До продукта доходят единицы:</b> после email веб-заход есть у {n_of(us.get('email_and_app'), email_n)}, покупки после checkout — {n_of(us.get('checkout_and_purchase'), checkout_n)}. Приоритет — разобрать вход и завершение оплаты, а не переписывать квиз вслепую.</li><li><b>Ценность и удержание оценивать рано:</b> онбординг завершили {n_of(us.get('onb_done'), app_web)}, ранних покупателей только {buyers_n}. Сначала нужно дать людям войти и оплатить, затем оценивать капсулы и продления.</li></ol></div></section><section><div class="eyebrow">1 · Воронка по экранам</div><h2>Одна воронка, два несовпадающих измерения</h2><p class="meta">{PERIOD_US} · знаменатель {started} из {started} с funnel_start · штриховка = меньше 30 человек на шаге</p><div class="callout"><b>Как читать две колонки.</b> Это одна и та же воронка, а не две версии продукта. Слева экран определён по адресу URL, справа — по названию screen_id, которое передал разработчик. Обе колонки описывают одних и тех же людей.</div><div class="callout warn"><b>Почему точный обрыв пока не доказан.</b> URL и screen_id расходятся в {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий. Пример: у 7 человек URL уже main_goals, а screen_id всё ещё social_proof. Поэтому обрыв age_group → social_proof получается {n_of(age_path, started)} → {n_of(social_path, started)} по URL и {n_of(age_sid, started)} → {n_of(social_sid, started)} по screen_id. Сначала Дане нужно исправить screen_id и пересчитать воронку; квиз не сокращаем.</div><div class="grid2">{_funnel_panel('По адресу URL (pathname)', path_rows, data.get('step_order') or [], started)}{_funnel_panel('По screen_id разработчика', sid_rows, data.get('step_order') or [], started)}</div></section><section><div class="eyebrow">2 · Оплата</div><h2>Оплата по дням</h2><p class="meta">{PERIOD_US} · ось X — дата, ось Y — люди · знаменатель каждого значения {started} из {started} стартов окна</p><div class="legend"><span><i class="dot"></i>открыли оплату</span><span><i class="dot ok"></i>оплатили</span><span>штриховка = мало данных</span></div><div class="card">{daily_chart}</div><p class="note">Пустые столбцы — 0 из {started}. Успешные оплаты: {n_of(purchase_n, started)} в каждый день окна.</p><div class="callout warn"><b>Причина не установлена.</b> У {n_of(us.get('checkout_and_primer'), checkout_n)} открывших оплату есть primer_payment; в Primer $1 — {n_of(primer.get('trial_1'), primer_total)} строк, $39.90 — {n_of(primer.get('month_3990'), primer_total)}.</div>{_preview_note(preview_n, checkout_n, started, email_n)}<div class="table-wrap"><table><thead><tr><th>Primer, {esc(primer_period)}</th><th>Строк</th></tr></thead><tbody><tr><td>Успешные первые оплаты, не тест</td><td class="num">{n_of(primer_first, primer_total)}</td></tr><tr><td>Повторные успешные списания</td><td class="num">{n_of(primer_renew, primer_total)}</td></tr><tr><td>Отказы, включая 1 тест</td><td class="num">{n_of(primer_declined, primer_total)}</td></tr><tr><td>Триал $1 / подписка $39.90</td><td class="num">{n_of(primer.get('trial_1'), primer_total)} / {n_of(primer.get('month_3990'), primer_total)}</td></tr></tbody></table></div></section><section><div class="eyebrow">3 · Вход в приложение</div><h2>Семь разобранных записей</h2><p class="meta">12.11–17.11 · снимки из аудита 17.11 · знаменатель 7 из 7 · первые три строки разбивают записи, ошибки с ними пересекаются · штриховка = мало данных</p>{_magic_link_html(data.get('magic_links') or [])}<div class="card chart"><div class="bars">{_bar_rows(login_items, 7)}</div></div><p class="note">Network Error: «Signing you in…» около 34 секунд у 1 из 7. После «This link has expired» главная открылась у 1 из 7. Кадры 18.11 заново не разбирались.</p></section><section><div class="eyebrow">4 · Первая сессия</div><h2>Что происходит в продукте</h2><p class="meta">{PERIOD_US} · знаменатель {app_web} из {app_web} с веб-событием приложения · штриховка = меньше 30 человек</p><div class="card chart"><div class="bars">{_bar_rows(first_items, app_web)}</div></div><p class="note">В записи 16.11 после шага 7 был возврат на шаг 2 у 1 из 7 записей; onboarding_step у 1 из {app_web} веб-заходов двоился на шагах 1–6.</p></section><section><div class="eyebrow">5 · Покупатели до 11.11</div><h2>Пять человек <span class="tag">мало данных</span></h2><p class="meta">15.10–28.10 первые оплаты; события до 18.11.2026 23:59 МСК · взаимоисключающие группы: продление → отмена → ничего</p><div class="card chart"><div class="bars">{_bar_rows(early_items, buyers_n)}</div></div><p class="note">У {n_of(cancelled, buyers_n)} есть subscription_cancelled; у обоих позднее в одну секунду subscription_expired payment_failed, поэтому самостоятельная отмена не доказана.</p></section><section><div class="eyebrow">6 · Сравнение</div><h2>Robella против FoxIQ и Azora</h2><p class="meta">Robella {PERIOD_US} · FoxIQ {FOX_LABEL} · Azora {AZ_LABEL} · вход склеен по почте · штриховка и «ориентир» при N &lt; 30</p><div class="legend"><span><i class="dot"></i>Robella</span><span><i class="dot fox"></i>FoxIQ</span><span><i class="dot azora"></i>Azora</span></div><div class="grid2">{''.join(comparison_groups)}</div><p class="note">Периоды разные, поэтому это ориентиры конверсий, не доказательство причины. У Robella вход считается только от {email_n} оставивших почту.</p></section><section><div class="eyebrow">7 · Баги и точки роста</div><h2>Что передать в работу</h2><div class="table-wrap"><table class="bugs"><thead><tr><th>Что видим</th><th>Сколько</th><th>Что предлагаем</th><th>Кому</th></tr></thead><tbody><tr><td>После боевого checkout нет платежа</td><td class="num">{n_of(us.get('checkout_and_primer'), checkout_n - preview_n)} с primer_payment</td><td>Проверить создание платежа и прайс $1/$39.90; preview не считать платёжным отказом</td><td>Даня, Дима</td></tr><tr><td>screen_id расходится с pathname</td><td class="num">{n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий</td><td>Починить разметку, затем пересчитать обрыв</td><td>Даня</td></tr><tr><td>Работающий автологин не виден в аналитике</td><td class="num">{n_of(us.get('autologin'), app_web)} pageview /auto-login</td><td>Починить событие успешного входа, не менять сам автологин</td><td>Даня</td></tr><tr><td>Онбординг не завершён, шаги двоятся</td><td class="num">{n_of(us.get('onb_done'), us.get('onb_started'))} завершили</td><td>Убрать дубли и возврат с шага 7 на 2</td><td>Даня</td></tr><tr><td>Капсула не показала готовый образ</td><td class="num">1 из 7 записей</td><td>Проверить завершение генерации и таймаут</td><td>Даня</td></tr><tr><td>Отмена совпадает с payment_failed</td><td class="num">2 из 5 ранних покупателей</td><td>Не писать user_initiated на отказ банка</td><td>Даня</td></tr></tbody></table></div><div class="card"><h3>Дане — по приоритету</h3><ol class="priority"><li><b>Платёж:</b> выяснить, почему у {n_of(checkout_n - preview_n, started)} боевых открытий оплаты нет primer_payment; проверить цены США. Preview 18.11 не считать живым платёжным отказом.</li><li><b>Разметка и среды:</b> выяснить расхождение screen_id и pathname у {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий; исключить /preview/ из продуктовой аналитики: это тестовая среда FunnelFox, которую фильтр пропустил.</li>{_NEW_DANE}<li><b>Онбординг:</b> убрать дубли и возврат с шага 7 на 2; проверить генерацию капсулы.</li><li><b>Подписка:</b> is_test на персоне и причина subscription_cancelled.</li></ol></div></section></main></body></html>"""
+    return f"""<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Robella — продуктовый разбор, 20.11.2026</title><style>{css}</style></head><body><main class="wrap"><header><div class="eyebrow">Robella · веб · продуктовый разбор</div><h1>Путь пользователя и оплата</h1><p class="meta">{esc(data['period_full'])} · весь срок одним периодом · люди после фильтра тестов · <a href="robella-product-analysis-2026-11-20-metodika.md">методика и проверки</a></p></header><section><div class="eyebrow">Главное · выводы</div><div class="card summary"><ol><li><b>Главная потеря — до почты:</b> {n_of(started - email_n, started)} не оставили email. Точный экран обрыва не называем, пока разметка расходится.</li><li><b>До продукта доходят единицы:</b> после email веб-заход есть у {n_of(us.get('email_and_app'), email_n)}, покупки после checkout — {n_of(us.get('checkout_and_purchase'), checkout_n)}. Приоритет — разобрать вход и завершение оплаты, а не переписывать квиз вслепую.</li><li><b>Ценность и удержание оценивать рано:</b> онбординг завершили {n_of(us.get('onb_done'), app_web)}, покупателей за весь срок — {buyers_n}. Сначала нужно дать людям войти и оплатить, затем оценивать капсулы и продления.</li></ol></div></section><section><div class="eyebrow">1 · Воронка по экранам</div><h2>Одна воронка, два несовпадающих измерения</h2><p class="meta">{PERIOD_US} · знаменатель {started} из {started} с funnel_start · штриховка = меньше 30 человек на шаге</p><div class="callout"><b>Как читать две колонки.</b> Это одна и та же воронка, а не две версии продукта. Слева экран определён по адресу URL, справа — по названию screen_id, которое передал разработчик. Обе колонки описывают одних и тех же людей.</div><div class="callout warn"><b>Почему точный обрыв пока не доказан.</b> За период URL и screen_id расходятся в {n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий. Пример: у {n_of(overlap.get('goals_without_social'), started)} URL уже main_goals, а social_proof по URL не было. Поэтому обрыв age_group → social_proof получается {n_of(age_path, started)} → {n_of(social_path, started)} по URL и {n_of(age_sid, started)} → {n_of(social_sid, started)} по screen_id. Даня исправил screen_id 19.11 (проверено на превью воронки) — обрыв пересчитать на данных после исправления; квиз не сокращаем.</div><div class="grid2">{_funnel_panel('По адресу URL (pathname)', path_rows, data.get('step_order') or [], started)}{_funnel_panel('По screen_id разработчика', sid_rows, data.get('step_order') or [], started)}</div></section><section><div class="eyebrow">2 · Оплата</div><h2>Оплата по неделям</h2><p class="meta">{PERIOD_US} · ось X — неделя (пн–вс, МСК), ось Y — люди · знаменатель каждого значения {started} из {started} стартов за период</p><div class="legend"><span><i class="dot"></i>открыли оплату</span><span><i class="dot ok"></i>оплатили</span><span>штриховка = мало данных</span></div><div class="card">{daily_chart}</div><p class="note">Пустые столбцы — 0 из {started}. Успешные оплаты воронки за весь срок: {n_of(purchase_n, started)}; открыли оплату — {n_of(checkout_n, started)}.</p><div class="callout"><b>Открыть оплату — ещё не попытка заплатить.</b> Платёж в Primer создаётся, только когда человек нажимает «оплатить»; если окно оплаты открыли и закрыли, в Primer ничего не появляется — это не поломка (сверка Кати по Primer, 19.11). primer_payment есть у {n_of(us.get('checkout_and_primer'), checkout_n)} открывших оплату; в Primer $1 — {n_of(primer.get('trial_1'), primer_total)} строк, $39.90 — {n_of(primer.get('month_3990'), primer_total)}.</div>{_preview_note(preview_n, checkout_n, started, email_n)}<div class="table-wrap"><table><thead><tr><th>Primer, {esc(primer_period)}</th><th>Строк</th></tr></thead><tbody><tr><td>Успешные первые оплаты, не тест</td><td class="num">{n_of(primer_first, primer_total)}</td></tr><tr><td>Повторные успешные списания</td><td class="num">{n_of(primer_renew, primer_total)}</td></tr><tr><td>Отказы, включая 1 тест</td><td class="num">{n_of(primer_declined, primer_total)}</td></tr><tr><td>Триал $1 / подписка $39.90</td><td class="num">{n_of(primer.get('trial_1'), primer_total)} / {n_of(primer.get('month_3990'), primer_total)}</td></tr></tbody></table></div></section><section><div class="eyebrow">3 · Вход в приложение</div><h2>Семь разобранных записей</h2><p class="meta">12.11–17.11 · снимки из аудита 17.11 · знаменатель 7 из 7 · первые три строки разбивают записи, ошибки с ними пересекаются · штриховка = мало данных</p>{_magic_link_html(data.get('magic_links') or [])}<div class="card chart"><div class="bars">{_bar_rows(login_items, 7)}</div></div><p class="note">Network Error: «Signing you in…» около 34 секунд у 1 из 7. После «This link has expired» главная открылась у 1 из 7. Кадры 18.11 заново не разбирались.</p></section><section><div class="eyebrow">4 · Первая сессия</div><h2>Что происходит в продукте</h2><p class="meta">{PERIOD_US} · знаменатель {app_web} из {app_web} с веб-событием приложения · штриховка = меньше 30 человек</p><div class="card chart"><div class="bars">{_bar_rows(first_items, app_web)}</div></div><p class="note">Завершивших онбординг ({us.get('onb_done')}) больше, чем начавших ({us.get('onb_started')}): событие onboarding_started приходит не у всех. В записях 12–17.11 после шага 7 был возврат на шаг 2 у 1 из 7 записей, шаги 1–6 двоились у 1 человека.</p></section><section><div class="eyebrow">5 · Покупатели за весь срок</div><h2>{buyers_n} человек <span class="tag">мало данных</span></h2><p class="meta">первые оплаты {buyers_span}; события до 18.11.2026 23:59 МСК · взаимоисключающие группы: продление → отмена → ничего</p><div class="card chart"><div class="bars">{_bar_rows(early_items, buyers_n)}</div></div><p class="note">У {n_of(cancelled, buyers_n)} есть subscription_cancelled; у них в ту же секунду приходит subscription_expired payment_failed, поэтому самостоятельная отмена не доказана.</p></section><section><div class="eyebrow">6 · Сравнение</div><h2>Robella против FoxIQ и Azora</h2><p class="meta">Robella {PERIOD_US} · FoxIQ {FOX_LABEL} · Azora {AZ_LABEL} · вход склеен по почте · штриховка и «ориентир» при N &lt; 30</p><div class="legend"><span><i class="dot"></i>Robella</span><span><i class="dot fox"></i>FoxIQ</span><span><i class="dot azora"></i>Azora</span></div><div class="grid2">{''.join(comparison_groups)}</div><p class="note">Периоды разные, поэтому это ориентиры конверсий, не доказательство причины. У Robella вход считается только от {email_n} оставивших почту.</p></section><section><div class="eyebrow">7 · Баги и точки роста</div><h2>Что передать в работу</h2><div class="table-wrap"><table class="bugs"><thead><tr><th>Что видим</th><th>Сколько</th><th>Что предлагаем</th><th>Кому</th></tr></thead><tbody><tr><td>screen_id расходился с pathname</td><td class="num">{n_of(mismatch.get('mismatch_nested'), mismatch.get('events'))} событий до 19.11</td><td>Исправлено 19.11; пересчитать обрыв на новых данных. По Кате — проверить то же во всех воронках (Azora, Minutka, FoxIQ)</td><td>Даня</td></tr><tr><td>Работающий автологин виден в аналитике не у всех</td><td class="num">{n_of(us.get('autologin'), app_web)} pageview /auto-login</td><td>Починить событие успешного входа, не менять сам автологин</td><td>Даня</td></tr><tr><td>Онбординг: старт теряется, шаги двоятся</td><td class="num">старт {us.get('onb_started')}, завершение {us.get('onb_done')} из {app_web}</td><td>Починить onboarding_started, убрать дубли и возврат с шага 7 на 2</td><td>Даня</td></tr><tr><td>Капсула не показала готовый образ</td><td class="num">1 из 7 записей</td><td>Проверить завершение генерации и таймаут</td><td>Даня</td></tr><tr><td>Отмена совпадает с payment_failed</td><td class="num">{n_of(cancelled, buyers_n)} покупателей</td><td>Не писать user_initiated на отказ банка</td><td>Даня</td></tr></tbody></table></div><div class="card"><h3>Дане — по приоритету</h3><ol class="priority"><li><b>Разметка и среды:</b> screen_id в Robella исправлен 19.11 — проверить то же расхождение во всех воронках (Azora, Minutka, FoxIQ); исключить /preview/ из продуктовой аналитики: это тестовая среда FunnelFox, которую фильтр пропустил.</li>{_NEW_DANE}<li><b>Онбординг:</b> убрать дубли и возврат с шага 7 на 2; проверить генерацию капсулы.</li><li><b>Подписка:</b> is_test на персоне и причина subscription_cancelled.</li></ol></div></section></main></body></html>"""
 
 
 def render_md(data: dict) -> str:
@@ -697,7 +725,7 @@ def render_md(data: dict) -> str:
     primer_first = _n(primer.get("settled_cit"))
     primer_total = _n(primer.get("rows"))
     primer_check = primer_first + primer_renew + primer_declined
-    return f"""# Методика продуктового разбора Robella, 18.11.2026
+    return f"""# Методика продуктового разбора Robella, 20.11.2026
 
 Расчёты выполняет `scripts/robella-analysis.py`; HTML собирается тем же скриптом. Почты, distinct_id, токены и ключ PostHog в файлы не выносятся. ClickUp не используется.
 
@@ -706,7 +734,7 @@ def render_md(data: dict) -> str:
 - Primer: дескриптор или metadata с `robella`; файл — {primer['file_rows']} платежей всех продуктов, {msk(primer.get('first'))} — {msk(primer.get('last'))} МСК. Строк Robella: {primer_total}.
 - Записи: 7 не-тестовых снимков 12.11–17.11, разобранных в аудите `reports/robella-posthog-audit-2026-11-17.md`. Кадры 18.11 заново не разбирались.
 - Весь срок: {data['period_full']}. Первое событие в выгрузке: `{data['scope'].get('first_ts')}`.
-- Окно США: `timestamp >= 2026-11-10 21:00:00` и `< 2026-11-18 21:00:00` UTC, то есть {PERIOD_US}.
+- Период один — весь срок: {PERIOD_US}. 20.11 по замечанию Кати объединены прежние «окно США 11–18.11» и «покупатели до 11.11»; все разделы, кроме записей сессий, считаются за этот период.
 - Весь срок после фильтра: воронку начали {data['full'].get('started')} из {data['full'].get('started')}, почту оставили {n_of(data['full'].get('email_n'), data['full'].get('started'))}, оплату открыли {n_of(data['full'].get('checkout_n'), data['full'].get('started'))}, покупку воронки — {n_of(data['full'].get('purchase_n'), data['full'].get('started'))}. Веб-событие приложения — {n_of(data['full'].get('app_web'), data['full'].get('people'))} всех людей Robella; лендинг — {n_of(data['full'].get('landing'), data['full'].get('people'))}.
 
 ## 2. Исключение тестовых
@@ -717,7 +745,7 @@ def render_md(data: dict) -> str:
 {_preview_md(preview_n, checkout_n, started, email_n)}
 
 ## 3. Воронка
-- Знаменатель: уникальные люди с `funnel_start`, `project = robella_ff`, окно США: {started} из {started}.
+- Знаменатель: уникальные люди с `funnel_start`, `project = robella_ff`, весь срок: {started} из {started}.
 - Шаг по pathname: последний сегмент `$pathname`; корень `/ai-stilist-week-web` обозначен `intro`.
 - Шаг по screen_id: `properties.screen_id`. Две версии считаются независимо; это «открыли экран хотя бы раз», не строгая последовательность.
 - Основная проверка: pathname age_group {n_of((path.get('age_group') or {}).get('people'), started)}, social_proof {n_of((path.get('social_proof') or {}).get('people'), started)}, main_goals {n_of((path.get('main_goals') or {}).get('people'), started)}.
@@ -733,22 +761,23 @@ def render_md(data: dict) -> str:
 - Primer: первые успешные не-тестовые {n_of(primer_first, primer_total)}, повторные успешные {n_of(primer_renew, primer_total)}, отказы {n_of(primer_declined, primer_total)}. Контрольная сумма: {primer_first} + {primer_renew} + {primer_declined} = {primer_check} из {primer_total}.
 - $1: {n_of(primer.get('trial_1'), primer_total)} строк; $39.90: {n_of(primer.get('month_3990'), primer_total)} строк. Старые цены: $19.99/$29.99, повтор $59.99.
 - Файл Primer заканчивается 17.11 12:28 МСК. После него до 18.11 23:59 МСК в PostHog `primer_payment`: {primer['after_file']['n']} событий, {primer['after_file']['people']} человек.
-- Причина нулевых покупок не установлена: события не различают «другой прайс на пейволле» и «платёж не создан». У paywall свойства price/amount/currency/trial_price/plan пустые.
+- Открытие оплаты без `primer_payment` — не поломка: платёж в Primer создаётся только по нажатию «оплатить» (сверка Кати по Primer, 19.11). У paywall свойства price/amount/currency/trial_price/plan пустые.
+- «По дням открытия» ниже — сумма по неделям графика (пн–вс МСК).
 
 ## 5. Вход и первая сессия
 - Источник входа: снимки 7 записей из аудита 17.11. Вошли в продукт 2 из 7; дошли до «Check your inbox» 3 из 7; ушли с формы без запроса письма 2 из 7. Первые три группы взаимоисключающие. Network Error 1 из 7 и истёкшая ссылка 1 из 7 пересекаются с ними.
 {_magic_link_md(data.get('magic_links') or [])}
 - «Signing you in…» длился около 34 секунд у 1 из 7. После «This link has expired» главная открылась у 1 из 7.
-- Веб-заходы в приложение в окне США: {n_of(us.get('app_web'), us.get('app_web'))}. Автологин в продукте уже работает; проблема в измерении: pageview `/auto-login` — {n_of(us.get('autologin'), us.get('app_web'))}. `/auth`: {n_of(us.get('auth_n'), us.get('app_web'))}; `/magic-link-login`: {n_of(us.get('magic_page'), us.get('app_web'))}.
+- Веб-заходы в приложение за весь срок: {n_of(us.get('app_web'), us.get('app_web'))}. Автологин в продукте уже работает; проблема в измерении: pageview `/auto-login` — {n_of(us.get('autologin'), us.get('app_web'))}. `/auth`: {n_of(us.get('auth_n'), us.get('app_web'))}; `/magic-link-login`: {n_of(us.get('magic_page'), us.get('app_web'))}.
 - Онбординг: начали {n_of(us.get('onb_started'), us.get('app_web'))}, завершили {n_of(us.get('onb_done'), us.get('app_web'))}. Шаги 1–6 удвоены у 1 из 1 начавшего; возврат с шага 7 на шаг 2 виден в 1 из 7 записей.
 - Капсула: {n_of(us.get('capsule'), us.get('app_web'))}; шкаф: {n_of(us.get('closet'), us.get('app_web'))}; примерка: {n_of(us.get('tryon'), us.get('app_web'))}; отчёт: {n_of(us.get('report_n'), us.get('app_web'))}.
 
-## 6. Пять покупателей до 11.11
+## 6. Покупатели за весь срок
 Группы взаимоисключающие с приоритетом «продлили» → «отменили» → «ничего»:
 - продлили: {n_of(renewed, len(buyers))} с `subscription_renewed`;
 - отменили: {n_of(cancelled, len(buyers))} с `subscription_cancelled`, без продления;
 - ничего: {n_of(untouched, len(buyers))}.
-Контрольная сумма: {renewed} + {cancelled} + {untouched} = {renewed + cancelled + untouched} из {len(buyers)}. У двух с отменой позднее `subscription_expired payment_failed` приходит в ту же секунду; по правилу FoxIQ это похоже на отказ банка, а не доказанную самостоятельную отмену. Выборка меньше 30 — только ориентир.
+Контрольная сумма: {renewed} + {cancelled} + {untouched} = {renewed + cancelled + untouched} из {len(buyers)}. У покупателей с отменой `subscription_expired payment_failed` приходит в ту же секунду; по правилу FoxIQ это похоже на отказ банка, а не доказанную самостоятельную отмену. Выборка меньше 30 — только ориентир.
 
 ## 7. Сравнение с FoxIQ и Azora
 - Robella: {PERIOD_US}; старт {started}, почта {email_n}, checkout {checkout_n}, вход по той же почте {n_of(us.get('email_and_app'), email_n)}.
@@ -761,7 +790,7 @@ def render_md(data: dict) -> str:
 - На каждом столбце есть `N из M`; у каждого раздела указаны период и знаменатель. Штриховка — N < 30, «ориентир» добавлен в сравнении.
 - HTML использует только чистый CSS; JavaScript, внешние библиотеки, шрифты и подсказки при наведении отсутствуют.
 - Узкий экран: двойные графики складываются в одну колонку; таблица багов превращается в карточки с подписями полей; горизонтальная прокрутка и обрезание не нужны.
-- Ограничения: записи 18.11 не разобраны; Primer не покрывает последние 35,5 часа окна; preview 18.11 подтверждён как неживой трафик, но полный пересчёт стартов и почт без preview требует отдельного фильтра по всем шагам; причины нулевой оплаты на боевом пути и точного обрыва не установлены.
+- Ограничения: записи 18.11 не разобраны; Primer не покрывает последние 35,5 часа периода; preview 18.11 подтверждён как неживой трафик, но полный пересчёт стартов и почт без preview требует отдельного фильтра по всем шагам; причины нулевой оплаты на боевом пути и точного обрыва не установлены.
 """
 
 

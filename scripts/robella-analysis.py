@@ -467,7 +467,8 @@ def checkout_stories() -> list:
         for event in compact:
             if event["event"] == "funnel_screen_open" and event["path"]:
                 last_screen = event["path"]
-        stories.append({"n": index, "events": interesting[:40], "truncated": len(events) >= 250, "screen_events": sum(1 for event in compact if event["event"] == "funnel_screen_open"), "last_screen": last_screen, "checkout": sum(1 for event in compact if event["event"] == "funnel_checkout_open"), "primer": sum(1 for event in compact if event["event"] == "primer_payment"), "purchase": sum(1 for event in compact if event["event"] == "funnel_purchase_success"), "fail": sum(1 for event in compact if event["event"] == "funnel_purchase_fail"), "app_events": sum(1 for event in compact if event["project"] == "robella"), "recording_active": sum(1 for event in compact if event["recording"] == "active")})
+        bought = hog(f"""SELECT toString(min(timestamp)) AS ts FROM events WHERE person_id = '{pid}' AND event = 'funnel_purchase_success' AND toString(properties.project) = 'robella_ff' AND timestamp < toDateTime('{END}'){" HAVING count() > 0"}""")
+        stories.append({"first_checkout": msk_sec(person["first_checkout"]), "purchase_ts": msk_sec(bought[0]["ts"]) if bought else "", "n": index, "events": interesting[:40], "truncated": len(events) >= 250, "screen_events": sum(1 for event in compact if event["event"] == "funnel_screen_open"), "last_screen": last_screen, "checkout": sum(1 for event in compact if event["event"] == "funnel_checkout_open"), "primer": sum(1 for event in compact if event["event"] == "primer_payment"), "purchase": sum(1 for event in compact if event["event"] == "funnel_purchase_success"), "fail": sum(1 for event in compact if event["event"] == "funnel_purchase_fail"), "app_events": sum(1 for event in compact if event["project"] == "robella"), "recording_active": sum(1 for event in compact if event["recording"] == "active")})
     return stories
 
 
@@ -525,18 +526,17 @@ def _week_key(day: str) -> str:
 def _checkout_daily(data):
     """Открытия оплаты и покупки по неделям МСК (пн–вс): с 20.11 период — весь срок."""
     counts = defaultdict(lambda: {"open": 0, "reached": 0, "purchase": 0})
+    # 20.11: неделя открытия берётся из первого funnel_checkout_open человека, а не из усечённого списка событий;
+    # покупка — по неделе первого funnel_purchase_success (раньше часть людей терялась на усечении).
     for story in data.get("checkout") or []:
-        day = None
-        for event in story.get("events") or []:
-            if event.get("event") == "funnel_checkout_open":
-                day = str(event.get("ts") or "")[:10]
-                break
-        if not day:
+        day = str(story.get("first_checkout") or "")[:10]
+        if not day[:2].isdigit():
             continue
-        day = _week_key(day)
-        counts[day]["open"] += 1
-        counts[day]["reached"] += 1 if _n(story.get("primer")) > 0 else 0
-        counts[day]["purchase"] += 1 if _n(story.get("purchase")) > 0 else 0
+        counts[_week_key(day)]["open"] += 1
+        counts[_week_key(day)]["reached"] += 1 if _n(story.get("primer")) > 0 else 0
+        bought = str(story.get("purchase_ts") or "")[:10]
+        if bought[:2].isdigit():
+            counts[_week_key(bought)]["purchase"] += 1
     return counts
 
 

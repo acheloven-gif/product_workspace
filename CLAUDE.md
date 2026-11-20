@@ -160,7 +160,7 @@
 | «Ренье · Задачи» | распорядитель поручений | заведение и разбор задач в ClickUp, недельный ритм, задачи без проекта | `session_0133EPbyWX6tdZB5eLbDyDqW` |
 | «Вивиан · Отчёты» | летописица двора | дейлик, отчёт Кате за день, недельные итоги (по журналу и ClickUp) | `session_0133EPbxeMND5Hn23GAU1kmL` |
 | «Эмили · Charisly» | фрейлина, хранительница Charisly | всё по продукту Charisly | `session_0133EPbzmdUtDSEp7UNQLkwL` |
-| «Селеста · memoryOS» | хранительница библиотеки | проект «memoryOS-клон»: разбор конкурента, ТЗ на приложение | `session_0133EPc1aZFPHVyQYvujXhJk` |
+| «Селеста · memoryOS» | хранительница библиотеки | проект Rememblo (бывший «memoryOS-клон»): разбор конкурента, ТЗ на приложение | `session_0133EPc1aZFPHVyQYvujXhJk` |
 | «Аларик · FoxIQ» | магистр придворной академии | задачи по FoxIQ: дополнение под воронку memoryOS, письма для возврата | `session_0133EPc15MaxUjZphuXYhQPx` |
 | «Тристан · Zeely» | глашатай | разбор ниши Zeely: воронка, приложение, решение «берём или нет» | `session_0133EPbyXA3hs6y8zNERFJLQ` |
 | «Северин · Cloaked» | начальник тайной стражи | клон Cloaked (приватность, защита от спама) под другое гео: разбор, выбор страны | `session_0133EPbzhVwNJdm515EGAUi8` |
@@ -201,7 +201,9 @@
 
 - **Charisly** — см. `charisly/CLAUDE.md`.
 - **Контроллер экранного времени** (идея) — см. `screen-time/CLAUDE.md`.
-- **memoryOS-клон** (идея, готовим ТЗ) — см. `memoryos/CLAUDE.md`.
+- **Rememblo** (бывший «memoryOS-клон», название с 10.11; сборка) — см. `memoryos/CLAUDE.md`.
+- **Robella** — проект Кати; у Наташи только продуктовый (аналитический) разбор.
+- **Minutka** — проект Кати; Наташа по нему ничего не делает.
 - **FoxIQ** (существующий продукт; задачи Наташи по возвратам и воронке memoryOS) — см. `foxiq/CLAUDE.md`.
 - **Zeely** (разбор новой ниши) — см. `zeely/CLAUDE.md`.
 - **Chillio** (разбор новой ниши) — см. `chillio/CLAUDE.md`.
@@ -248,7 +250,7 @@ CLAUDE.md        этот файл
 journal/         рабочий журнал по дням
 charisly/        контекст и материалы по Charisly
 screen-time/     контекст проекта «Контроллер экранного времени»
-memoryos/        контекст проекта «memoryOS-клон» и черновик ТЗ
+memoryos/        контекст проекта Rememblo (бывший «memoryOS-клон») и ТЗ
 foxiq/           контекст и документы по задачам FoxIQ
 zeely/, chillio/ разбор новых ниш из шорт-листа FB
 cloaked/         клон Cloaked под другое гео

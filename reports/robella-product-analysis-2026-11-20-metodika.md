@@ -60,7 +60,7 @@
 - продлили: 1 из 5 с `subscription_renewed`;
 - отменили: 2 из 5 с `subscription_cancelled`, без продления;
 - ничего: 2 из 5.
-Контрольная сумма: 1 + 2 + 2 = 5 из 5. Отмена у отменивших своя: в приложении есть `subscription_cancel_click` → `subscription_cancel_confirm` → `subscription_cancelled` через 1 и 10 минут после покупки. Через 28 дней сервер ещё раз пишет `subscription_cancelled user_initiated` и `subscription_expired payment_failed` в одну секунду, хотя попытки списания в Primer в эти дни нет — причина окончания подписки записывается неверно. Выборка меньше 30 — только ориентир.
+Контрольная сумма: 1 + 2 + 2 = 5 из 5. Отмена у отменивших своя: в приложении есть `subscription_cancel_click` → `subscription_cancel_confirm` → `subscription_cancelled` через 1 и 10 минут после покупки. Через 28 дней `subscription_cancelled` приходит второй раз и в ту же секунду `subscription_expired payment_failed`, хотя попытки списания в Primer в эти дни нет. Уточняем, так ли это должно записываться. Выборка меньше 30 — только ориентир.
 
 ## 7. Сравнение с FoxIQ и Azora
 - Robella: 30.09.2026 18:14 МСК — 18.11.2026 23:59 МСК; старт 469, почта 37, checkout 29, вход по той же почте 4 из 37.

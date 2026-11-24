@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Еженедельный отчёт Наташи по своим задачам</title>
+<style>
+:root{--bg:#fff5ee;--card:#fffdfb;--ink:#3a2a26;--mut:#8b6f65;--line:#f4d9cb;--acc:#e48a6c;--acc2:#fde3d6;--ok:#5f9c7a;--warn:#c9922f;--crit:#c9604f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:30px 18px 60px}
+h1{font-size:23px;margin:0 0 4px;color:#7a3f2c}
+.sub{color:var(--mut);margin:0 0 20px;font-size:13.5px}
+input[name=wk]{position:absolute;opacity:0;pointer-events:none}
+.tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.tabs label{padding:8px 18px;border:1px solid var(--line);background:var(--card);border-radius:999px;cursor:pointer;font-weight:600;font-size:14px;color:var(--mut);box-shadow:0 1px 0 #f4d9cb}
+#w1:checked~.tabs label[for=w1],
+#w2:checked~.tabs label[for=w2],
+#w3:checked~.tabs label[for=w3],
+#w4:checked~.tabs label[for=w4],
+#w5:checked~.tabs label[for=w5],
+#w6:checked~.tabs label[for=w6]{background:var(--acc);color:#fff;border-color:var(--acc);box-shadow:0 2px 8px #e48a6c55}
+.panel{display:none}
+#w1:checked~.panels .p1,
+#w2:checked~.panels .p2,
+#w3:checked~.panels .p3,
+#w4:checked~.panels .p4,
+#w5:checked~.panels .p5,
+#w6:checked~.panels .p6{display:block}
+.app{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin:0 0 14px;box-shadow:0 2px 10px #f4d9cb66}
+.app h2{font-size:17px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.chip{display:inline-block;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:999px;background:var(--acc2);color:#b25a3f}
+.chip.ok{background:#e4f3ea;color:var(--ok)}.chip.warn{background:#fcf1d6;color:var(--warn)}.chip.crit{background:#fbe5e2;color:var(--crit)}
+h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);margin:14px 0 4px}
+ul{margin:4px 0 0;padding-left:20px}li{margin:3px 0}
+p{margin:4px 0}
+.note{font-size:13px;color:var(--mut);margin:14px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#fdebe1;font-weight:600;color:#7a3f2c}
+a{color:#b25a3f;text-decoration:underline;text-decoration-color:#f4d9cb}a:hover{color:#7a3f2c}
+</style></head><body><div class="wrap">
+<h1>Еженедельный отчёт по моим задачам</h1>
+<p class="sub">Наташа. Только то, что делала я, с 14.10. Новая неделя добавляется отдельной вкладкой справа.</p>
+
+<input type="radio" name="wk" id="w1"><input type="radio" name="wk" id="w2"><input type="radio" name="wk" id="w3"><input type="radio" name="wk" id="w4"><input type="radio" name="wk" id="w5"><input type="radio" name="wk" id="w6" checked="">
+<div class="tabs"><label for="w1">12–18.10</label><label for="w2">19–25.10</label><label for="w3">26.10–01.11</label><label for="w4">02–08.11</label><label for="w5">09–15.11</label><label for="w6">16–22.11</label></div>
+
+<div class="panels">
+
+<div class="panel p1">
+<div class="app"><h2>Charisly <span class="chip">12–18.10</span></h2><h3>Что сделано</h3><ul><li>14.10: сделала скринкаст приложения конкурента (RiseGuide) и начала <a href="https://app.clickup.com/t/1249d35g3w4" target="_blank">формальное ТЗ на приложение Charisly</a>.</li><li>15.10: исправила ТЗ по замечаниям Кати и завела у себя в списке задачу с полным ТЗ: <a href="https://app.clickup.com/t/1249d35gb2w" target="_blank">Charisly — веб-приложение для прокачки харизмы</a> (таб-бар, онбординг, пейволл, уроки, тренажёры).</li><li>16.10: завела задачу на разработку в «Запуске продукта», приложила ТЗ и скринкаст конкурента: <a href="https://app.clickup.com/t/1249d35gtky" target="_blank">Charisly — веб-приложение (разработка)</a>.</li><li>16.10: дописала в ТЗ блок 2 «Сценарий после воронки» (вход по мэджик линку, первая практика, первый урок, экран завершения), отправила Кате на проверку.</li></ul></div>
+<div class="app"><h2>Инструменты <span class="chip">12–18.10</span></h2><h3>Что сделано</h3><ul><li>14–16.10: настроила ClickUp и Claude под продуктовую работу (рабочий журнал, чаты по направлениям): <a href="https://app.clickup.com/t/1249d35g3yw" target="_blank">Настроить Claude для продуктовой работы</a>.</li></ul></div>
+<div class="app"><h2>Исследования <span class="chip">12–18.10</span></h2><h3>Что сделано</h3><ul><li>15.10: начала анализ идеи контроллера экранного времени, смотрела воронки конкурентов.</li><li>16.10: разобрала выгрузки Facebook, включая выгрузку №9 от 10.10: отобрала кандидатов по тирам гео и вертикалям, отчёт в комментариях к задаче <a href="https://app.clickup.com/t/1249d35gtqp" target="_blank">Анализ выгрузок Facebook: выбрать приложения и ниши для следующих тестов</a>.</li></ul></div>
+<p class="note">Составлено по моим ежедневным отчётам Кате, сообщениям и задачам в ClickUp. Ссылки ведут на задачи. Метрики и тесты в этот отчёт не вошли.</p>
+</div>
+
+<div class="panel p2">
+<div class="app"><h2>Charisly <span class="chip">19–25.10</span></h2><h3>Что сделано</h3><ul><li>19.10: исправила блок 2 «Сценарий после воронки» по замечаниям Кати в <a href="https://app.clickup.com/t/1249d35gb2w" target="_blank">ТЗ Charisly</a> и перенесла его в <a href="https://app.clickup.com/t/1249d35gtky" target="_blank">задачу на разработку</a> Коле. Спросила Колю про пуши.</li><li>21.10: воронка и отмена готовы и протестированы, цены и гайды на апсейлы подготовлены. Связку воронки с приложением и апсейлы переназначила с Дани на Колю.</li></ul></div>
+<div class="app"><h2>memoryOS-клон <span class="chip">19–25.10</span></h2><h3>Что сделано</h3><ul><li>20.10: разобрала конкурента, написала <a href="https://app.clickup.com/t/1249d35hn53" target="_blank">memoryOS: черновик ТЗ</a> под веб.</li><li>21.10: внесла правки Кати в ТЗ, завела карточку проекта с чек-листами <a href="https://app.clickup.com/t/1249d35huw5" target="_blank">memoryOS-клон — тренировка памяти</a> (по задаче <a href="https://app.clickup.com/t/1249d35htqv" target="_blank">Новое приложение: завести карточку в «Проектах»</a>), там же отправила шорт-лист названий. Прошла воронку memoryOS 3 раза через Claude и 2 раза сама: план и пейволл везде одинаковые.</li><li>22.10: завела пространство MemoryOS, поставила Корюну задачи: <a href="https://app.clickup.com/t/1249d35j0c1" target="_blank">веб-приложение для тренировки памяти</a> и <a href="https://app.clickup.com/t/1249d35j1k8" target="_blank">лендинг</a>.</li><li>23.10: завела задачу <a href="https://app.clickup.com/t/1249d35j931" target="_blank">memoryOS-клон: воронка как у memoryOS — выбрать воронку и цены</a>.</li></ul></div>
+<div class="app"><h2>FoxIQ <span class="chip">19–25.10</span></h2><h3>Что сделано</h3><ul><li>21.10: взяла в работу две задачи: <a href="https://app.clickup.com/t/1249d35hux6" target="_blank">что добавить в приложение, чтобы запустить на него воронку как у memoryOS</a> (хватает ли приложению данных и функций под такую воронку) и <a href="https://app.clickup.com/t/1249d35hux8" target="_blank">логика писем для возврата пользователей</a> (сценарии, частота, ограничения).</li><li>22.10: сделала обе, отправила на ревью Кате.</li></ul></div>
+<div class="app"><h2>Zeely и Chillio <span class="chip">19–25.10</span></h2><h3>Что сделано</h3><ul><li>22.10: начала разбор конкурентов: <a href="https://app.clickup.com/t/1249d35j0t1" target="_blank">Zeely: разобрать воронку и приложение конкурента, решить, берём ли нишу</a>, <a href="https://app.clickup.com/t/1249d35j0t2" target="_blank">Chillio: то же</a>.</li><li>23.10: написала <a href="https://app.clickup.com/t/1249d35jcbn" target="_blank">Zeely: ТЗ веб-приложения</a>. 24.10: написала <a href="https://app.clickup.com/t/1249d35jej8" target="_blank">Chillio-клон: черновик ТЗ</a>.</li></ul></div>
+<div class="app"><h2>Исследования <span class="chip">19–25.10</span></h2><h3>Что сделано</h3><ul><li>19.10: доделала <a href="https://app.clickup.com/t/1249d35gtqp" target="_blank">анализ выгрузок FB</a>: пересобрала топ по спенду, гео, CPA и тренду, добавила «Находки» и шорт-лист из 19 приложений. 20.10: отправила шорт-лист Кате.</li></ul></div>
+<p class="note">Составлено по моим ежедневным отчётам Кате, сообщениям и задачам в ClickUp. Ссылки ведут на задачи. Метрики и тесты в этот отчёт не вошли.</p>
+</div>
+
+<div class="panel p3">
+<div class="app"><h2>FoxIQ <span class="chip">26.10–01.11</span></h2><h3>Что сделано</h3><ul><li>26.10: приложила документ с логикой писем к задаче <a href="https://app.clickup.com/t/1249d35hux8" target="_blank">логика писем для возврата пользователей</a>.</li><li>27.10: тексты писем возврата отдала на реализацию: <a href="https://app.clickup.com/t/1249d35jzae" target="_blank">FoxIQ: письма для возврата пользователей — реализация</a>. По решению Димы завела задачу <a href="https://app.clickup.com/t/1249d35k3jc" target="_blank">FoxIQ: функционал «улучшение памяти» под воронку memoryOS</a> (2 версии дизайна, A/B-тест), правки воронки отдала Никите и Даше.</li><li>29.10: описала две гипотезы (личный IQ-результат с прогнозом роста и еженедельный повторный замер IQ), ответила Кате на вопросы про срок теста, опору гипотез и метод «до и после», описала, как считала в PostHog (в личке Кате).</li><li>29–30.10: сделала продуктовый разбор по образцу (путь пользователя, что связано с отменой и продлением), перестроила гипотезы под тест «до и после» с расчётом сроков по потоку и пересобрала их с данными Primer: <a href="https://app.clickup.com/t/1249d35m0q5" target="_blank">FoxIQ: доработать продуктовый анализ по образцу Azora</a>.</li><li>30.10: проверила, что тестовые пользователи исключаются, собрала их список (599 почт): <a href="https://app.clickup.com/t/1249d35ky7q" target="_blank">Получить полный список исключённых тестовых пользователей</a>.</li></ul></div>
+<div class="app"><h2>memoryOS-клон <span class="chip">26.10–01.11</span></h2><h3>Что сделано</h3><ul><li>26.10: отправила Корюну правки по <a href="https://app.clickup.com/t/1249d35j0c1" target="_blank">приложению</a> и ответила на его вопросы.</li><li>27.10: решили копировать <a href="https://app.clickup.com/t/1249d35j931" target="_blank">воронку у конкурента</a> с теми же ценами. 28.10: ответила Диме по <a href="https://app.clickup.com/t/1249d35k963" target="_blank">апсейлам конкурента</a>.</li><li>29.10: завела задачу <a href="https://app.clickup.com/t/1249d35kune" target="_blank">Исследовать аналоги memoryOS и воронки со схожим нарративом</a>.</li></ul></div>
+<div class="app"><h2>Zeely, Chillio, Cloaked <span class="chip">26.10–01.11</span></h2><h3>Что сделано</h3><ul><li>26.10: Chillio: решили делать нативное iOS-приложение с блокировщиком, <a href="https://app.clickup.com/t/1249d35jej8" target="_blank">ТЗ</a> исправлено. Cloaked: разобрала гео и выбрала Tier-1 (Франция, Австралия, Германия, Финляндия, Италия, Испания), таблица с обоснованием в задаче <a href="https://app.clickup.com/t/1249d35jpy8" target="_blank">Cloaked: разобрать воронку, выбрать гео</a>.</li><li>27.10: завела карточки <a href="https://app.clickup.com/t/1249d35k1z2" target="_blank">Zeely-клон</a>, <a href="https://app.clickup.com/t/1249d35k1z3" target="_blank">Chillio-клон</a>, <a href="https://app.clickup.com/t/1249d35k1z4" target="_blank">Cloaked-клон</a> и пространства, передала ТЗ в разработку: <a href="https://app.clickup.com/t/1249d35k3e4" target="_blank">Zeely — Коле</a>, <a href="https://app.clickup.com/t/1249d35k3e6" target="_blank">Chillio — Корюну</a>. Взяла задачу <a href="https://app.clickup.com/t/1249d35k20d" target="_blank">получить номер США/Канады для воронки Cloaked</a>. 28.10: выбрала лендинг Zeely.</li><li>29.10: параллельно сделала продуктовую и маркетинговую аналитику конкурентов (продукт, цены и апсейлы, отзывы, креативы): <a href="https://app.clickup.com/t/1249d35ktdf" target="_blank">Zeely</a>, <a href="https://app.clickup.com/t/1249d35ktdg" target="_blank">Chillio</a>, <a href="https://app.clickup.com/t/1249d35ktdh" target="_blank">Cloaked</a>. 30.10: доделала маркетинговый разбор Zeely, по Chillio добавила креативы из BigSpy и проверила связь с Genesis (не подтвердилась).</li></ul></div>
+<div class="app"><h2>Исследования <span class="chip">26.10–01.11</span></h2><h3>Что сделано</h3><ul><li>27.10: пересчитала таблицу по <a href="https://app.clickup.com/t/1249d35gtqp" target="_blank">выгрузкам FB</a>, веб и стор отдельно.</li><li>28.10: переделала анализ FB-выгрузок по комментариям Кати: сверила цифры, исправила ошибки, пересобрала шорт-лист, «Под вопросом» и вертикали.</li></ul></div>
+<div class="app"><h2>Инструменты <span class="chip">26.10–01.11</span></h2><h3>Что сделано</h3><ul><li>27–29.10: <a href="https://app.clickup.com/t/1249d35k19k" target="_blank">подключила PostHog к Claude Code</a>, <a href="https://app.clickup.com/t/1249d35k205" target="_blank">настроила Wispr Flow</a> (голосовой ввод и запись созвонов), разобралась, <a href="https://app.clickup.com/t/1249d35k19m" target="_blank">как вести продуктовую аналитику через Claude Code</a>.</li></ul></div>
+<p class="note">Составлено по моим ежедневным отчётам Кате, сообщениям и задачам в ClickUp. Ссылки ведут на задачи. Метрики и тесты в этот отчёт не вошли.</p>
+</div>
+
+<div class="panel p4">
+<div class="app"><h2>FoxIQ <span class="chip">02–08.11</span></h2><h3>Что сделано</h3><ul><li>02.11: нашла, где теряются люди на воронке, и добавила гипотезу «сократить квиз с 40 до примерно 20 вопросов» в <a href="https://app.clickup.com/t/1249d35m0q5" target="_blank">продуктовый анализ FoxIQ</a>. Закрыла <a href="https://app.clickup.com/t/1249d35ky7q" target="_blank">задачу со списком тестовых пользователей</a>.</li><li>03.11: прошла воронку, приложение и отмену подписки, пересобрала <a href="https://app.clickup.com/t/1249d35m0q5" target="_blank">продуктовый разбор</a> и отправила в задачу. Передала Корюну <a href="https://app.clickup.com/t/1249d35jzae" target="_blank">задачу на письма возврата</a>.</li><li>05.11: приняла задачу по письмам для FoxIQ. Передала с Дани на Корюна <a href="https://app.clickup.com/t/1249d35k3jc" target="_blank">задачу на функционал «как в memoryOS»</a>.</li><li>06.11: приняла решения по <a href="https://app.clickup.com/t/1249d35k3jc" target="_blank">функционалу «улучшение памяти»</a>: уроки берём из memoryOS-клона и меняем имена и названия, экраны сначала на стенде с заглушками, расход энергии вместо монет, комнаты открываются по порядку с Premium. Дворцы, которые добавил Корюн, посмотрела и согласовала. Попросила Корюна оценить отрисовку одного нового дворца.</li><li>06.11: с Корюном доделали функционал под воронку memoryOS. Завела Дане задачу <a href="https://app.clickup.com/t/1249d35nfwy" target="_blank">события воронки отмены подписки не приходят в PostHog</a>.</li></ul></div>
+<div class="app"><h2>Исследования <span class="chip">02–08.11</span></h2><h3>Что сделано</h3><ul><li>02.11: доделала <a href="https://app.clickup.com/t/1249d35ktdg" target="_blank">разбор Chillio</a> по замечаниям Кати: разобрала негативные отзывы, проверила отмену подписки, отправила в задаче.</li><li>02.11: собрала <a href="https://app.clickup.com/t/1249d35kune" target="_blank">исследование аналогов memoryOS</a>, прошла воронки конкурентов и предложила второй вариант воронки «сначала тест памяти». Ответила Никите по <a href="https://app.clickup.com/t/1249d35j931" target="_blank">воронке клона memoryOS</a>, он поставил задачу Даше.</li><li>03.11: дополнила исследование аналогов memoryOS (прошла почти все воронки конкурентов).</li><li>05.11: посмотрела на спай-сервисах рекламу для <a href="https://app.clickup.com/t/1249d35ktdh" target="_blank">Cloaked</a>.</li><li>06.11: начала <a href="https://app.clickup.com/t/1249d35na12" target="_blank">пересчёт выборки FB</a> по уточнениям Димы и добавление конкурентов и их воронок.</li></ul></div>
+<div class="app"><h2>Клоны <span class="chip">02–08.11</span></h2><h3>Что сделано</h3><ul><li>Zeely-клон. 03.11: проверила <a href="https://app.clickup.com/t/1249d35k3e4" target="_blank">тестовую версию от Коли</a> и отправила замечания. 05.11: отписала Коле последние правки. 06.11: доработали с Колей функционал приложения, завела <a href="https://app.clickup.com/t/1249d35nfga" target="_blank">проверку доработок и цен на генерации</a>, цены обсуждаю в понедельник с Димой и Никитой.</li><li>Chillio-клон. 03.11: выбрала варианты лендинга. 05.11: <a href="https://app.clickup.com/t/1249d35k3e6" target="_blank">задача на разработку Chillio</a> поставлена на паузу.</li></ul></div>
+<p class="note">Составлено по моим ежедневным отчётам Кате, сообщениям и задачам в ClickUp. Ссылки ведут на задачи. Метрики и тесты в этот отчёт не вошли.</p>
+</div>
+
+<div class="panel p5">
+<div class="app"><h2>FoxIQ <span class="chip">тесты</span></h2>
+<h3>Что сделано</h3>
+<ul>
+<li>Расписала тесты <b>T1, T2, T3</b>: гипотезы, варианты по шагам, главная и защитная метрики, объём и срок. Задачи: <a href="https://app.clickup.com/t/1249d35ptk6" target="_blank"><b>T1</b> (первая тренировка прямо с экрана результата)</a>, <a href="https://app.clickup.com/t/1249d35ptk7" target="_blank"><b>T2</b> (предложение под причину отмены вместо одной скидки)</a>, <a href="https://app.clickup.com/t/1249d35ptk8" target="_blank"><b>T3</b> (уровни балла 137 / 120 / 104)</a>.</li>
+<li>Для T2 сама определила варианты и цены: $9,99 в месяц, пауза на 30 дней, +3 дня триала.</li>
+<li>Расписала правила писем: серия M (<a href="https://app.clickup.com/t/1249d35p2th" target="_blank">рассылка о новых играх для неактивных</a>) и <a href="https://app.clickup.com/t/1249d35nu7q" target="_blank">письма возврата: убрать неоплативших и контрольную группу</a>.</li>
+</ul>
+<h3>Тесты</h3>
+<table><tbody><tr><th>Тест</th><th>Статус</th><th>Срок набора</th></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptkt" target="_blank">T1</a></td><td>выложен на прод выключенным (12.11), проверен Максимом 13.11; запуск ждал моего решения</td><td>около 19 дней при 15 покупках в день</td></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptkr" target="_blank">T2</a></td><td>в разработке у Дани</td><td>около 30 дней</td></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptku" target="_blank">T3</a></td><td>стартует после итогов T1</td><td>около 18 дней</td></tr></tbody></table>
+<p class="note">Запущенных тестов нет.</p>
+<h3>Блокеры</h3>
+<p>Нет.</p>
+<h3>План на неделю</h3>
+<ul>
+<li>Проверить функционал T1 и пройти тестовую покупку картой 4242.</li>
+<li>После проверки запустить T1.</li>
+<li>Срез по серии M через неделю (пул 18.11).</li>
+</ul>
+<h3>Нужно решение Кати</h3>
+<p>Нет.</p>
+</div>
+</div>
+
+<div class="panel p6">
+<div class="app"><h2>FoxIQ <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>16.11: проверила и подтвердила Диме, что <a href="https://app.clickup.com/t/1249d35k3jc" target="_blank">функционал под воронки memoryOS</a> готов, можно запускать. 18.11: подтвердила, что он переведён на японский и испанский.</li>
+<li>17.11: отправила итоговую версию <a href="https://app.clickup.com/t/1249d35m0q5" target="_blank">продуктового разбора FoxIQ</a> (v4.23).</li>
+<li>17.11: нашла баг: на онбординге после оплаты кончались сердечки, и онбординг запускался заново. Отдала Дане, он исправил, проверила на двух аккаунтах.</li>
+<li>18.11: <a href="https://app.clickup.com/t/1249d35r0u7" target="_blank">сравнила когорты</a> 09–15.11 и 02–08.11: отмены в первый час выросли с 17,2% до 40,6%.</li>
+<li>19.11: по твоему замечанию попросила Даню убрать кнопку отмены в один клик, проверила обе воронки отмены на всех языках. 20.11: попросила Даню поставить на экран ошибки оплаты скидки две кнопки, паузу и отмену, проверила все языки (<a href="https://app.clickup.com/t/1249d35ptkr" target="_blank">задача T2</a>).</li>
+<li><a href="https://app.clickup.com/t/1249d35p2th" target="_blank">Серия писем M</a>: собрала данные за 13–23.11 (Brevo — у Корюна, возвраты — PostHog). Доставлено 80 писем, открыто 8, кликов 0, отписка 1. Вернулись в приложение за 48 часов 5 из 65.</li>
+</ul>
+<h3>Тесты</h3>
+<table><tbody><tr><th>Тест</th><th>Статус</th><th>Срок</th></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptk6" target="_blank">T1</a></td><td>включила 18.11 в 12:30</td><td>итог около 17.12</td></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptk7" target="_blank">T2</a></td><td>включила 19.11 в 19:15, A/B. По твоему замечанию пересчитала базу: с 09.11 предложение не принял никто (0 из 95), прежние 20% были ошибкой. Предложила вариант «только B, до и после»: 120 входов. Для защитных метрик собрала базу возвратов (Primer, 5 из 61) и обращений в поддержку (у Никиты, по 2 за две недели на каждую тему)</td><td>около 15 дней после ок</td></tr>
+<tr><td><a href="https://app.clickup.com/t/1249d35ptk8" target="_blank">T3</a></td><td>поставила Корюну запуск параллельно с T1 (40/60), без Brain Score (<a href="https://app.clickup.com/t/1249d35ptku" target="_blank">разработка</a>)</td><td>срок готовности от Корюна жду</td></tr></tbody></table>
+<h3>План на неделю</h3><ul><li>Запустить T3, когда Корюн будет готов.</li><li>По серии M решить, продолжать ли её.</li></ul>
+</div>
+<div class="app"><h2>Rememblo <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>18.11: одобрила <a href="https://app.clickup.com/t/1249d35j931" target="_blank">воронку</a>.</li>
+<li>19.11: вручную проверила воронку, переход в приложение, приложение и воронку отмены, отправила тебе ссылки.</li>
+<li>Нашла, что отмена в приложении проходила без воронки отмены, — разобрали.</li>
+<li>18.11: спросила в общем чате про креативы для Rememblo и Charisly. Дима ответил: когда всё готово, ставить задачу на него.</li>
+</ul></div>
+<div class="app"><h2>Charisly <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>18.11: обновила чек-лист запуска: раздел «Приложение» закрыт, осталось 27 из 47.</li>
+<li>Поставила Максиму проверить апсейлы, Коле — разобраться, откуда уходят письма входа и апсейлов.</li>
+</ul></div>
+<div class="app"><h2>Zeely-клон <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>Перепроверила <a href="https://app.clickup.com/t/1249d35p218" target="_blank">названия</a>, отметила тебе Adrelo, Proclamo, Gleevo, Reclune и Genada.</li>
+<li>Добавила варианты с «ad»: лучшие свободные — Reeladly, Reeladia, Publad.</li>
+</ul><h3>Нужно решение Кати</h3><p>Какое название берём.</p></div>
+<div class="app"><h2>Robella (разбор) <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>17.11: сделала <a href="https://app.clickup.com/t/1249d35r0u6" target="_blank">аудит PostHog</a>, 18.11 — продуктовый разбор.</li>
+<li>По твоим замечаниям объединила период (30.09–18.11) и исключила тестовые проходы.</li>
+<li>Поставила Дане задачу на расхождение screen_id во всех воронках (<a href="https://app.clickup.com/t/1249d35rkjp" target="_blank">Robella</a>) — исправлено, проверила.</li>
+</ul></div>
+<div class="app"><h2>Исследования <span class="chip">16–22.11</span></h2><h3>Что сделано</h3><ul>
+<li>16.11: отправила вариант <a href="https://app.clickup.com/t/1249d35na12" target="_blank">FB-выборки</a> с калькуляторами окупаемости.</li>
+</ul></div>
+<p class="note">Составлено по моим сообщениям, комментариям и задачам в ClickUp. Ссылки ведут на задачи.</p>
+</div>
+
+</div>
+</div>
+</body></html>

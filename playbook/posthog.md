@@ -73,6 +73,15 @@ PostHog у нас свой (self-hosted, не облако): https://ph.app-inkf
 - **UTM:** `utm_source`, `utm_medium`, `utm_campaign`, `utm_content`, `utm_term` — отдельные свойства. Остальные параметры ссылки (`adgroup_id`, `network`, `gclid` и т.п.) лежат только внутри `$current_url`.
 - PostHog видит тех, у кого **загрузилась воронка**, а не клики по рекламе. Кликов в рекламном кабинете всегда больше.
 - Воронка и приложение — **разные персоны** в PostHog. Связывать человека между воронкой и приложением — по email (`person.properties.email`).
+- **Ловушка: чужая метка `project` у скопированной воронки** (найдено 24.11.2026). Воронка Rememblo (`f.rememblo.com`) до 24.11 писала события как `foxiq_ff` (142 события, 18–20.11) и `minutka_ff` (30 событий, 13–19.11): при копировании в FunnelFox остался чужой код аналитики. 24.11 Даша поставила `rememblo_ff`. Задним числом метки в PostHog не меняются. Поэтому в анализах `foxiq_ff` и `minutka_ff` исключать `properties.$host = 'f.rememblo.com'`, а воронку Rememblo до 24.11 брать по `$host`, а не по `project`.
+- **Проверка меток перед трафиком.** Ошибочную метку не найти фильтром по метке: сначала фильтр по месту (`$host` / Current URL), потом смотреть `project`. У каждого домена должна быть одна своя метка:
+  ```sql
+  select properties.$host as host, properties.project as project, count() as events, max(timestamp) as last_seen
+  from events
+  where timestamp > now() - interval 14 day and properties.$host != ''
+  group by host, project
+  order by host, events desc
+  ```
 
 ### Лендинги (`*_landing`, проверено 06.11.2026)
 - Все шесть появились одновременно 03.11.2026 ~14:00 UTC. Источник — браузерный SDK (`$lib = 'web'`), свойства `environment` нет.

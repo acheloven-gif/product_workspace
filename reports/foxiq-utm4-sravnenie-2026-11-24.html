@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FoxIQ: отмены по источникам</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#fcfcfb;--card:#ffffff;--line:#e6e5e0;
+  --text:#0b0b0b;--text2:#52514e;--muted:#a3a29c;
+  --base:#b9b8b2;--accent:#eb6834;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#1a1a19;--card:#222221;--line:#34342f;
+    --text:#f0efec;--text2:#c3c2b7;--muted:#7d7c75;
+    --base:#5f5e59;--accent:#d95926;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#1a1a19;--card:#222221;--line:#34342f;
+  --text:#f0efec;--text2:#c3c2b7;--muted:#7d7c75;
+  --base:#5f5e59;--accent:#d95926;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--text2);margin:0 0 20px;font-size:14px}
+.lead{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+.lead p{margin:0 0 6px}.lead p:last-child{margin:0}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.chart h2{font-size:16px;margin:0 0 2px}
+.chart .hint{color:var(--text2);font-size:13px;margin:0 0 12px}
+.row{display:grid;grid-template-columns:minmax(120px,34%) 1fr 108px;gap:10px;align-items:center;margin:8px 0}
+.lbl{font-size:13px;color:var(--text2)}
+.lbl b{color:var(--text);font-weight:600}
+.track{position:relative;height:22px}
+.bar{height:100%;border-radius:0 4px 4px 0;background:var(--base);min-width:2px}
+.bar.hot{background:var(--accent)}
+.val{font-size:13px;color:var(--text);white-space:nowrap}
+.bar:hover{filter:brightness(1.08)}
+.key{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin:0 0 16px}
+.key span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px;background:var(--base)}
+.key span.hot::before{background:var(--accent)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--text2);font-weight:500}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--text2);font-size:14px}
+.note{color:var(--text2);font-size:13px;margin-top:16px}
+@media (max-width:480px){.row{grid-template-columns:1fr 96px;gap:2px 8px}.row .lbl{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<main>
+<h1>FoxIQ: откуда отмены сразу после покупки</h1>
+<p class="sub">Покупки 16.10–18.11.2026 (МСК). Поведение — PostHog, продления и деньги — Primer. Тестовые покупки исключены.</p>
+
+<div class="lead">
+<p><b>Источник 4 (баер Ваня) сам по себе нормальный.</b> До 08.11 его покупатели отменяли даже реже других.</p>
+<p><b>Проблема в двух кампаниях Вани, запущенных 08.11.</b> Больше половины их покупателей отменяют подписку в первый час, обычно через 2–3 минуты. Продлевает только каждый десятый, денег с покупателя вдвое меньше.</p>
+<p><b>Кнопка отмены «в один клик» (11–19.11) отмены усилила, но не начала:</b> рост пошёл 08–10.11, когда кнопки ещё не было.</p>
+</div>
+
+<div class="key"><span>остальные группы</span><span class="hot">две кампании Вани с 08.11</span></div>
+
+<section class="chart">
+<h2>Отменили подписку в первый час</h2>
+<p class="hint">Доля покупателей. Меньше — лучше.</p>
+<div class="row"><div class="lbl"><b>Другие баеры</b></div><div class="track"><div class="bar" style="width:31%" title="18 из 106"></div></div><span class="val">17% · 18 из 106</span></div>
+<div class="row"><div class="lbl"><b>Ваня до 08.11</b></div><div class="track"><div class="bar" style="width:13%" title="2 из 30"></div></div><span class="val">7% · 2 из 30</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, другие кампании</div><div class="track"><div class="bar" style="width:45%" title="15 из 61"></div></div><span class="val">25% · 15 из 61</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, две кампании</div><div class="track"><div class="bar hot" style="width:100%" title="50 из 89"></div></div><span class="val">56% · 50 из 89</span></div>
+</section>
+
+<section class="chart">
+<h2>Продлили подписку после пробной недели</h2>
+<p class="hint">Доля покупателей. Больше — лучше. Покупки до 12.11: у остальных неделя ещё не закончилась к концу выгрузки Primer.</p>
+<div class="row"><div class="lbl"><b>Другие баеры</b></div><div class="track"><div class="bar" style="width:100%" title="30 из 97"></div></div><span class="val">31% · 30 из 97</span></div>
+<div class="row"><div class="lbl"><b>Ваня до 08.11</b></div><div class="track"><div class="bar" style="width:87%" title="8 из 30"></div></div><span class="val">27% · 8 из 30</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, другие кампании</div><div class="track"><div class="bar" style="width:71%" title="8 из 36"></div></div><span class="val">22% · 8 из 36</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, две кампании</div><div class="track"><div class="bar hot" style="width:32%" title="5 из 50"></div></div><span class="val">10% · 5 из 50</span></div>
+</section>
+
+<section class="chart">
+<h2>Денег с одного покупателя</h2>
+<p class="hint">Все успешные платежи до 20.11 минус возвраты: $1, первое продление, апсейлы. Покупки до 12.11. Больше — лучше.</p>
+<div class="row"><div class="lbl"><b>Другие баеры</b></div><div class="track"><div class="bar" style="width:100%" title="97 покупателей"></div></div><span class="val">$8,83</span></div>
+<div class="row"><div class="lbl"><b>Ваня до 08.11</b></div><div class="track"><div class="bar" style="width:72%" title="30 покупателей"></div></div><span class="val">$6,40</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, другие кампании</div><div class="track"><div class="bar" style="width:84%" title="36 покупателей"></div></div><span class="val">$7,41</span></div>
+<div class="row"><div class="lbl"><b>Ваня с 08.11</b>, две кампании</div><div class="track"><div class="bar hot" style="width:41%" title="50 покупателей"></div></div><span class="val">$3,66</span></div>
+</section>
+
+<details>
+<summary>Таблица и как считали</summary>
+<table>
+<thead><tr><th>Группа</th><th>Отмена в 1-й час</th><th>Продлили</th><th>$ на покупателя</th></tr></thead>
+<tbody>
+<tr><td>Другие баеры</td><td>18 из 106</td><td>30 из 97</td><td>$8,83</td></tr>
+<tr><td>Ваня до 08.11</td><td>2 из 30</td><td>8 из 30</td><td>$6,40</td></tr>
+<tr><td>Ваня с 08.11, другие кампании</td><td>15 из 61</td><td>8 из 36</td><td>$7,41</td></tr>
+<tr><td>Ваня с 08.11, две кампании</td><td>50 из 89</td><td>5 из 50</td><td>$3,66</td></tr>
+</tbody>
+</table>
+<p class="note">Две кампании: 120252533966230551 и 120252541694000551. Источник — utm_source воронки FunnelFox (4 = Ваня), связка с приложением по почте. Отмена — самостоятельная, отказы банка не считаются. Подробно — reports/foxiq-utm4-otmeny-2026-11-24.md.</p>
+</details>
+</main>
+</body>
+</html>

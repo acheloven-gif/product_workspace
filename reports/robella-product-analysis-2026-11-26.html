@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robella: разбор воронки</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f7f7f5; --surface:#ffffff; --text:#191919; --text-2:#5f5f5f; --line:#e4e4e0;
+  --accent:#257de0; --accent-soft:#dbe9fa; --bench:#b4b4ae; --bench-soft:#ebebe7;
+  --tag-data:#e6f2e8; --tag-data-t:#1d5c2a; --tag-guess:#fdf1dc; --tag-guess-t:#7a4b00; --tag-unk:#efeff2; --tag-unk-t:#4a4a55; --tag-hand:#e8eefb; --tag-hand-t:#1f4a8f;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#121212; --surface:#1b1b1b; --text:#efefef; --text-2:#a2a2a2; --line:#2f2f2f;
+    --accent:#338ced; --accent-soft:#1c3150; --bench:#6b6b66; --bench-soft:#2a2a28;
+    --tag-data:#183020; --tag-data-t:#9fd9ad; --tag-guess:#3a2c12; --tag-guess-t:#f2c779; --tag-unk:#26262c; --tag-unk-t:#c4c4cf; --tag-hand:#1a2640; --tag-hand-t:#a9c4f5;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#121212; --surface:#1b1b1b; --text:#efefef; --text-2:#a2a2a2; --line:#2f2f2f;
+  --accent:#338ced; --accent-soft:#1c3150; --bench:#6b6b66; --bench-soft:#2a2a28;
+  --tag-data:#183020; --tag-data-t:#9fd9ad; --tag-guess:#3a2c12; --tag-guess-t:#f2c779; --tag-unk:#26262c; --tag-unk-t:#c4c4cf; --tag-hand:#1a2640; --tag-hand-t:#a9c4f5;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:880px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;line-height:1.25;margin:0 0 8px}
+h2{font-size:20px;margin:40px 0 12px}
+h3{font-size:16px;margin:24px 0 8px}
+p,li{margin:6px 0}
+ul,ol{padding-left:22px}
+.meta{color:var(--text-2);font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+.lead{display:grid;gap:10px}
+.lead li{margin:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi b{display:block;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--text-2);font-size:13px}
+.tag{display:inline-block;font-size:12px;font-weight:600;border-radius:6px;padding:1px 7px;margin-right:4px;white-space:nowrap}
+.t-data{background:var(--tag-data);color:var(--tag-data-t)}
+.t-guess{background:var(--tag-guess);color:var(--tag-guess-t)}
+.t-unk{background:var(--tag-unk);color:var(--tag-unk-t)}
+.t-hand{background:var(--tag-hand);color:var(--tag-hand-t)}
+code{font-size:13px;background:var(--bench-soft);border-radius:4px;padding:1px 4px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--text-2);font-weight:600;font-size:13px}
+td.n,th.n{text-align:right}
+.tbl{overflow-x:auto}
+/* charts */
+.chart-title{font-weight:600;margin:0 0 2px}
+.chart-sub{color:var(--text-2);font-size:13px;margin:0 0 14px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text-2);margin:0 0 12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.bars{display:grid;gap:8px}
+.row{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:10px;align-items:center}
+.row .lbl{font-size:13px;line-height:1.3}
+.row .lbl small{display:block;color:var(--text-2);font-size:12px}
+.track{position:relative;height:22px;border-radius:4px;background:transparent}
+.track::before{content:"";position:absolute;left:0;top:50%;width:100%;border-top:1px dashed var(--line)}
+.bar{position:absolute;left:0;top:2px;bottom:2px;border-radius:0 4px 4px 0;background:var(--accent);min-width:2px}
+.bar.b{background:var(--bench)}
+.range{position:absolute;top:2px;bottom:2px;border-radius:4px;background:var(--bench-soft);border:1px solid var(--bench)}
+.val{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;font-weight:600;white-space:nowrap;padding-left:6px;font-variant-numeric:tabular-nums}
+.pair{display:grid;gap:3px}
+.pair .track{height:18px}
+.hit{cursor:default}
+.hit:hover .bar{filter:brightness(1.12)}
+.axis{display:grid;grid-template-columns:minmax(120px,210px) 1fr;gap:10px;font-size:11px;color:var(--text-2);margin-top:4px}
+.axis div:last-child{display:flex;justify-content:space-between}
+.note{font-size:13px;color:var(--text-2);margin-top:12px}
+@media (max-width:560px){
+  .row,.axis{grid-template-columns:1fr}
+  .axis div:first-child{display:none}
+  h1{font-size:22px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>Robella: продуктовый разбор воронки и приложения</h1>
+<p class="meta">Переделка по комментарию Кати от 25.11. Задача: <a href="https://app.clickup.com/t/1249d35r0u6">Короткий аудит PostHog по Robella</a>. Дата: 26.11.2026.<br>
+Период: события воронки в PostHog приходят с 16.10.2026; данные по 26.11.2026 13:25 МСК. Источник: PostHog, <code>robella_ff</code> (воронка) и <code>robella</code> (приложение). Считали людей, не события. Тестовые исключены. Деньги по PostHog не считались.<br>
+Метки выводов: <span class="tag t-data">Видно в данных</span><span class="tag t-hand">Проверено руками</span><span class="tag t-guess">Предположение</span><span class="tag t-unk">Не знаем</span></p>
+
+<div class="kpis">
+  <div class="kpi"><b>27%</b><span>проходят экран возраста (96 из 354). В наших воронках первый вопрос проходят 74–98%</span></div>
+  <div class="kpi"><b>0 из 48</b><span>прошли экран возраста с невысоким окном браузера (до 500 px)</span></div>
+  <div class="kpi"><b>0 из 28</b><span>прошли экран возраста, когда заставка грузилась 10+ секунд</span></div>
+  <div class="kpi"><b>40%</b><span>прошедших возраст оставляют почту — на уровне наших воронок (29–63%)</span></div>
+</div>
+
+<h2>Коротко</h2>
+<div class="card">
+<ol class="lead">
+<li><b>Из тех, кого видит PostHog, больше всего людей теряет экран возраста.</b> Его проходят 27% (96 из 354). В наших воронках первый вопрос проходят 74–98%, в том числе вопрос про возраст в FoxIQ <code>memory-plan-trial</code> (74%). На заставке среди загрузившихся Robella теряет не больше других: 30%, у других 17–63%. <span class="tag t-data">Видно в данных</span></li>
+<li><b>Причин две, обе проверены руками 26.11.</b>
+  <ul>
+  <li><b>Долгая загрузка.</b> Robella открывается дольше Charisly и Rememblo. На экране возраста бывают белые квадраты вместо картинок: подписи возраста нарисованы на картинках, в кнопках текста нет. На экране загрузки текст наезжает на текст, пока картинка не прогрузилась. Если заставка шла 10+ секунд, экран возраста не прошёл никто (0 из 28).</li>
+  <li><b>Вёрстка.</b> В окне 390×650 (телефон во встроенном браузере Facebook) нижний ряд «40–49» и «50+» не помещается, подписей не видно. С окном ниже 500 px не прошёл никто (0 из 48), с iPad — 1 из 37. В других наших воронках в таком же окне проходят 83–98%.</li>
+  </ul>
+  <span class="tag t-data">Видно в данных</span><span class="tag t-hand">Проверено руками</span></li>
+<li><b>После экрана возраста Robella конвертирует как наши воронки:</b> почта — 40% от прошедших возраст, оплата — 3 из 30 открывших оплату. <span class="tag t-data">Видно в данных</span> (выборка маленькая — ориентир)</li>
+<li><b>Главная правка:</b> облегчить картинки начала воронки и сделать возраст компактными текстовыми кнопками, которые видно без прокрутки. Если экран будут проходить хотя бы на 74%, до почты при том же трафике дойдёт в 2,5–3 раза больше людей. <span class="tag t-guess">Предположение</span></li>
+<li><b>Сколько людей уходит на белом экране до открытия воронки, PostHog не видит.</b> В предложениях — как это замерить. <span class="tag t-unk">Не знаем</span></li>
+<li><b>Приложение:</b> покупателей 5, все купили 15–28.10. С 11.11 покупок нет. Отменили 3 из 5. Глубже отчёта заходят 1–2 человека из 5. Для выводов нужно 30+ покупателей. <span class="tag t-data">Видно в данных</span></li>
+</ol>
+</div>
+
+<h2>1. Где теряются люди</h2>
+<div class="card">
+  <p class="chart-title">Воронка Robella, % от открывших первый экран</p>
+  <p class="chart-sub">ai-stylist + ai-stilist-week-web, 16.10–26.11, люди. 100% = 503 человека.</p>
+  <div class="bars">
+    <div class="row hit" title="intro: 503 человека, 100%"><div class="lbl">Заставка (intro)<small>503</small></div><div class="track"><div class="bar" style="width:100%"></div><span class="val" style="left:calc(100% - 44px);color:#fff">100%</span></div></div>
+    <div class="row hit" title="age_group: 354 из 503, 70%"><div class="lbl">Экран возраста<small>354 · 70% от прошлого шага</small></div><div class="track"><div class="bar" style="width:70%"></div><span class="val" style="left:70%">70%</span></div></div>
+    <div class="row hit" title="social_proof: 96 из 503, 19%; 27% от открывших возраст"><div class="lbl"><b>Прошли возраст</b><small>96 · <b>27%</b> от прошлого шага</small></div><div class="track"><div class="bar" style="width:19%"></div><span class="val" style="left:19%">19%</span></div></div>
+    <div class="row hit" title="Почта: 38 из 503, 7,6%"><div class="lbl">Почта<small>38 · 40% от прошлого шага</small></div><div class="track"><div class="bar" style="width:7.6%"></div><span class="val" style="left:7.6%">7,6%</span></div></div>
+    <div class="row hit" title="Открыли оплату: 30 из 503, 6,0%"><div class="lbl">Открыли оплату<small>30 · 79%</small></div><div class="track"><div class="bar" style="width:6%"></div><span class="val" style="left:6%">6,0%</span></div></div>
+    <div class="row hit" title="Нажали «оплатить»: 6 из 503, 1,2%"><div class="lbl">Нажали «оплатить»<small>6 · 20%</small></div><div class="track"><div class="bar" style="width:1.2%"></div><span class="val" style="left:1.2%">1,2%</span></div></div>
+    <div class="row hit" title="Оплатили: 3 из 503, 0,6%"><div class="lbl">Оплатили<small>3 · 50%</small></div><div class="track"><div class="bar" style="width:0.6%"></div><span class="val" style="left:0.6%">0,6%</span></div></div>
+  </div>
+  <p class="note">Слова Кати «83% не проходят загрузку и вопрос про возраст» подтверждаются: до третьего экрана не дошли 407 из 503 (81%). Главный обрыв — на экране возраста.</p>
+</div>
+
+<div class="card">
+  <p class="chart-title">Сколько проходят второй экран: Robella и наши воронки</p>
+  <p class="chart-sub">% открывших второй экран, которые открыли третий. 16.10–26.11, люди. У Robella второй экран — вопрос про возраст.</p>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Robella</span><span><i style="background:var(--bench)"></i>Наши воронки</span></div>
+  <div class="bars">
+    <div class="row hit" title="FoxIQ iq-test-web-v1: 2499 из 2559, 98%"><div class="lbl">FoxIQ iq-test-web-v1<small>2 559</small></div><div class="track"><div class="bar b" style="width:98%"></div><span class="val" style="left:calc(98% - 40px)">98%</span></div></div>
+    <div class="row hit" title="Azora soulmate-month-web: 5829 из 6161, 95%"><div class="lbl">Azora soulmate-month-web<small>6 161</small></div><div class="track"><div class="bar b" style="width:95%"></div><span class="val" style="left:calc(95% - 40px)">95%</span></div></div>
+    <div class="row hit" title="Azora palm-reading-month-web: 28482 из 31876, 89%"><div class="lbl">Azora palm-reading-month-web<small>31 876</small></div><div class="track"><div class="bar b" style="width:89%"></div><span class="val" style="left:calc(89% - 40px)">89%</span></div></div>
+    <div class="row hit" title="Azora palm-reading-week-web: 7737 из 8669, 89%"><div class="lbl">Azora palm-reading-week-web<small>8 669</small></div><div class="track"><div class="bar b" style="width:89%"></div><span class="val" style="left:calc(89% - 40px)">89%</span></div></div>
+    <div class="row hit" title="FoxIQ test-iq: 3173 из 3767, 84%"><div class="lbl">FoxIQ test-iq<small>3 767</small></div><div class="track"><div class="bar b" style="width:84%"></div><span class="val" style="left:calc(84% - 40px)">84%</span></div></div>
+    <div class="row hit" title="FoxIQ memory-plan-trial (вопрос про возраст): 207 из 279, 74%"><div class="lbl">FoxIQ memory-plan-trial<small>279 · тоже вопрос про возраст</small></div><div class="track"><div class="bar b" style="width:74%"></div><span class="val" style="left:calc(74% - 40px)">74%</span></div></div>
+    <div class="row hit" title="Robella: 96 из 354, 27%"><div class="lbl"><b>Robella</b><small>354</small></div><div class="track"><div class="bar" style="width:27%"></div><span class="val" style="left:27%">27%</span></div></div>
+  </div>
+  <div class="axis"><div></div><div><span>0%</span><span>50%</span><span>100%</span></div></div>
+</div>
+
+<div class="card">
+  <p class="chart-title">После экрана возраста Robella — на уровне наших воронок</p>
+  <p class="chart-sub">% оставивших почту среди прошедших второй экран. 16.10–26.11, люди.</p>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Robella</span><span><i style="background:var(--bench)"></i>Наши воронки</span></div>
+  <div class="bars">
+    <div class="row hit" title="Azora soulmate-month-web: 63%"><div class="lbl">Azora soulmate-month-web</div><div class="track"><div class="bar b" style="width:63%"></div><span class="val" style="left:63%">63%</span></div></div>
+    <div class="row hit" title="FoxIQ iq-test-web-v1: 57%"><div class="lbl">FoxIQ iq-test-web-v1</div><div class="track"><div class="bar b" style="width:57%"></div><span class="val" style="left:57%">57%</span></div></div>
+    <div class="row hit" title="Azora palm-reading-month-web: 55%"><div class="lbl">Azora palm-reading-month-web</div><div class="track"><div class="bar b" style="width:55%"></div><span class="val" style="left:55%">55%</span></div></div>
+    <div class="row hit" title="Azora palm-reading-week-web: 48%"><div class="lbl">Azora palm-reading-week-web</div><div class="track"><div class="bar b" style="width:48%"></div><span class="val" style="left:48%">48%</span></div></div>
+    <div class="row hit" title="Robella: 38 из 96, 40%"><div class="lbl"><b>Robella</b><small>38 из 96</small></div><div class="track"><div class="bar" style="width:40%"></div><span class="val" style="left:40%">40%</span></div></div>
+    <div class="row hit" title="FoxIQ test-iq: 34%"><div class="lbl">FoxIQ test-iq</div><div class="track"><div class="bar b" style="width:34%"></div><span class="val" style="left:34%">34%</span></div></div>
+    <div class="row hit" title="FoxIQ memory-plan-trial: 29%"><div class="lbl">FoxIQ memory-plan-trial</div><div class="track"><div class="bar b" style="width:29%"></div><span class="val" style="left:29%">29%</span></div></div>
+  </div>
+  <div class="axis"><div></div><div><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <p class="note">Оплата от открывших оплату: Robella 3 из 30 (10%), наши воронки 8–18%. Квиз после возраста не сокращаем (решение созвона 03.11): просадка на одном шаге, остальные в норме.</p>
+</div>
+
+<h2>2. Почему уходят с экрана возраста</h2>
+
+<div class="card">
+  <p class="chart-title">Экран возраста по высоте окна браузера: Robella и наши воронки</p>
+  <p class="chart-sub">% открывших второй экран, которые прошли дальше. Телефоны, 16.10–26.11, люди. Серая полоса — разброс по нашим воронкам (Azora palm-reading, soulmate, FoxIQ test-iq, iq-test-web-v1, memory-plan-trial, Minutka).</p>
+  <div class="legend"><span><i style="background:var(--accent)"></i>Robella</span><span><i style="background:var(--bench-soft);border:1px solid var(--bench)"></i>Наши воронки, от и до</span></div>
+  <div class="bars">
+    <div class="row"><div class="lbl">Окно ниже 500 px<small>Robella: 0 из 48</small></div>
+      <div class="pair"><div class="track hit" title="Robella, окно ниже 500 px: 0 из 48 (0%)"><div class="bar" style="width:0"></div><span class="val" style="left:0">0%</span></div>
+      <div class="track hit" title="Наши воронки, окно ниже 500 px: 83–98%"><div class="range" style="left:83%;width:15%"></div><span class="val" style="left:calc(83% - 64px)">83–98%</span></div></div></div>
+    <div class="row"><div class="lbl">Окно 500–650 px<small>Robella: 18 из 37</small></div>
+      <div class="pair"><div class="track hit" title="Robella, окно 500–650 px: 18 из 37 (49%)"><div class="bar" style="width:49%"></div><span class="val" style="left:49%">49%</span></div>
+      <div class="track hit" title="Наши воронки, окно 500–650 px: 86–97%"><div class="range" style="left:86%;width:11%"></div><span class="val" style="left:calc(86% - 64px)">86–97%</span></div></div></div>
+    <div class="row"><div class="lbl">Окно 650 px и выше<small>Robella: 75 из 220</small></div>
+      <div class="pair"><div class="track hit" title="Robella, окно 650 px и выше: 75 из 220 (34%)"><div class="bar" style="width:34%"></div><span class="val" style="left:34%">34%</span></div>
+      <div class="track hit" title="Наши воронки, окно 650 px и выше: 73–98%"><div class="range" style="left:73%;width:25%"></div><span class="val" style="left:calc(73% - 64px)">73–98%</span></div></div></div>
+  </div>
+  <div class="axis"><div></div><div><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <p class="note">iPad и Mac у Robella: прошёл 1 из 37 (3%). В других наших воронках размер окна на первый вопрос не влияет, значит, дело в экране Robella, а не в аудитории. <span class="tag t-data">Видно в данных</span></p>
+</div>
+
+<div class="card">
+  <p class="chart-title">Экран возраста и скорость: сколько длилась заставка на 3 секунды</p>
+  <p class="chart-sub">Время на заставке по свойству <code>sec_on_prev</code>; % открывших экран возраста, которые прошли дальше. Robella, 16.10–26.11, люди.</p>
+  <div class="bars">
+    <div class="row hit" title="Заставка до 4 секунд: 81 из 270 (30%)"><div class="lbl">До 4 секунд<small>81 из 270</small></div><div class="track"><div class="bar" style="width:30%"></div><span class="val" style="left:30%">30%</span></div></div>
+    <div class="row hit" title="Заставка 5–9 секунд: 13 из 38 (34%)"><div class="lbl">5–9 секунд<small>13 из 38</small></div><div class="track"><div class="bar" style="width:34%"></div><span class="val" style="left:34%">34%</span></div></div>
+    <div class="row hit" title="Заставка 10 секунд и дольше: 0 из 28 (0%)"><div class="lbl"><b>10 секунд и дольше</b><small>0 из 28</small></div><div class="track"><div class="bar" style="width:0"></div><span class="val" style="left:0">0%</span></div></div>
+  </div>
+  <div class="axis"><div></div><div><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <p class="note">Эти 28 человек почти не совпадают с группами «невысокое окно» и «iPad»: это отдельная причина. 10+ секунд на заставке — не обязательно медленный интернет: человек мог свернуть приложение. Поэтому вывод подкреплён ручной проверкой. <span class="tag t-data">Видно в данных</span><span class="tag t-guess">Предположение</span></p>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Как устроен экран возраста и что видно руками</h3>
+<ul>
+<li>Логотип, заголовок «Confidence and style at every stage», подзаголовок «To unlock your personalized subscription plan, select your age group».</li>
+<li>4 варианта — плитки 2×2 с картинками 324×502. <b>Подписи «18–29…50+» нарисованы на картинках</b>, в самих кнопках текста нет. Кнопки «Далее» нет: ответ — нажатие на плитку.</li>
+<li>Воронка показывается колонкой фиксированной ширины (около 430 px).</li>
+</ul>
+<p><span class="tag t-hand">Проверено руками</span> Наташа, 26.11:</p>
+<ul>
+<li>в окне 571×857 видны все 4 варианта с подписями;</li>
+<li>в окне 390×650 нижний ряд не помещается: фото «40–49» и «50+» видны частично, подписей нет, нужно прокручивать;</li>
+<li>после перехода по ссылке белый экран держится 2–3 секунды без VPN и около 6 секунд с VPN. Charisly и Rememblo открываются быстрее, картинки в них появляются сразу;</li>
+<li>на экране возраста иногда белые квадраты вместо картинок, на экране загрузки текст наезжает на текст, пока не прогрузилась картинка.</li>
+</ul>
+<p><span class="tag t-guess">Предположение</span> Тормозят картинки Robella: большая картинка на первом экране (FunnelFox отдаёт до 1600×2000) и 4 картинки на экране возраста. Вёрстка не держит место под картинку, поэтому текст накладывается.</p>
+<p><span class="tag t-unk">Не знаем</span> Сколько людей уходит на белом экране до первого экрана (PostHog видит человека только после загрузки воронки) и какой возраст выбирают (ответ в PostHog не приходит).</p>
+<p><b>Проверено и отброшено:</b> ошибки на экране (1 событие <code>$exception</code> за весь срок), локаль (99,8% en-US), источник трафика (<code>utm_source</code> 4 — 27%, Artem — 29%), смена воронки или даты (разница в пределах 4 п.п.).</p>
+<p class="note">Отдельно: 28.10 за один день пришли 34 из 52 визитов с iPad/Mac. Похоже на размещение на планшетах; если повторится, iPad чинить в первую очередь.</p>
+</div>
+
+<h2>3. Воронки и экраны</h2>
+<div class="card tbl">
+<table>
+<tr><th>Воронка</th><th>Адрес</th><th class="n">Экранов</th><th>Трафик, люди</th></tr>
+<tr><td>ai-stylist</td><td>f.robella.app/ai-stylist</td><td class="n">36</td><td>428, 16.10–26.11</td></tr>
+<tr><td>ai-stilist-week-web (оффер США: триал $1)</td><td>f.robella.app/ai-stilist-week-web</td><td class="n">36</td><td>73, 11.11–25.11</td></tr>
+<tr><td>ai-stilist-2</td><td>f.robella.app/ai-stilist-2</td><td class="n">—</td><td>2 человека 06.11, сейчас 404</td></tr>
+</table>
+<ul>
+<li>Обе живые воронки — одни и те же 36 экранов в одном порядке; экран возраста — один и тот же. Обе дают одинаковые 27% на экране возраста.</li>
+<li>Локаль одна — <code>en</code>: 502 из 503 человек с en-US, 483 из 503 из США.</li>
+<li>Тексты первых трёх экранов дословно повторяют Mosso. Отличается вид экрана возраста: у Mosso и Dressly — текстовые кнопки, у Robella — плитки-картинки.</li>
+</ul>
+</div>
+
+<h2>4. Оплата</h2>
+<div class="card">
+<ul>
+<li>Открыли оплату 30, нажали «оплатить» 6, оплатили 3 (все — 16.10–28.10). С 11.11 открыли оплату 5 человек, нажать «оплатить» не попытался никто. Открыть и закрыть окно оплаты — не поломка (сверка Кати по Primer, 19.11).</li>
+<li>Доля оплат от открывших оплату (3 из 30) — на уровне наших воронок (8–18%), но выборка слишком мала для выводов про пейвол и цену. <span class="tag t-data">Видно в данных</span></li>
+<li>Покупок по ценам США ($1 / $39.90) пока ноль: дошли до оплаты 5 человек.</li>
+</ul>
+</div>
+
+<h2>5. Приложение</h2>
+<div class="card tbl">
+<p class="chart-sub">Вошли в приложение 20 человек: 5 покупателей и 15 без оплаты (зарегистрировались через лендинг). Тестовые и свои аккаунты исключены — 70 человек.</p>
+<table>
+<tr><th>Функция</th><th class="n">Покупатели (5)</th><th class="n">Без оплаты (15)</th></tr>
+<tr><td>Отчёт</td><td class="n">5</td><td class="n">9</td></tr>
+<tr><td>Экран beauty score</td><td class="n">4</td><td class="n">6</td></tr>
+<tr><td>Онбординг завершили</td><td class="n">1</td><td class="n">9</td></tr>
+<tr><td>Капсула (создали / открыли)</td><td class="n">1 / 2</td><td class="n">1 / 0</td></tr>
+<tr><td>Примерка</td><td class="n">1</td><td class="n">1</td></tr>
+<tr><td>Чат со стилистом</td><td class="n">1</td><td class="n">1</td></tr>
+<tr><td>Добавили вещь в гардероб</td><td class="n">1</td><td class="n">0</td></tr>
+<tr><td>Переход в магазин</td><td class="n">2</td><td class="n">0</td></tr>
+<tr><td>Челлендж (шаг)</td><td class="n">1</td><td class="n">0</td></tr>
+<tr><td>Пейвол в приложении</td><td class="n">1</td><td class="n">5</td></tr>
+<tr><td>Управление подпиской</td><td class="n">4</td><td class="n">1</td></tr>
+</table>
+<ul>
+<li>Отчёт и beauty score открывают все покупатели. Глубже — по 1–2 из 5, и почти всё это один человек (купил 28.10, 10 дней в приложении). <span class="tag t-data">Видно в данных</span></li>
+<li>Покупатели: отменили 3 из 5 (двое — через 1 и 10 минут после покупки, третий — 23.11 с причиной «не пользуюсь», хотя 19.11 принял удерживающее предложение); продлил 1; у одного (купил 16.10) нет ни продления, ни отмены — сверить в Primer. <span class="tag t-data">Видно в данных</span><span class="tag t-unk">Не знаем</span></li>
+<li>С лендинга robella.app можно войти без оплаты: с 20.11 так вошли 5 человек (онбординг → отчёт → пейвол), не оплатил никто. <span class="tag t-data">Видно в данных</span></li>
+<li>Ценность для покупателя, похоже, заканчивается на отчёте: дальше приложение не ведёт. С 5 покупателями не проверить, нужно 30+. <span class="tag t-guess">Предположение</span></li>
+</ul>
+</div>
+
+<h2>6. Гипотезы и предложения</h2>
+
+<div class="card">
+<h3 style="margin-top:0">Г1 (главная). Облегчить начало воронки и переделать экран возраста — без A/B, сразу для всех</h3>
+<p><b>Гипотеза.</b> Начало воронки Robella тяжёлое. Если облегчить картинки и сделать возраст компактными текстовыми кнопками, это сработает на трёх участках:</p>
+<ol>
+<li><b>От клика по рекламе до первого экрана</b> — страница откроется быстрее, меньше людей уйдёт на белом экране (сейчас не измерено).</li>
+<li><b>Экран возраста при медленной загрузке</b> (0 из 28) — подписи будут текстом в кнопках, белых квадратов не будет.</li>
+<li><b>Экран возраста на телефоне и iPad</b> (0 из 48, 1 из 37) — компактные кнопки поместятся в экран. Облегчение картинок здесь не поможет, нужна новая вёрстка.</li>
+</ol>
+<p>Ожидаем, что экран возраста будут проходить не 27%, а 74% и выше. Тогда до почты дойдёт в 2,5–3 раза больше людей. <span class="tag t-guess">Предположение</span></p>
+<p><b>Что меняем</b> (задача Даше через Никиту):</p>
+<ul>
+<li>плитки 2×2 заменить на 4 текстовые кнопки в столбик «18–29», «30–39», «40–49», «50+», высота около 56 px, как у Mosso и Dressly;</li>
+<li>всё должно помещаться в окно высотой 450 px без прокрутки; картинку можно оставить одну сверху или убрать;</li>
+<li>облегчить картинки первого экрана и экрана возраста;</li>
+<li>задать картинке на экране загрузки фиксированную высоту, чтобы текст не наезжал.</li>
+</ul>
+<p><b>Главная метрика:</b> доля открывших экран возраста, которые прошли дальше. Сейчас 27% (96 из 354). Отдельно — окно ниже 500 px и iPad.<br>
+<b>Защитные:</b> почта от прошедших возраст (сейчас 40%), открытие оплаты от оставивших почту (79%).<br>
+<b>Метод — «до и после».</b> Экран сломан для части устройств, держать на нём половину трафика ради A/B — терять людей. Риск: может смениться креатив или аудитория, поэтому сравнивать тот же <code>utm_source</code>.<br>
+<b>Объём и срок:</b> чтобы отличить 27% от 60% (α = 5%, мощность 80%), нужно 35 человек на экране возраста после правки; для 27% → 40% — 206. Сейчас на экран попадает около 11 человек в день: первый вывод — через 4 дня, надёжный — через 7.</p>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Замерить потерю на загрузке страницы</h3>
+<ol>
+<li><b>Рекламный кабинет Meta (Дима):</b> сравнить «клики по ссылке» и «просмотры целевой страницы» в кампаниях Robella и, для ориентира, Charisly или Azora. Разница — люди, которые не дождались страницы.</li>
+<li><b>pagespeed.web.dev, мобильная версия:</b> сравнить время до первого экрана и главной картинки у f.robella.app/ai-stylist, f.charisly.app/charisma-challenge и f.rememblo.com/memory-plan.</li>
+<li><b>Свой замер в PostHog</b> (разработчик, общий скрипт воронок <code>azf.js</code>): событие в начале загрузки страницы со временем от перехода по ссылке и событие ухода, если первый экран так и не показался.</li>
+</ol>
+</div>
+
+<div class="card">
+<h3 style="margin-top:0">Г2. Объединить заставку и вопрос про возраст в один экран — позже</h3>
+<p>Первым экраном сразу обещание, рейтинг и кнопки возраста, как у Dressly, Mosso, K-Styler. Метрика — старт → третий экран. Нужен A/B: чтобы отличить 19% от 25%, нужно около 750 человек на вариант — при 15 стартах в день больше 3 месяцев. Возвращаться, когда будет 100+ стартов в день.</p>
+<h3>Г3. Приложение: вести покупателя от отчёта к следующему действию — позже</h3>
+<p>После отчёта показывать одно действие («Собери капсулу из своих вещей» или «Примерь образ дня»). Сейчас 5 покупателей — не выборка; вернуться при 30+.</p>
+<h3>Исправить сразу, без теста</h3>
+<ol>
+<li>Экран возраста и картинки — Г1.</li>
+<li>Сверить в Primer подписку покупателя от 16.10 без продления и отмены.</li>
+<li>Включить запись сессий в воронке (сейчас выключена).</li>
+<li>Передавать ответ на вопрос про возраст в событие экрана.</li>
+</ol>
+</div>
+
+<h2>7. Ограничения и как считали</h2>
+<div class="card">
+<ul>
+<li>Выборка Robella маленькая: 503 старта, 96 прошли возраст, 3 покупки. Сравнения с нашими воронками — ориентир.</li>
+<li>Вид экрана проверен руками в окнах 571×857 и 390×650; на iPad и в живом встроенном браузере Facebook — нет.</li>
+<li>В воронке нет событий ухода со страницы и записей сессий.</li>
+<li>Деньги не считались, только поведение по PostHog. Primer после 17.11 не сверялся.</li>
+<li>У наших воронок тестовые по почте не исключались (на таком объёме проценты не меняются). У Robella исключены 13 тестовых в воронке и 70 в приложении.</li>
+<li><b>Воронка:</b> <code>funnel_screen_open</code>, <code>project = robella_ff</code>, <code>$host = f.robella.app</code>, без <code>sandbox</code> и preview. Шаг — по <code>screen_index</code> (0 — заставка, 1 — возраст, 2 — следующий экран). Почта — <code>funnel_email_submit</code>, оплата — <code>funnel_checkout_open</code>, «оплатить» — <code>funnel_purchase_start</code>, покупка — <code>funnel_purchase_success</code>.</li>
+<li><b>Срезы:</b> первое значение у человека — <code>$viewport_height</code> (высота видимой области браузера), <code>$os</code>, <code>$browser</code>, <code>utm_source</code>, <code>ff_locale</code>. Время на заставке — <code>sec_on_prev</code> на экране возраста.</li>
+<li><b>Тестовые:</b> <code>is_test</code>, <code>utm_campaign</code> 88888888, почта по шаблону из <code>playbook/posthog.md</code>, аккаунт Наташи.</li>
+<li><b>Наши воронки:</b> <code>azora_ff</code>, <code>foxiq_ff</code>, <code>minutka_ff</code>, те же события, 16.10–26.11.</li>
+<li><b>Объём теста:</b> двусторонний тест двух долей, α = 0,05, мощность 80%. Время — UTC; выгрузка 26.11 13:25 МСК.</li>
+</ul>
+</div>
+
+</main>
+</body>
+</html>

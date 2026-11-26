@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Воронки конкурентов Robella</title>
+<style>
+:root{color-scheme:light;--bg:#f7f7f5;--surface:#fff;--text:#191919;--text-2:#5f5f5f;--line:#e4e4e0;--accent:#257de0;--soft:#ebebe7}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#121212;--surface:#1b1b1b;--text:#efefef;--text-2:#a2a2a2;--line:#2f2f2f;--accent:#5aa2f0;--soft:#2a2a28}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#121212;--surface:#1b1b1b;--text:#efefef;--text-2:#a2a2a2;--line:#2f2f2f;--accent:#5aa2f0;--soft:#2a2a28}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+main{max-width:880px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;line-height:1.25;margin:0 0 8px}
+h2{font-size:20px;margin:0 0 12px}
+h3{font-size:16px;margin:26px 0 8px;padding-top:14px;border-top:1px solid var(--line)}
+h2+h3{border-top:0;padding-top:0}
+p,li{margin:6px 0} ul,ol{padding-left:22px}
+a{color:var(--accent);overflow-wrap:anywhere}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px;margin:16px 0}
+blockquote{margin:8px 0;padding:6px 14px;border-left:3px solid var(--accent);background:var(--soft);border-radius:0 8px 8px 0;color:var(--text-2)}
+code{font-size:13px;background:var(--soft);border-radius:4px;padding:1px 4px;overflow-wrap:anywhere}
+.tbl{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--text-2);font-weight:600;font-size:13px}
+tr:last-child td{border-bottom:0}
+</style></head><body><main>
+<h1>Robella: ресёрч воронок конкурентов и идеи новых воронок</h1>
+<p>Задача: <a target="_blank" rel="noopener" href="https://app.clickup.com/t/1249d35truy">Robella: ресёрч воронок — идеи новых воронок</a> (поставила Катя, срок 30.11).
+Дата: 25.11.2026. Исполнитель: Наталья (через Claude).</p>
+<section class="card"><h2>Коротко</h2>
+<ul>
+<li>Нашли 6 конкурентов с веб-воронками в нише «стилист / гардероб / цветотип», 5 прошли до пейвола: Dressly, Mosso, K-Styler, Inspoy (Stylix), Myswatches. Essembl ведёт с лендинга в App Store, квиза нет.</li>
+<li><strong>Первый экран.</strong> У 3 из 5 квиз-воронок (Dressly, Mosso, K-Styler) первый экран выглядит одинаково: обещание, рейтинг и число пользователей, а под ними сразу кнопки выбора возраста. Отдельного экрана загрузки или вступления нет, первый клик уже отвечает на вопрос. У Robella два первых экрана — загрузка (intro) и вопрос про возраст, на них уходят 83%. Подробнее в «Выводах для Robella».</li>
+<li><strong>Нарратив.</strong> Два варианта:<ul>
+<li>цвет → фигура → образ жизни → «план стиля на 4–8 недель» (Mosso, K-Styler);</li>
+<li>боль онлайн-покупок (возвраты, «сюрпризы» в заказе) → посадка → цвет → капсула с ссылками на покупки (Dressly).
+Внутри квиза везде прогресс-бары: «Phase 1 Completed», «77% match → 89%», промежуточные экраны-обещания.</li>
+</ul>
+</li>
+<li><strong>Оффер.</strong> У Mosso, K-Styler и Dressly — план на 4/8/12/16/24 недели. Первый период со скидкой 66–70% через промокод в URL, скретч-карта или «скидка Чёрной пятницы» и таймер 10–15 минут. Затем продление по полной цене: $49.99–99.99 за период. У Inspoy — триал $1 на 3 дня, затем $39.99/мес (так же устроен US-оффер Robella). Myswatches — разовая покупка $29.99/$39.99 и физическая карта цветов.</li>
+<li><strong>Масштаб рекламы.</strong> Больше всего свежей рекламы у Inspoy: 21 из 27 объявлений в выборке запущены в ноябре. Mosso рекламируется с июня по ноябрь на EN/ES/PT. Рекламу Dressly в Meta Ad Library по ключевым словам найти не удалось.</li>
+</ul>
+</section><section class="card"><h2>Как собирали</h2>
+<ul>
+<li>Реклама: Meta Ad Library, активные объявления, поиск по ключевым словам (ai stylist, color analysis, capsule wardrobe, color palette quiz, style quiz app и др.) и по названиям конкурентов, 25.11.2026. Из объявлений брали ссылки на воронки, тексты и даты запуска. Tyver API не пустил (Not authenticated), поэтому выгрузку Tyver не делали.</li>
+<li>Воронки: прошли каждую сами в браузере (мобильный профиль iPhone, язык EN), выбирали «женщина, 35–44». Почта тестовая (yopmail). Оплату не делали, фото не загружали: везде был шаг «пропустить».</li>
+<li>Ограничения:<ul>
+<li>по одному проходу на воронку; цены могут зависеть от гео, времени и промо — сейчас идёт Чёрная пятница;</li>
+<li>IP-гео прохода не контролировали;</li>
+<li>число результатов в Ad Library — по ключевому слову, в него попадают посторонние объявления: это ориентир, а не точное число объявлений бренда;</li>
+<li>гео показов не смотрели, видны только языки объявлений.</li>
+</ul>
+</li>
+</ul>
+</section><section class="card"><h2>Конкуренты</h2>
+<h3>1. Dressly — капсульный гардероб через «боль онлайн-покупок»</h3>
+<ul>
+<li>Воронка: https://quiz.dressly.world/en/new-general-smart-plan-hp-4w-2 (ссылка «Take 1-minute quiz» со страницы входа account.dressly.world).</li>
+<li>Реклама: активных объявлений Dressly в Ad Library по запросам «Dressly» и «dressly.world» не нашли. Сторонний разбор web2wave («198 000 объявлений, 87,6% ведут на quiz.dressly.world») прочитать не удалось: сайт закрыт сетью, цифры видны только в выдаче поиска — <strong>Не знаем</strong>, актуальны ли.</li>
+<li>Первые экраны:<ol>
+<li>«4.4 out of 5 · 1 000 000+ users · <strong>Dress effortlessly</strong> · Simplify your wardrobe with a personalized plan that finds perfect outfits for you · Pass the quiz to personalize your subscription» + кнопки <strong>Age: 18–34 / 35–44 / 45–54 / 55+</strong>.</li>
+<li>«1 000 000+ people use Dressly to shop smarter · “Your best outfit isn’t new — it’s just finally worn right”» + «featured in» (логотипы СМИ).</li>
+<li>«How satisfied are you with your wardrobe?»</li>
+<li>«Where does most of your shopping happen?»</li>
+<li>«How often do you update your wardrobe?» → «How much do you trust online shopping?» → экран «Shop online with certainty».</li>
+</ol>
+</li>
+<li>Нарратив — 5 блоков, всего около 30 экранов до почты:<ul>
+<li>«Shopping Experience»: сюрпризы в заказах, вещи разваливаются после двух стирок, возвраты;</li>
+<li>«Look &amp; Fit»: тип фигуры;</li>
+<li>«Color»: глаза, кожа, волосы;</li>
+<li>«Personal Style»: поводы, стиль, «nothing to wear»;</li>
+<li>«Final Steps»: главная цель.
+Между блоками — экраны-обещания: «No more 'return' headaches», «Colors that make you glow», «Stop blending in». Затем «Your Personalized Wardrobe Upgrade Plan… by January 2027», загрузка с отзывами, почта, имя, скретч-карта «70%».</li>
+</ul>
+</li>
+<li>
+<p>Пейвол: промокод в URL, таймер 10 минут.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>План</th>
+<th>Сейчас</th>
+<th>Потом</th>
+<th>В день</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 недели (MOST POPULAR)</td>
+<td>$15.19</td>
+<td>$49.99 каждые 4 недели</td>
+<td>$0.54</td>
+</tr>
+<tr>
+<td>12 недель</td>
+<td>$36.99</td>
+<td>$99.99 каждые 12 недель</td>
+<td>$0.44</td>
+</tr>
+<tr>
+<td>24 недели</td>
+<td>$59.99</td>
+<td>$119.99 каждые 24 недели</td>
+<td>$0.36</td>
+</tr>
+</tbody>
+</table></div>
+<p>Что внутри плана: капсула из 10 вещей, 30+ образов, виртуальная примерка («See it on you first»), список покупок со ссылками. Юрлицо: Solwita Corp (Лас-Вегас).</p>
+</li>
+</ul>
+<h3>2. Mosso — «AI-стилист, который тебя понимает», капсула и цвет</h3>
+<ul>
+<li>Воронки из рекламы:<ul>
+<li>https://mosso.ai/mid/v3-4w/quiz (перенаправляет на <code>/en/mid/transform-my-style-bmc/quiz</code>);</li>
+<li><code>/mid/8wupfreebupd2v1-pp/quiz</code>;</li>
+<li><code>/mid/8wupfreeblgl-amz/quiz</code>;</li>
+<li><code>/es/mid/armario-capsula/quiz</code>;</li>
+<li><code>/pt/mid/8wupfreebupd2v1-v4sub1skipleg/quiz</code>.</li>
+</ul>
+</li>
+<li>Реклама: объявления идут от страниц-«персон» (Emma Quince, Grace Collins, Rose Hunter, Olivia Reyes, Vanessa Carvalho) в стиле UGC. Тексты:<ul>
+<li>«✨ Meet your AI stylist who actually gets you. Mosso learns your style, your lifestyle, and what makes you feel amazing…»;</li>
+<li>«Meet the AI stylist that turns your closet into the ultimate capsule wardrobe».
+Языки EN/ES/PT. Даты запуска в выборке — июнь–ноябрь 2026, из них 6 объявлений запущены в ноябре и 5 в октябре.</li>
+</ul>
+</li>
+<li>Первые экраны:<ol>
+<li>«Learn which colors and shapes flatter you most» (загрузка квиза) → «<strong>Confidence and style at every stage</strong> · To unlock your personalized subscription plan, select your age group» + <strong>18–29 / 30–39 / 40–49 / 50+</strong>.</li>
+<li>«120,000+ women found their signature style with Mosso · 4.8/5 out of 1743 reviews».</li>
+<li>«What are your main goals?» (фигура / цвета / собраться за 5 минут / не покупать лишнего).</li>
+<li>«Imagine getting dressed in under 5 minutes · We've analyzed 2 million data points…».</li>
+<li>Глаза → волосы → тон кожи → подтон → «33% · Phase 1 Completed · Your best colors are set».</li>
+</ol>
+</li>
+<li>Нарратив — 3 фазы с прогрессом:<ul>
+<li>цвета;</li>
+<li>фигура и посадка: рост, вес, что подчеркнуть, проблемы, слайдер «какую долю вещей носите»;</li>
+<li>образ жизни и бюджет: город и климат, день, где покупаете, бюджет, свайп-карточки «Would you wear this?».
+Дальше идут вопросы во время загрузки («Do you ever feel like certain outfits make you look older than you are?»), предложение сделать фото лица (можно пропустить), почта, скретч-карта «Black Friday 70%».</li>
+</ul>
+</li>
+<li>
+<p>Пейвол: «Your 28-Day Plan is Ready in MOSSO App», цветотип показан, промокод в URL, таймер 14 минут.</p>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>План</th>
+<th>Сейчас</th>
+<th>Цена без скидки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4 недели</td>
+<td>$19.99</td>
+<td>$59.99</td>
+</tr>
+<tr>
+<td>8 недель (MOST POPULAR)</td>
+<td>$29.99</td>
+<td>$99.99</td>
+</tr>
+<tr>
+<td>16 недель</td>
+<td>$49.99</td>
+<td>$149.99</td>
+</tr>
+</tbody>
+</table></div>
+<p>Продление по полной цене: для 8-недельного плана — $99.99 каждые 8 недель. Подарок: e-book «The Ultimate Capsule Guide».</p>
+</li>
+</ul>
+<h3>3. K-Styler — «корейский метод: измерено, а не угадано»</h3>
+<ul>
+<li>Воронка: https://quiz.mykstyler.com/quizv1-sgo, конструктор web2wave. Пейвол: <code>/paywall/plan-offer-v1-sgo</code>.</li>
+<li>
+<p>Реклама: страница «Soojin Yoon 윤수진 — Korean Personal Style Expert». Текст:
+    &gt; «Tired of buying clothes that looked amazing on the hanger — and terrible on you? … Two quick scans — body and face — measure your skeletal frame and personal coloring… No quiz. No opinion. Measured. … the same Korean image-consulting method behind a $500/hr Seoul practice — from your phone.»</p>
+<p>Запуски в выборке — июль–ноябрь 2026, больше всего в сентябре. По запросу «K-Styler» в Ad Library около 820 результатов, но в выборке есть посторонние объявления.
+- Первые экраны:
+1. «4.6 out of 5 · 114k users · 3-MINUTE QUIZ · <strong>The Korean styling method · Built for your body</strong> · Select your age to discover the colors and shapes that flatter you» + <strong>Age: 18–34 / 35–44 / 45–54 / 55+</strong>.
+2. «114,000+ women use K-Styler to dress for the body and coloring they actually have · “You were never hard to dress. You were just never measured.”».
+3. «How does getting dressed usually make you feel?» (Confident / Unsure / Tired / Overwhelmed).
+4. «What’s your main goal?».
+5. «Which styles do you like?» → «Imagine getting dressed in under 5 minutes».
+- Нарратив: вопросы почти дословно совпадают с Mosso, но порядок другой — сначала чувства и цели, потом поведение, сложности, фигура и цвет. Между ними экраны с позиционированием:
+- «It was never you»;
+- «Measured, not guessed»;
+- «Why not just ask ChatGPT?»;
+- «Western color systems mistype women of color… The Korean method was built to read every undertone».
+Дальше: «How fast do you want results? 4/8/16 weeks» → график плана «by January 2027» → загрузка с отзывами → почта.
+- Пейвол: промокод «70%» и таймер 10 минут. 4-недельный план: $14.99 вместо $49.99 ($0.54 в день), затем $49.99 каждые 4 недели. Подарок: e-book, гарантия возврата 28 дней. Блок «Meet the founder» (Soojin Yoon, AICI, Сеул). Юрлицо: Zenith Labs Limited.</p>
+</li>
+</ul>
+<h3>4. Inspoy (Stylix) — заход через примерку стрижки, квиз про стиль</h3>
+<ul>
+<li>Воронка: https://sub.stylix.app/quiz-pp?mode=hairstyle&amp;creative_topic=hairstyle</li>
+<li>
+<p>Реклама: несколько страниц — «Stylist: Palette Finder», «Stylist: Outfit Maker with Olivia Carter», «Style Better Daily», «Inspoy Hair Studio». Хук в рекламе — примерка стрижки по фото:</p>
+<ul>
+<li>«Thinking about a new haircut? See yourself with different hairstyles before making a change. Upload a photo…»;</li>
+<li>«See Your Next Haircut Before the Salon».</li>
+</ul>
+<p>Языки EN/PT/JA/AR. В выборке по запросу «Inspoy» 27 объявлений, 21 из них запущено в ноябре, 6 — в октябре. Всего в Ad Library около 310–340 результатов.
+- Первые экраны:
+1. «<strong>Look and feel your best in clothes that flatter you</strong> · 100 000+ women changed their lives with Inspoy · Light Summer · Best colors · Start».
+2. «Know which colors and styles work for you · Answer a few questions…».
+3. «How old are you?» (6 вариантов).
+4. «With Inspoy, I hope to…» (выбрать топ-3).
+5. «Imagine a closet where every piece sparks joy».
+- Нарратив: 17 вопросов — стиль, гардероб, рост и вес, фигура, что подчеркнуть, что скорректировать, климат, образ жизни, бренды, бюджет, эстетика. По ходу растёт «совпадение» гида со стилем: «51% matches» → «77% match unlocked» → «89% done — let's unlock your color power». Затем скан лица (можно пропустить) и анализ с лентой «112 people unlocked… in the last hour». Итог — «Personal summary, 97% match»: цветотип и фигура показаны, палитра и образы закрыты («Unlock»). Потом почта.
+- Пейвол: промокод AUTUMN_2026. Варианты триала:
+- 3 дня за $1 (RECOMMENDED);
+- 1 неделя за $5.49;
+- 4 недели за $9.99.</p>
+<p>После 3-дневного триала — $39.99 в месяц. Функции: цветотип, цифровой гардероб, виртуальная примерка, подборка покупок, чат с AI-стилистом. Гарантия возврата 14 дней. Юрлицо: Digital Solutions LLC (Аврора, Колорадо).</p>
+</li>
+</ul>
+<h3>5. Myswatches — короткий квиз и разовая покупка карты цветов</h3>
+<ul>
+<li>Воронка: https://myswatchesquiz.netlify.app/</li>
+<li>Реклама: страница Myswatches, 23 объявления в выборке, запуски в октябре и ноябре. Текст:
+    &gt; «For 20 YEARS I bought clothes that looked good in store, but never suited me. Turns out I was wearing the wrong colors my entire life… Unlock 50+ of your Power Colors… Join 10,000+ women… Take our quiz».</li>
+<li>Первые экраны:<ol>
+<li>«BLACK FRIDAY WEEK DEAL · <strong>Find out exactly which colors were made for you</strong> · 4.9/5 · Trusted by 20,000+ women» + три входа: «Find My Colors + get cards» / «Just Get Cards» / «I know my season».</li>
+<li>Цвет глаз (1/8).</li>
+<li>Цвет волос.</li>
+<li>Тон кожи.</li>
+<li>Металл украшений → подтон → возраст → фото (можно пропустить).</li>
+</ol>
+</li>
+<li>Нарратив: 8 вопросов. Потом «проверка ответов», анимация «подбора сезона» и результат с отзывами «до / после». Таблица: консультация вживую $200–600 против $39.99.</li>
+<li>
+<p>Оффер: <strong>разовая покупка, не подписка</strong>.</p>
+<ul>
+<li>Basic — $29.99: результат за 48 часов, 20 цветов;</li>
+<li>Premium — $39.99: результат за 24 часа, 50+ оттенков, цвета-антиподы, физическая карта, книга образов, бонусы Чёрной пятницы.</li>
+</ul>
+<p>Проверку делает человек (так заявлено). Гарантия возврата 30 дней.</p>
+</li>
+</ul>
+<h3>6. Essembl — гардероб из своих вещей (лендинг → App Store)</h3>
+<ul>
+<li>Ссылка из рекламы: https://try.essembl.com/</li>
+<li>Реклама: страница Valentinessembl, около 240 результатов в Ad Library, запуски июль–октябрь 2026. Аудитория в основном мужская (#menswear). Тексты:<ul>
+<li>«Turn your wardrobe into outfits», «No more “I have nothing to wear”»;</li>
+<li>«snap the piece and Essembl tells you if it actually works with what you already own».</li>
+</ul>
+</li>
+<li>Первый экран: «SOUND FAMILIAR? <strong>200 clothes. Nothing to wear.</strong> · 4.5 from 4.6K App Store ratings · 2.4M users», демо «Scan → Wardrobe → Outfit», кнопка «Show me what to wear» (в App Store) или «continue on the web» (вход через Apple / Google / Email). Квиза и веб-пейвола нет, поэтому на вебе цены не видны.</li>
+</ul>
+</section><section class="card"><h2>Сводка офферов</h2>
+<div class="tbl"><table>
+<thead>
+<tr>
+<th>Конкурент</th>
+<th>Вход</th>
+<th>Длина до почты</th>
+<th>Оффер на пейволе</th>
+<th>Продление</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dressly</td>
+<td>возраст на 1-м экране</td>
+<td>~30 экранов</td>
+<td>4 нед. $15.19 / 12 нед. $36.99 / 24 нед. $59.99</td>
+<td>$49.99 / $99.99 / $119.99 за период</td>
+</tr>
+<tr>
+<td>Mosso</td>
+<td>возраст на 1-м экране</td>
+<td>~30 экранов</td>
+<td>4 нед. $19.99 / <strong>8 нед. $29.99</strong> / 16 нед. $49.99</td>
+<td>$59.99 / $99.99 / $149.99 за период</td>
+</tr>
+<tr>
+<td>K-Styler</td>
+<td>возраст на 1-м экране</td>
+<td>~32 экрана</td>
+<td>4 нед. $14.99</td>
+<td>$49.99 / 4 нед.</td>
+</tr>
+<tr>
+<td>Inspoy</td>
+<td>лендинг + Start, возраст на 3-м</td>
+<td>~25 экранов</td>
+<td>триал 3 дня $1 / 1 нед. $5.49 / 4 нед. $9.99</td>
+<td>$39.99 / мес</td>
+</tr>
+<tr>
+<td>Myswatches</td>
+<td>лендинг + 3 входа</td>
+<td>8 вопросов</td>
+<td>разово $29.99 / $39.99</td>
+<td>нет</td>
+</tr>
+<tr>
+<td>Robella (US, для сравнения)</td>
+<td>загрузка (intro) → возраст</td>
+<td>~30 экранов</td>
+<td>триал $1</td>
+<td>$39.90 / мес</td>
+</tr>
+</tbody>
+</table></div>
+<p>Robella — по разбору от 20.11 и карточке Robella (воронка США отдана в трафик 11.11).</p>
+</section><section class="card"><h2>Выводы для Robella</h2>
+<ul>
+<li><strong>Видно в данных.</strong> У трёх конкурентов, у которых больше всего свежей рекламы в нише, первый экран совмещает обещание, социальное доказательство и вопрос про возраст. Пользователь начинает квиз первым же нажатием. У Robella перед возрастом стоит отдельный экран загрузки (intro), а на первых двух экранах теряется 83% (у FoxIQ и Azora — 40–45%).</li>
+<li><strong>Предположение.</strong> Если убрать отдельный экран intro и вынести вопрос про возраст на первый экран вместе с обещанием и рейтингом, просадка на входе уменьшится. Это не сокращение квиза: вопросы остаются, меняется только первый экран. Просадка на этом шаге значительная, поэтому правка подходит под исключение из правила «квиз не сокращаем». Решение — за Катей и Димой.</li>
+<li><strong>Не знаем.</strong> Какие из этих воронок окупаются. Конверсий и расходов конкурентов в открытых данных нет.</li>
+</ul>
+</section><section class="card"><h2>Идеи новых воронок для Robella</h2>
+<p>Все идеи — гипотезы для обсуждения с Катей и Димой. Цены и воронки выбирают Дима и Никита.</p>
+<ol>
+<li>
+<p><strong>«Твой сезон цвета за 2 минуты»</strong> (цвет первым, как Mosso / K-Styler / Myswatches)</p>
+<ul>
+<li>Заход: реклама «Носила не те цвета 20 лет» / «Find the colors that make you glow».</li>
+<li>Первые экраны:<ol>
+<li>обещание + рейтинг + возраст кнопками;</li>
+<li>социальное доказательство;</li>
+<li>глаза → волосы → кожа → подтон с картинками;</li>
+<li>промежуточный результат «Your best colors are set — 33%»;</li>
+<li>дальше фигура и стиль.</li>
+</ol>
+</li>
+<li>Оффер: цветотип в итоге показан, палитра и образы закрыты, план на 4 недели.</li>
+</ul>
+</li>
+<li>
+<p><strong>«Капсула из того, что уже есть в шкафу»</strong> (как Dressly / Mosso / Essembl)</p>
+<ul>
+<li>Заход: «200 вещей — и нечего надеть», «носишь 20% гардероба».</li>
+<li>Первые экраны:<ol>
+<li>обещание + возраст;</li>
+<li>«Какую долю вещей вы носите?» (слайдер);</li>
+<li>«Как часто нечего надеть?»;</li>
+<li>сложности с гардеробом;</li>
+<li>экран-обещание «Get dressed in 5 minutes».</li>
+</ol>
+</li>
+<li>Оффер: «28-дневный капсульный план» + e-book в подарок, ссылки на покупки.</li>
+</ul>
+</li>
+<li>
+<p><strong>«Покупай онлайн без возвратов»</strong> (нарратив Dressly)</p>
+<ul>
+<li>Заход: «Заказала — не подошло — возврат? Узнай свою посадку и цвета до покупки».</li>
+<li>Первые экраны:<ol>
+<li>обещание + возраст;</li>
+<li>где покупаете;</li>
+<li>как часто «сюрпризы» в заказе;</li>
+<li>возвраты;</li>
+<li>экран «No more return headaches».</li>
+</ol>
+</li>
+<li>Оффер: план + проверка вещи перед покупкой — у Robella есть примерка, это совпадает с обещанием.</li>
+</ul>
+</li>
+<li>
+<p><strong>«Примерь образ / стрижку по одному фото»</strong> (заход Inspoy)</p>
+<ul>
+<li>Заход: визуальная примерка в рекламе («See it on you before you buy / before the salon»).</li>
+<li>Первые экраны:<ol>
+<li>лендинг с примером «до / после» + Start;</li>
+<li>«Что хотите узнать?» (выбрать топ-3);</li>
+<li>возраст;</li>
+<li>дальше квиз с растущим «% совпадения».</li>
+</ol>
+</li>
+<li>Оффер: триал $1 на 3 дня — у Robella такая же схема, меняется только заход.</li>
+<li>Что важно: заход работает, только если примерка в приложении Robella показывает хороший результат. Нужна продуктовая проверка.</li>
+</ul>
+</li>
+<li>
+<p><strong>«Измерено, а не угадано»</strong> (позиционирование K-Styler)</p>
+<ul>
+<li>Заход: эксперт или метод («цвет и фигура по скану, а не по мнению», «почему не спросить ChatGPT»).</li>
+<li>Первые экраны:<ol>
+<li>обещание + возраст;</li>
+<li>«You were never hard to dress. You were just never measured»;</li>
+<li>как вы себя чувствуете, когда одеваетесь;</li>
+<li>главная цель;</li>
+<li>экран против «советов наугад».</li>
+</ol>
+</li>
+<li>Оффер: план на 4 недели со скидкой по промокоду и гарантией возврата.</li>
+<li>Нужно лицо или эксперт для рекламы. Метод нельзя приписывать реальной практике, которой нет.</li>
+</ul>
+</li>
+</ol>
+</section><section class="card"><h2>Пройти руками (не открылось из среды Claude)</h2>
+<ul>
+<li>Воронку Robella https://f.robella.app/ai-stylist браузер в среде Claude не открыл (ошибка соединения). Сравнение первых экранов — по разбору от 20.11.</li>
+<li>Essembl: веб-вход через аккаунт и цены в App Store (https://try.essembl.com/ → App Store).</li>
+<li>Разбор Dressly от web2wave: https://www.web2wave.com/post/dresslys-meta-ad-strategy-198-000-ads-27-creatives</li>
+</ul></section>
+</main></body></html>
